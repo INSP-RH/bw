@@ -1,0 +1,131 @@
+---
+title: "bw: Dynamic Body Weight Model"
+output: github_document
+---
+
+```{r setup, include=FALSE, echo=FALSE, warning=FALSE,message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(fig.height = 12)
+library(ggplot2)
+library(bw)
+```
+
+The ``bw`` package implements the [Dynamic Weight Change model from _Hall et al._ for adults](https://www.niddk.nih.gov/research-funding/at-niddk/labs-branches/LBM/integrative-physiology-section/research-behind-body-weight-planner/Documents/Hall_Lancet_Web_Appendix.pdf) and the [Children dynamic weight model from Hall **et al**](http://www.thelancet.com/journals/lancet/article/PIIS2213-8587(13)70051-2/abstract) for children.
+
+
+## Installation
+
+To install the latest version please run the following code:
+
+```{r, eval = FALSE}
+if (!require(devtools)){install.packages("devtools")}
+devtools::install_github("INSP-RH/bw", build_vignettes = TRUE)
+```
+
+## Adult Model
+
+The main function to estimate weight change is ``adult_weight``. It takes as input body weight (kg), height (m),
+age (yrs), sex (either `"male"` or `"female"`) either as column vectors from a database or as individual level. In addition it takes a day-by-day `matrix` for change in energy intake from baseline (kcal/day) and another `matrix` for change in sodium (mg/day).
+
+```{r}
+#Individual's parameters
+bw  <- 80
+ht  <- 1.8
+age <- 32
+sex <- "female"
+
+#Matrix of energy intake change for 100 days
+deltaEI     <- rep(-100, 365)
+
+#Function of sodium intake
+deltaNA     <- rep(-10, 365)
+
+#Estimate weight change. 
+wtrajectory  <- adult_weight(bw, ht, age, sex, deltaEI, deltaNA)
+```
+
+The variable `wtrajectory` is a list containing matrices of all the modelled variables: 
+
+```{r}
+names(wtrajectory)
+```
+
+These can be plotted with `model_plot`:
+
+```{r, fig.height=12}
+model_plot(wtrajectory)
+```
+
+The model can also be used for computing weight change for several individuals at a time:
+
+```{r}
+#Antropometric data
+weights <- c(45, 67, 58, 92, 81)
+heights <- c(1.30, 1.73, 1.77, 1.92, 1.73)
+ages    <- c(45, 23, 66, 44, 23)
+sexes   <- c("male", "female", "female", "male", "male") 
+
+#Matrix of energy consumption reduction: 
+EIchange <- cbind(rep(-100, 365), rep(-200, 365), rep(-200, 365), 
+                  rep(-123, 365), rep(-50, 365))
+
+#Returns a weight change matrix and other matrices
+model_weight <- adult_weight(weights, heights, ages, sexes, 
+                             EIchange)
+
+model_plot(model_weight)
+```
+
+Average for included variables can be done:
+```{r, eval = FALSE}
+model_mean(model_weight)
+```
+
+```{r, echo = FALSE}
+head(model_mean(model_weight))
+```
+
+BMI prevalence can be computed: 
+
+```{r, eval = FALSE}
+adult_bmi(model_weight)
+```
+
+```{r, echo = FALSE}
+head(adult_bmi(model_weight))
+```
+
+
+## Children Model
+
+The function `child_weight` estimates weight change the same way as `adult_weight`. It takes as input age (yrs), sex ("male" or "female"), fat free mass (kg), and fat mass (kg). The functions `model_mean` and `model_plot` can be also com
+A function of energy intake (kcals/yr) for all the years can be inputed. 
+
+```{r, fig.height=8}
+#Antropometric data
+FatFree <- c(32, 17.2, 18.8, 20, 24.1)
+Fat     <- c(4.30, 2.02, 3.07, 1.12, 2.93)
+ages    <- c(10, 6.2, 5.4, 4, 4.1)
+sexes   <- c("male", "female", "female", "male", "male") 
+
+#Returns a weight change matrix and other matrices
+model_weight <- child_weight(ages, sexes, Fat, FatFree)
+
+#Plot
+model_plot(model_weight)
+```
+
+Mean by sex:
+```{r, eval = FALSE}
+model_mean(model_weight, group = sexes)
+```
+
+```{r, echo = FALSE}
+head(model_mean(model_weight, group = sexes))
+```
+
+Additional information on usage can be found on the package's vignette:
+
+```{r, eval = FALSE}
+browseVignettes("bw")
+```
