@@ -246,6 +246,9 @@ model_mean <- function(weight,
                             "SE_variance", "Lower_CI_variance", 
                             "Upper_CI_variance")
   
+  #Remove rownames
+  rownames(weightdata) <- c()
+  
   #Return data frame
   return(weightdata)
   
