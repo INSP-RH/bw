@@ -1,0 +1,16 @@
+Package: bw
+Title: A speedy implementation of Hall's weight change model
+Version: 0.5.0
+Authors@R: c(person("Rodrigo", "Zepeda-Tello", email = "rzepeda17@gmail.com",role = c("aut")), person("Dalia", "Camacho-García-Formentí", email = "daliaf172@gmail.com", role = c("aut", "cre")))
+Description: bw is awesome package of Hall model. It allows for awesomeness.
+Depends: R (>= 3.4.0)
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Type: Package
+Suggests: testthat, microbenchmark
+LazyLoad: yes
+stringsAsFactors: FALSE
+LinkingTo: Rcpp
+Imports: Rcpp, compiler, ggplot2, gridExtra, reshape2, survey
+RoxygenNote: 6.0.1
