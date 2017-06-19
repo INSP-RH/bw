@@ -7,7 +7,8 @@
 adult_weight(bw, ht, age, sex, EIchange = matrix(0, ncol = length(bw), nrow =
   ceiling(days)), NAchange = matrix(0, ncol = length(bw), nrow =
   ceiling(days)), EI = NA, PAL = rep(1.5, length(bw)),
-  pcarb_base = rep(0.5, length(bw)), pcarb = pcarb_base, days = 365)
+  pcarb_base = rep(0.5, length(bw)), pcarb = pcarb_base, days = 365,
+  checkValues = TRUE)
 }
 \arguments{
 \item{bw}{(vector) Body weight for model (kg)}
@@ -33,6 +34,8 @@ adult_weight(bw, ht, age, sex, EIchange = matrix(0, ncol = length(bw), nrow =
 \item{pcarb}{(vector) Percent carbohydrates after intake change.}
 
 \item{days}{(double) Days to run the model.}
+
+\item{checkValues}{(boolean) Check whether the values from the model are biologically feasible.}
 }
 \description{
 Estimates weight change given energy and sodium intake changes at 

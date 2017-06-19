@@ -83,7 +83,7 @@
 #' @export
 
 model_plot <- function(weight, 
-                       plotvars = names(weight)[-which(names(weight) %in% c("Time", "BMI_Category", "Age"))], 
+                       plotvars = names(weight)[-which(names(weight) %in% c("Time", "BMI_Category", "Age", "Correct_Values"))], 
                        timevar  = "Time", title = "Hall's model results", ncol = 2){
   
   #Get time variable

@@ -22,13 +22,13 @@ public:
     Adult(NumericVector weight, NumericVector height, NumericVector age_yrs,
           NumericVector sexstring, NumericMatrix input_EIchange,
           NumericMatrix input_NAchange, NumericVector physicalactivity,
-          NumericVector percentc, NumericVector percentb);
+          NumericVector percentc, NumericVector percentb, bool checkValues);
     
     //Constructor for when initial energy intake is added by user
     Adult(NumericVector weight, NumericVector height, NumericVector age_yrs,
           NumericVector sexstring, NumericMatrix input_EIchange,
           NumericMatrix input_NAchange, NumericVector physicalactivity,
-          NumericVector percentc, NumericVector percentb, NumericVector input_EIntake);
+          NumericVector percentc, NumericVector percentb, NumericVector input_EIntake, bool checkValues);
     
     //Destroyer
     ~ Adult();
@@ -53,6 +53,8 @@ public:
     //Numeric vectors containing EI and NA changes
     NumericMatrix EIchange;
     NumericMatrix NAchange;
+    
+
     
     //Functions
     //---------------------------------------------------------------------------
@@ -93,6 +95,7 @@ private:
     double rmr_f;
     int    nind; //Number of individuals in model
     double dt;   //Delta t for Rungue Kutta 4
+    bool check;
     
     //Auxiliary functions
     void getRMR(void);
@@ -108,11 +111,12 @@ private:
     void build(NumericVector weight, NumericVector height, NumericVector age_yrs,
                NumericVector sexstring, NumericMatrix input_EIchange,
                NumericMatrix input_NAchange, NumericVector physicalactivity,
-               NumericVector percentc, NumericVector percentb);
+               NumericVector percentc, NumericVector percentb, bool checkValues);
     void build(NumericVector weight, NumericVector height, NumericVector age_yrs,
                NumericVector sexstring, NumericMatrix input_EIchange,
                NumericMatrix input_NAchange, NumericVector physicalactivity,
-               NumericVector percentc, NumericVector percentb, NumericVector input_EIntake);
+               NumericVector percentc, NumericVector percentb, NumericVector input_EIntake,
+               bool checkValues);
     NumericVector TotalIntake (double t);
     StringVector  BMIClassifier(NumericVector BMI);
     NumericVector CI(double t);
@@ -127,6 +131,7 @@ private:
     NumericVector dG(double t, NumericVector G);
     NumericVector dL(double t, NumericVector L, NumericVector G,
                      NumericVector AT, NumericVector ECF);
+    
     
 };
 

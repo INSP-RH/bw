@@ -13,10 +13,10 @@ List adult_weight_wrapper(NumericVector bw, NumericVector ht, NumericVector age,
                           NumericVector sex, NumericMatrix EIchange,
                           NumericMatrix NAchange, NumericVector PAL,
                           NumericVector pcarb_base, NumericVector pcarb,
-                          double days){
+                          double days, bool checkValues){
     
     //Create new adult with characteristics
-    Adult Person (bw,  ht, age, sex, EIchange, NAchange, PAL, pcarb,  pcarb_base);
+    Adult Person (bw,  ht, age, sex, EIchange, NAchange, PAL, pcarb,  pcarb_base, true);
     
     //Run model using RK4
     return Person.rk4(days);
@@ -28,10 +28,10 @@ List adult_weight_wrapper_EI(NumericVector bw, NumericVector ht, NumericVector a
                           NumericVector sex, NumericMatrix EIchange,
                           NumericMatrix NAchange, NumericVector PAL,
                           NumericVector pcarb_base, NumericVector pcarb,
-                             NumericVector input_EIntake, double days){
+                             NumericVector input_EIntake, double days, bool checkValues){
     
     //Create new adult with characteristics
-    Adult Person (bw,  ht, age, sex, EIchange, NAchange, PAL, pcarb,  pcarb_base, input_EIntake);
+    Adult Person (bw,  ht, age, sex, EIchange, NAchange, PAL, pcarb,  pcarb_base, input_EIntake, true);
     
     //Run model using RK4
     return Person.rk4(days);

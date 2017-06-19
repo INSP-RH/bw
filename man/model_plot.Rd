@@ -5,7 +5,7 @@
 \title{Plot Results from Weight Change Model}
 \usage{
 model_plot(weight, plotvars = names(weight)[-which(names(weight) \%in\%
-  c("Time", "BMI_Category", "Age"))], timevar = "Time",
+  c("Time", "BMI_Category", "Age", "Correct_Values"))], timevar = "Time",
   title = "Hall's model results", ncol = 2)
 }
 \arguments{

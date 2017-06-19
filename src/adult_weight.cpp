@@ -12,11 +12,11 @@
 Adult::Adult(NumericVector weight, NumericVector height, NumericVector age_yrs,
              NumericVector sexstring, NumericMatrix input_EIchange,
              NumericMatrix input_NAchange, NumericVector physicalactivity,
-             NumericVector percentc, NumericVector percentb){
+             NumericVector percentc, NumericVector percentb, bool checkValues){
     
     //Build model from parameters
     build(weight, height, age_yrs, sexstring, input_EIchange, input_NAchange,
-          physicalactivity, percentc, percentb);
+          physicalactivity, percentc, percentb, checkValues);
     
 }
 
@@ -24,14 +24,77 @@ Adult::Adult(NumericVector weight, NumericVector height, NumericVector age_yrs,
 Adult::Adult(NumericVector weight, NumericVector height, NumericVector age_yrs,
              NumericVector sexstring, NumericMatrix input_EIchange,
              NumericMatrix input_NAchange, NumericVector physicalactivity,
-             NumericVector percentc, NumericVector percentb, NumericVector input_EIntake){
+             NumericVector percentc, NumericVector percentb, NumericVector input_EIntake,
+             bool checkValues){
     
     
     //Build model from parameters
     build(weight, height, age_yrs, sexstring, input_EIchange, input_NAchange,
-          physicalactivity, percentc, percentb, input_EIntake);
+          physicalactivity, percentc, percentb, input_EIntake, checkValues);
     
 }
+
+//Function to build a new Adult
+void Adult::build(NumericVector weight, NumericVector height, NumericVector age_yrs,
+                  NumericVector sexstring, NumericMatrix input_EIchange,
+                  NumericMatrix input_NAchange, NumericVector physicalactivity,
+                  NumericVector percentc, NumericVector percentb, bool checkValues){
+    
+    //Assign parameters
+    bw         = weight;
+    ht         = height;
+    age        = age_yrs;
+    sex        = sexstring;
+    EIchange   = input_EIchange;
+    NAchange   = input_NAchange;
+    PAL        = physicalactivity;
+    pcarb      = percentc;
+    pcarb_base = percentb;
+    check      = checkValues;
+    
+    //Get energy
+    getParameters();
+    getRMR();
+    getATinit();
+    getECFinit();
+    getBaselineMass();
+    getCaloricSteadyState();
+    getEnergy();
+    getDelta();
+    getK();
+    getCarbConstants();
+}
+
+//Function to build a new Adult when input_EIintake is included
+void Adult::build(NumericVector weight, NumericVector height, NumericVector age_yrs,
+                  NumericVector sexstring, NumericMatrix input_EIchange,
+                  NumericMatrix input_NAchange, NumericVector physicalactivity,
+                  NumericVector percentc, NumericVector percentb, NumericVector input_EIntake, bool checkValues){
+    
+    //Assign parameters
+    bw         = weight;
+    ht         = height;
+    age        = age_yrs;
+    sex        = sexstring;
+    EIchange   = input_EIchange;
+    NAchange   = input_NAchange;
+    PAL        = physicalactivity;
+    pcarb      = percentc;
+    pcarb_base = percentb;
+    EI         = input_EIntake;
+    check      = checkValues;
+    
+    //Get energy
+    getParameters();
+    getRMR();
+    getATinit();
+    getECFinit();
+    getBaselineMass();
+    getDelta();
+    getK();
+    getCarbConstants();
+}
+
 
 
 //Destroyer
@@ -44,7 +107,9 @@ void Adult::getParameters(void){
     //Get size of model
     nind    = bw.size();
     
-    //Initialize other variables
+    //Set to true
+    
+    //Initialize other variables that are not dependent on the individual
     roG     = 4206.501; // 1000*17.6*0.23900573614 #Changed from kjoules to kcals
     Na      = 3220;     // (1000*3.22)#Sodium
     zetaNa  = 3000;
@@ -69,14 +134,18 @@ void Adult::getParameters(void){
     G_base = NumericVector(nind, 0.5);
 }
 
-//Estimation of Resting Metabolic Rate
+//Estimation of Resting Metabolic Rate (rmr) in kcal
 void Adult::getRMR(void){
+    //These equations come from Miffin & St.Jeor
+    //Recall that sex = 0 => "male" and sex = 1 => "female"
     rmr = (rmrbw*bw + rmrht*ht - rmrage*age + rmr_m)*(1-sex) +
     (rmrbw*bw + rmrht*ht - rmrage*age - rmr_f)*sex;
 }
 
 //Estimation of calories at baseline
 void Adult::getCaloricSteadyState(void){
+    //These estimation assumes Energy Intake = Energy Expenditure.
+    //Energy is returned in kcal
     steadystate = rmr*PAL;
 }
 
@@ -243,13 +312,30 @@ List Adult::rk4(double days){
     BW(_,0)  = bw;
     BMI(_,0) = bw/pow(ht,2.0);
     CAT(_,0) = BMIClassifier(BMI(_,0));
-    TEI(_,0)  = EI;
+    TEI(_,0) = EI;
     TIME(0)  = 0.0;
     AGE(_,0) = age;
     
     
     //Loop through all other states
+    bool correctVals = true;
     for (int i = 1; i <= nsims; i++){
+        
+        
+        if (check){
+            for (int k = 0; k < nind; k++){
+                if(L(k,i-1)<=0|| !isfinite(L(k,i-1)) || F(k,i-1)<=0|| !isfinite(F(k,i-1))){
+                    Rcout << "First error in person "<< k+1 <<std::endl;
+                    correctVals = false;
+                    break;
+                }
+            }
+        }
+        
+        if (!correctVals) {
+            break;
+        }
+        
         
         //Adaptive thermogenesis
         k1 = dAT(TIME(i-1), AT(_, i-1)); // f(t_n , y_n)
@@ -322,68 +408,12 @@ List Adult::rk4(double days){
                         Named("Body_Weight") = BW,
                         Named("Body_Mass_Index") = BMI,
                         Named("BMI_Category") = CAT,
-                        Named("Energy_Intake") = TEI);
+                        Named("Energy_Intake") = TEI,
+                        Named("Correct_Values")=correctVals);
+    
 }
 
 
-//Function to build a new Adult
-void Adult::build(NumericVector weight, NumericVector height, NumericVector age_yrs,
-                  NumericVector sexstring, NumericMatrix input_EIchange,
-                  NumericMatrix input_NAchange, NumericVector physicalactivity,
-                  NumericVector percentc, NumericVector percentb){
-    
-    //Assign parameters
-    bw         = weight;
-    ht         = height;
-    age        = age_yrs;
-    sex        = sexstring;
-    EIchange   = input_EIchange;
-    NAchange   = input_NAchange;
-    PAL        = physicalactivity;
-    pcarb      = percentc;
-    pcarb_base = percentb;
-
-    //Get energy
-    getParameters();
-    getRMR();
-    getATinit();
-    getECFinit();
-    getBaselineMass();
-    getCaloricSteadyState();
-    getEnergy();
-    getDelta();
-    getK();
-    getCarbConstants();
-}
-
-//Function to build a new Adult when input_EIintake is included
-void Adult::build(NumericVector weight, NumericVector height, NumericVector age_yrs,
-                  NumericVector sexstring, NumericMatrix input_EIchange,
-                  NumericMatrix input_NAchange, NumericVector physicalactivity,
-                  NumericVector percentc, NumericVector percentb, NumericVector input_EIntake){
-    
-    //Assign parameters
-    bw         = weight;
-    ht         = height;
-    age        = age_yrs;
-    sex        = sexstring;
-    EIchange   = input_EIchange;
-    NAchange   = input_NAchange;
-    PAL        = physicalactivity;
-    pcarb      = percentc;
-    pcarb_base = percentb;
-    EI         = input_EIntake;
-    
-    //Get energy
-    getParameters();
-    getRMR();
-    getATinit();
-    getECFinit();
-    getBaselineMass();
-    getDelta();
-    getK();
-    getCarbConstants();
-}
 
 //Change in calories
 NumericVector Adult::deltaEI(double t){

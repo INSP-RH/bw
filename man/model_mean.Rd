@@ -5,10 +5,11 @@
 \title{Get Mean results from Adult Weight Change Model}
 \usage{
 model_mean(weight, meanvars = names(weight)[-which(names(weight) \%in\%
-  c("Time", "BMI_Category"))], days = seq(0, length(weight[["Time"]]) - 1,
-  length.out = 25), group = rep(1, nrow(weight[[meanvars[1]]])),
-  design = svydesign(ids = ~1, weights = rep(1, nrow(weight[[meanvars[1]]])),
-  data = as.data.frame(weight[meanvars[1]])), confidence = 0.95)
+  c("Time", "BMI_Category", "Correct_Values"))], days = seq(0,
+  length(weight[["Time"]]) - 1, length.out = 25), group = rep(1,
+  nrow(weight[[meanvars[1]]])), design = svydesign(ids = ~1, weights = rep(1,
+  nrow(weight[[meanvars[1]]])), data = as.data.frame(weight[meanvars[1]])),
+  confidence = 0.95)
 }
 \arguments{
 \item{weight}{(list) List from \code{\link{adult_weight}} or \code{\link{adult_weight}}.

@@ -27,6 +27,24 @@ public:
     NumericVector sex;  //0 = "male"; 1 = "female"
     NumericVector FFM;  //Fat Free Mass (kg)
     NumericVector FM;   //Fat Mass (kg)
+    
+    
+    //Functions
+    //---------------------------------------------------------------------------
+    List rk4(double days);
+    
+private:
+    
+    //Private unchanging constants
+    double rhoFM; //kcals/g -> kcals/kg
+    double deltamin;
+    double P;
+    double h;
+    
+    //Number of individuals
+    int nind;
+    
+    //Constants additional
     NumericVector K;
     NumericVector deltamax;
     
@@ -68,23 +86,7 @@ public:
     NumericVector ffm_beta1;
     NumericVector fm_beta0;
     NumericVector fm_beta1;
-    
-    
-    //Functions
-    //---------------------------------------------------------------------------
-    List rk4(double days);
-    
-    //private
-    
-    //Private unchanging constants
-    double rhoFM; //kcals/g -> kcals/kg
-    double deltamin;
-    double P;
-    double h;
-    
-    //Number of individuals
-    int nind;
-    
+
     
     void build(void);
     void getParameters();

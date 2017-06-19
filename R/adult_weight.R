@@ -11,11 +11,12 @@
 #' @param NAchange (matrix) Vector of sodium intake change (mg)
 #'
 #' \strong{ Optional }
-#' @param EI         (vector) Energy Intake at Baseline.
-#' @param PAL        (vector) Physical activity level.
-#' @param pcarb      (vector) Percent carbohydrates after intake change.
-#' @param pcarb_base (vector) Percent carbohydrates at baseline.
-#' @param days       (double) Days to run the model.
+#' @param EI          (vector) Energy Intake at Baseline.
+#' @param PAL         (vector) Physical activity level.
+#' @param pcarb       (vector) Percent carbohydrates after intake change.
+#' @param pcarb_base  (vector) Percent carbohydrates at baseline.
+#' @param days        (double) Days to run the model.
+#' @param checkValues (boolean) Check whether the values from the model are biologically feasible.
 #'
 #' @author Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 #' @author Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
@@ -88,7 +89,8 @@ adult_weight <- function(bw, ht, age, sex,
                          EI = NA,
                          PAL = rep(1.5, length(bw)), 
                          pcarb_base = rep(0.5, length(bw)), 
-                         pcarb = pcarb_base,  days = 365){
+                         pcarb = pcarb_base,  days = 365,
+                         checkValues = TRUE){
   
   #Check that dimension of EIchange and Nachange match
   EIchange <- as.matrix(EIchange)
@@ -134,12 +136,14 @@ adult_weight <- function(bw, ht, age, sex,
   #Run C program to estimate the loop
   if (any(is.na(EI))){
     wl <- adult_weight_wrapper(bw, ht, age, newsex, EIchange, NAchange,
-                               PAL, pcarb_base, pcarb, ceiling(days))  
+                               PAL, pcarb_base, pcarb, ceiling(days), checkValues)  
   } else {
     wl <- adult_weight_wrapper_EI(bw, ht, age, newsex, EIchange, NAchange,
-                                PAL, pcarb_base, pcarb, EI, ceiling(days))  
+                                PAL, pcarb_base, pcarb, EI, ceiling(days), checkValues)  
   }
-  
+  if(wl$Correct_Values[1]==FALSE){
+    stop("One of the variables takes either negative values, or NaN, NA or infinity")
+  }
   return(wl)
   
   
