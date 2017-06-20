@@ -48,6 +48,7 @@
 #' aggregate_data <- model_mean(model_weight)
 #' 
 #' #You can plot the mean with ci
+#' \dontrun{
 #' if(require(ggplot2)){
 #' ggplot(subset(aggregate_data, variable == "Body_Weight")) + 
 #'     geom_line(aes(x = time, y = mean)) +
@@ -123,8 +124,7 @@
 #'     fill = factor(group)), alpha = 0.25) +
 #'     geom_line(aes(x = time, y = mean, color = factor(group)), size = 2) +
 #'     theme_classic() + xlab("Days") + ylab("Mean Body Weight (kg)") 
-#' }                     
-#' 
+#' }
 #' #EXAMPLE 2A: SURVEY DATA FOR CHILDREN
 #' #-------------------------------------------------------
 #' #Data frame for use in survey
@@ -162,7 +162,7 @@
 #'     geom_line(aes(x = time, y = mean, color = factor(group)), size = 2) +
 #'     theme_classic() + xlab("Days") + ylab("Mean Body Weight (kg)") 
 #' }                     
-#'                                                             
+#' }                                                             
 #' @export
 
 model_mean <- function(weight, 

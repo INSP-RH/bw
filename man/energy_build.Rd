@@ -4,7 +4,7 @@
 \alias{energy_build}
 \title{Energy Matrix Interpolating Function}
 \usage{
-energy_build(energy, time, interpolation = "Linear")
+energy_build(energy, time, interpolation = "Brownian")
 }
 \arguments{
 \item{energy}{(matrix) Matrix with each row representing an individual and each column
@@ -17,7 +17,8 @@ were made. \strong{Note} that first element of time most always be \code{0}.
 \strong{ Optional }}
 
 \item{interpolation}{(string) Way to interpolate the values between measurements. Currently
-supporting \code{"Linear"}, \code{"Exponential"}, \code{"Stepwise"} and \code{"Logarithmic"}.}
+supporting \code{"Linear"}, \code{"Exponential"}, \code{"Stepwise_R"},  \code{"Stepwise_L"},
+\code{"Logarithmic"} and \code{"Brownian"}.}
 }
 \description{
 Creates a matrix interpolating energy consumption
@@ -28,21 +29,24 @@ from measurements at specific moments in time.
 #--------------------------------------------------------
 
 #Get energy consumption
-myconsumption <- energy_build(c(4000, 2000, 3211), c(0, 127, 145))
-plot(0:145, myconsumption, type = "l")
+myconsumption <- energy_build(c(2751, 1476, 2000), c(0, 365*2, 365*4), "Linear")
+plot(0:(365*4), myconsumption, type = "l")
 
 #Change interpolation to exponential
-myexponential <- energy_build(c(4000, 2000, 3211), c(0, 127, 145), "Exponential")
-lines(0:145, myexponential, type = "l", col = "red")
+myexponential <- energy_build(c(2751, 1476, 2000), c(0, 365*2, 365*4), "Exponential")
+lines(0:(365*4), myexponential, type = "l", col = "red")
 
-mystepwise    <- energy_build(c(4000, 2000, 3211), c(0, 127, 145), "Stepwise_R")
-lines(0:145, mystepwise, type = "l", col = "blue")
+mystepwise    <- energy_build(c(2751, 1476, 2000), c(0, 365*2, 365*4), "Stepwise_R")
+lines(0:(365*4), mystepwise, type = "l", col = "blue")
 
-mystepwise2    <- energy_build(c(4000, 2000, 3211), c(0, 127, 145), "Stepwise_L")
-lines(0:145, mystepwise2, type = "l", col = "green")
+mystepwise2    <- energy_build(c(2751, 1476, 2000), c(0, 365*2, 365*4), "Stepwise_L")
+lines(0:(365*4), mystepwise2, type = "l", col = "green")
 
-mylogarithmic <- energy_build(c(4000, 2000, 3211), c(0, 127, 145), "Logarithmic")
-lines(0:145, mylogarithmic, type = "l", col = "purple")
+mylogarithmic <- energy_build(c(2751, 1476, 2000), c(0, 365*2, 365*4), "Logarithmic")
+lines(0:(365*4), mylogarithmic, type = "l", col = "purple")
+
+mybrownian    <- energy_build(c(2751, 1476, 2000), c(0, 365*2, 365*4), "Brownian")
+lines(0:(365*4), mybrownian, type = "l", col = "forestgreen")
 
 #EXAMPLE 2: GROUP MODELLING
 #--------------------------------------------------------
@@ -50,7 +54,8 @@ lines(0:145, mylogarithmic, type = "l", col = "purple")
 #Get energy consumption
 multiple <- energy_build(cbind(runif(10,1000,2000), 
                                  runif(10,1000,2000), 
-                                 runif(10,1000,2000)), c(0, 142, 365))
+                                 runif(10,1000,2000)), c(0, 142, 365),
+                                 "Brownian")
 matplot(0:365, t(multiple), type = "l")
 }
 \seealso{
