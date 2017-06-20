@@ -23,13 +23,13 @@
 //  Copyright: Instituto Nacional de Salud Pública de México
 
 #include <Rcpp.h>
-#include "child_weight.hpp"
+#include "child_weight.h"
 
 // [[Rcpp::export]]
-List child_weight_wrapper(NumericVector age, NumericVector sex, NumericVector FFM, NumericVector FM, double days){
+List child_weight_wrapper(NumericVector age, NumericVector sex, NumericVector FFM, NumericVector FM, double days, bool checkValues){
     
     //Create new adult with characteristics
-    Child Person (age,  sex, FFM, FM);
+    Child Person (age,  sex, FFM, FM, checkValues);
     
     //Run model using RK4
     return Person.rk4(days);

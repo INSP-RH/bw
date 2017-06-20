@@ -49,8 +49,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // child_weight_wrapper
-List child_weight_wrapper(NumericVector age, NumericVector sex, NumericVector FFM, NumericVector FM, double days);
-RcppExport SEXP bw_child_weight_wrapper(SEXP ageSEXP, SEXP sexSEXP, SEXP FFMSEXP, SEXP FMSEXP, SEXP daysSEXP) {
+List child_weight_wrapper(NumericVector age, NumericVector sex, NumericVector FFM, NumericVector FM, double days, bool checkValues);
+RcppExport SEXP bw_child_weight_wrapper(SEXP ageSEXP, SEXP sexSEXP, SEXP FFMSEXP, SEXP FMSEXP, SEXP daysSEXP, SEXP checkValuesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -59,7 +59,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type FFM(FFMSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type FM(FMSEXP);
     Rcpp::traits::input_parameter< double >::type days(daysSEXP);
-    rcpp_result_gen = Rcpp::wrap(child_weight_wrapper(age, sex, FFM, FM, days));
+    Rcpp::traits::input_parameter< bool >::type checkValues(checkValuesSEXP);
+    rcpp_result_gen = Rcpp::wrap(child_weight_wrapper(age, sex, FFM, FM, days, checkValues));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -67,7 +68,7 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"bw_adult_weight_wrapper", (DL_FUNC) &bw_adult_weight_wrapper, 11},
     {"bw_adult_weight_wrapper_EI", (DL_FUNC) &bw_adult_weight_wrapper_EI, 12},
-    {"bw_child_weight_wrapper", (DL_FUNC) &bw_child_weight_wrapper, 5},
+    {"bw_child_weight_wrapper", (DL_FUNC) &bw_child_weight_wrapper, 6},
     {NULL, NULL, 0}
 };
 

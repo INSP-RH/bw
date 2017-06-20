@@ -4,7 +4,7 @@
 \alias{child_weight}
 \title{Dynamic Children Weight Change Model}
 \usage{
-child_weight(age, sex, FM, FFM, days = 365)
+child_weight(age, sex, FM, FFM, days = 365, checkValues = TRUE)
 }
 \arguments{
 \item{age}{(vector) Age of individual (yrs)}
@@ -18,6 +18,8 @@ child_weight(age, sex, FM, FFM, days = 365)
 \strong{ Optional }}
 
 \item{days}{(numeric) Days to run the model.}
+
+\item{checkValues}{(boolean) Checks whether values of fat mass and free fat mass are possible}
 }
 \description{
 Estimates weight given age, sex, fat mass, and fat free mass,

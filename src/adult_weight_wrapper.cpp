@@ -6,7 +6,7 @@
 //
 //
 #include <Rcpp.h>
-#include "adult_weight.hpp"
+#include "adult_weight.h"
 
 // [[Rcpp::export]]
 List adult_weight_wrapper(NumericVector bw, NumericVector ht, NumericVector age,

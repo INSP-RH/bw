@@ -6,7 +6,7 @@
 //
 //
 
-#include "adult_weight.hpp"
+#include "adult_weight.h"
 
 //Default Constructor
 Adult::Adult(NumericVector weight, NumericVector height, NumericVector age_yrs,

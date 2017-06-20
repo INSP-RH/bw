@@ -9,7 +9,7 @@
 #' 
 #' \strong{ Optional }
 #' @param days     (numeric) Days to run the model.
-#'
+#' @param checkValues (boolean) Checks whether values of fat mass and free fat mass are possible
 #' @author Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 #' @author Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
 #' 
@@ -44,7 +44,7 @@
 #' @export
 #'
 
-child_weight <- function(age, sex, FM, FFM, days = 365){
+child_weight <- function(age, sex, FM, FFM, days = 365, checkValues = TRUE){
   
   #Check all variables are positive
   if (any(age < 0) || any(FM < 0) || any(FFM < 0)){
@@ -78,7 +78,7 @@ child_weight <- function(age, sex, FM, FFM, days = 365){
   newsex                         <- rep(0, length(sex))
   newsex[which(sex == "female")] <- 1
   
-  wt <- child_weight_wrapper(age, newsex, FM, FFM, days)
+  wt <- child_weight_wrapper(age, newsex, FM, FFM, days, checkValues)
   
   return(wt)
   

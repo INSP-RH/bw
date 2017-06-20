@@ -6,13 +6,14 @@
 //  Copyright © 2017 Instituto Nacional de Salud Publica. All rights reserved.
 //
 
-#include "child_weight.hpp"
+#include "child_weight.h"
 
-Child::Child(NumericVector input_age, NumericVector input_sex, NumericVector input_FFM, NumericVector input_FM){
-    age = input_age;
-    sex = input_sex;
-    FM  = input_FM;
-    FFM = input_FFM;
+Child::Child(NumericVector input_age, NumericVector input_sex, NumericVector input_FFM, NumericVector input_FM, bool checkValues){
+    age   = input_age;
+    sex   = input_sex;
+    FM    = input_FM;
+    FFM   = input_FFM;
+    check = checkValues;
     build();
 }
 
@@ -124,7 +125,23 @@ List Child::rk4 (double days){
     AGE(_,0)  = age;
     
     //Loop through all other states
+    bool correctVals = true;
+    
     for (int i = 1; i <= nsims; i++){
+        if (check){
+            for (int k = 0; k < nind; k++){
+                if(ModelFFM(k,i-1)<=0|| !isfinite(ModelFFM(k,i-1)) || ModelFM(k,i-1)<=0|| !isfinite(ModelFM(k,i-1))){
+                    Rcout << "First error in person "<< k+1 <<std::endl;
+                    correctVals = false;
+                    break;
+                }
+            }
+        }
+        
+        if (!correctVals) {
+            break;
+        }
+        
         
         //Rungue kutta 4 (https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods)
         k1 = dMass(AGE(_,i-1), ModelFFM(_,i-1), ModelFM(_,i-1));
@@ -151,7 +168,8 @@ List Child::rk4 (double days){
                         Named("Age") = AGE,
                         Named("Fat_Free_Mass") = ModelFFM,
                         Named("Fat_Mass") = ModelFM,
-                        Named("Body_Weight") = ModelBW);
+                        Named("Body_Weight") = ModelBW,
+                        Named("Correct_Values")=correctVals);
 
 
 }

@@ -103,7 +103,7 @@ model_plot <- function(weight,
     
     #Get data
     plot_data      <- as.data.frame(t(weight[[plotvars[i]]]))
-    plot_data$id   <- 1:nrow(plot_data)
+    plot_data$id   <- time[1:length(time)]
     assign(paste0("plot_data",i), melt(plot_data, id.var="id"))
     
     plotlist[[i]] <- 
@@ -112,7 +112,7 @@ model_plot <- function(weight,
                                   y = "value", 
                                   group = "variable", 
                                   colour = "variable")) +
-             xlab("Time") + ylab(gsub("_"," ", plotvars[i])) + theme_classic() + 
+             xlab(timevar) + ylab(gsub("_"," ", plotvars[i])) + theme_classic() + 
              theme(legend.position = "none") 
     
   }

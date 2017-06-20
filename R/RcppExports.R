@@ -9,7 +9,7 @@ adult_weight_wrapper_EI <- function(bw, ht, age, sex, EIchange, NAchange, PAL, p
     .Call('bw_adult_weight_wrapper_EI', PACKAGE = 'bw', bw, ht, age, sex, EIchange, NAchange, PAL, pcarb_base, pcarb, input_EIntake, days, checkValues)
 }
 
-child_weight_wrapper <- function(age, sex, FFM, FM, days) {
-    .Call('bw_child_weight_wrapper', PACKAGE = 'bw', age, sex, FFM, FM, days)
+child_weight_wrapper <- function(age, sex, FFM, FM, days, checkValues) {
+    .Call('bw_child_weight_wrapper', PACKAGE = 'bw', age, sex, FFM, FM, days, checkValues)
 }
 
