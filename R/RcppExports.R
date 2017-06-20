@@ -13,3 +13,7 @@ child_weight_wrapper <- function(age, sex, FFM, FM, days, checkValues) {
     .Call('bw_child_weight_wrapper', PACKAGE = 'bw', age, sex, FFM, FM, days, checkValues)
 }
 
+EnergyBuilder <- function(Energy, Time, interpol) {
+    .Call('bw_EnergyBuilder', PACKAGE = 'bw', Energy, Time, interpol)
+}
+

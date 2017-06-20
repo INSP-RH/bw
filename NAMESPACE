@@ -3,6 +3,7 @@
 export(adult_bmi)
 export(adult_weight)
 export(child_weight)
+export(energy_build)
 export(model_mean)
 export(model_plot)
 import(compiler)

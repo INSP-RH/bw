@@ -64,11 +64,25 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// EnergyBuilder
+NumericMatrix EnergyBuilder(NumericMatrix Energy, NumericVector Time, std::string interpol);
+RcppExport SEXP bw_EnergyBuilder(SEXP EnergySEXP, SEXP TimeSEXP, SEXP interpolSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type Energy(EnergySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type Time(TimeSEXP);
+    Rcpp::traits::input_parameter< std::string >::type interpol(interpolSEXP);
+    rcpp_result_gen = Rcpp::wrap(EnergyBuilder(Energy, Time, interpol));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"bw_adult_weight_wrapper", (DL_FUNC) &bw_adult_weight_wrapper, 11},
     {"bw_adult_weight_wrapper_EI", (DL_FUNC) &bw_adult_weight_wrapper_EI, 12},
     {"bw_child_weight_wrapper", (DL_FUNC) &bw_child_weight_wrapper, 6},
+    {"bw_EnergyBuilder", (DL_FUNC) &bw_EnergyBuilder, 3},
     {NULL, NULL, 0}
 };
 
