@@ -1,5 +1,5 @@
 ---
-title: "Adult Weight Change Model"
+title: "Using the Adult Weight Change Model"
 author: "Rodrigo Zepeda Tello & Dalia Camacho García Formentí"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -13,9 +13,11 @@ vignette: >
 require("bw")
 require("ggplot2")
 ```
-#The model
+
+<!--#The model
 
 The Adult Weight Change Model estimates weight change for adult individuals from the paper in [https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3880593/]. 
+-->
 
 #Usage in R
 
@@ -97,7 +99,7 @@ Additional inputs include `days` to specify the model's time span and `checkValu
 | `days`        | Time period (days) to run the model | Yes | $365$ |
 | `checkValues` | Check for internal consistency | Yes | `TRUE` |
 
-Finally, we remark that one can also input data from a database to estimate individual-level weight change:
+Finally, we remark that one can also input data from a database to estimate individual-level weight change (see the [related section](#estimating-weight-change-of-a-database)
 
 ```{r}
 #Database information
@@ -187,7 +189,7 @@ model_stepwise_l  <- adult_weight(70, 1.75, 22, "male", EIstepwise_l, days = 730
 ```
 
 Which look as follows:
-```{r, fig.width=7, fig.height=4}
+```{r, echo = FALSE, fig.width=7, fig.height=4}
 ggplot() +
   geom_line(aes(x = 1:730, y = as.vector(model_linear[["Body_Weight"]]), color = "Linear")) + 
   geom_line(aes(x = 1:730, y = as.vector(model_exponential[["Body_Weight"]]), color = "Exponential")) + 
@@ -203,7 +205,92 @@ ggplot() +
                                 "Right Stepwise" = "black", "Left Stepwise" = "green"))
 ```
 
-<!--##Estimating mean weight change-->
+##Estimating weight change of a database
 
+Vector data can also be used in the model to calculate weight change for several individuals at a time (which is quite faster than doing them individually). As an example consider the following dataset:
 
+```{r}
+#Database information
+mydata <- data.frame(
+  id = 1:5,
+  weight = c(45, 67, 58, 92, 81),
+  height = c(1.30, 1.73, 1.77, 1.92, 1.73),
+  age = c(45, 23, 66, 44, 23),
+  sex = c("male", "female", "female", "male", "male"),
+  energy_change = runif(5, -200, 200),
+  prob = c(0.1, 0.2, 0.2, 0.05, 0.45))
 
+#Get energy change with energy build function
+eichange      <- energy_build(cbind(rep(0,5), mydata$energy_change), c(0, 365))
+
+#Returns a weight change matrix and other matrices
+database_model <- adult_weight(mydata$weight, mydata$height, mydata$age, mydata$sex,
+                               eichange)
+```
+
+Plots can also be obtained for the population with the same command `model_plot`:
+
+```{r fig.width=7, fig.height=4}
+model_plot(database_model, "Body_Weight")
+```
+
+Summary measures can be obtained via `model_mean` and `adult_bmi`. The first, quantifies mean for `'Body_Weight'`, `'Adaptive_Thermogenesis'`, `'Extracellular_Fluid'`, `'Age'`, `'Body_Mass_Index'`, `'Glycogen'`, `'Lean_Mass'`, and `'Fat_Mass'`:
+
+```{r, eval = FALSE}
+model_mean(database_model, "Body_Weight")
+```
+
+```{r, echo = FALSE}
+head(model_mean(database_model, "Body_Weight"))[,1:5]
+```
+
+Mean is only estimated for some points in time, to estimate mean for the whole period, consider changing the `days` vector variable:
+
+```{r, eval = FALSE}
+model_mean(database_model, "Body_Weight", days = 1:365)
+```
+
+```{r, echo = FALSE, warning=FALSE}
+head(model_mean(database_model, "Body_Weight", days = 1:365))[,1:5]
+```
+
+Mean can also be grouped by a variable (say, `sex`):
+
+```{r, eval = FALSE}
+model_mean(database_model, "Body_Weight", days = 1:365, group = mydata$sex)
+```
+
+```{r, echo = FALSE}
+head(model_mean(database_model, "Body_Weight", days = 1:365, group = mydata$sex))[,1:5]
+```
+
+Finally, `model_mean` can also be used to estimate `survey` means using the `svydesign` from the `survey` package:
+
+```{r, eval = FALSE}
+require("survey")
+design <- svydesign(ids = ~id, probs = ~prob, data = mydata)
+#THERE IS AN ERROR HERE
+#model_mean(database_model, group = mydata$sex, design = design)
+```
+
+```{r, echo = FALSE, message=FALSE, warning = FALSE}
+require("survey")
+design <- svydesign(ids = ~id, probs = ~prob, data = mydata)
+#head(model_mean(database_model, group = mydata$sex, design = design))[,1:5]
+```
+
+The same process can be replicated with `adult_bmi` to obtain Body Mass Index prevalence per day:
+
+```{r, eval = FALSE}
+adult_bmi(database_model, group = mydata$sex)
+```
+
+```{r, echo = FALSE}
+head(adult_bmi(database_model, group = mydata$sex))
+```
+
+Additional information on the model and other package functions can be obtained in the other package's Vignettes
+
+```{r, eval = FALSE}
+browseVignettes("bw")
+```
