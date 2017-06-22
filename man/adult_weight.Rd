@@ -4,9 +4,9 @@
 \alias{adult_weight}
 \title{Dynamic Adult Weight Change Model}
 \usage{
-adult_weight(bw, ht, age, sex, EIchange = matrix(0, ncol = length(bw), nrow =
-  ceiling(days)), NAchange = matrix(0, ncol = length(bw), nrow =
-  ceiling(days)), EI = NA, PAL = rep(1.5, length(bw)),
+adult_weight(bw, ht, age, sex, EIchange = matrix(0, ncol = ceiling(days), nrow
+  = length(bw)), NAchange = matrix(0, ncol = ceiling(days), nrow =
+  length(bw)), EI = NA, fat = NA, PAL = rep(1.5, length(bw)),
   pcarb_base = rep(0.5, length(bw)), pcarb = pcarb_base, days = 365,
   checkValues = TRUE)
 }
@@ -26,6 +26,8 @@ adult_weight(bw, ht, age, sex, EIchange = matrix(0, ncol = length(bw), nrow =
 \strong{ Optional }}
 
 \item{EI}{(vector) Energy Intake at Baseline.}
+
+\item{fat}{(vector) Vector containing fat mass. Recall that}
 
 \item{PAL}{(vector) Physical activity level.}
 
@@ -51,12 +53,9 @@ As an example, \code{EIchange <- rep(-100, 50)} represents that
 each day \code{-100} kcals are reduced from consumption.
 }
 \note{
-I still haven't solved how to be able to change de
+Wee still haven't solved how to be able to change de
 Rungue-Kutta \code{dt} parameter. For now it is a day; but for faster
 models it should be changeable.
-
-For faster modelling code should be computed in paralell.
-\url{https://rcppcore.github.io/RcppParallel/}
 }
 \examples{
 #EXAMPLE 1: INDIVIDUAL MODELLING
@@ -74,6 +73,14 @@ adult_weight(80, 1.8, 40, "female", rep(-100, 400), rep(-25, 400), days = 400)
 kcalvec <-c(rep(-50, 100), rep(-100, 100), rep(-150, 100), rep(-200, 100))
 adult_weight(80, 1.8, 40, "female", kcalvec, days = 400)
 
+#Same female with known energy intake
+adult_weight(80, 1.8, 40, "female", rep(-100, 365), rep(-25, 365), EI = 2000)
+
+#Same female with known fat mass
+adult_weight(80, 1.8, 40, "female", rep(-100, 365), rep(-25, 365), fat = 32)
+
+#Same female with known fat mass and known energy consumption
+adult_weight(80, 1.8, 40, "female", rep(-100, 365), rep(-25, 365), EI = 2000, fat = 32)
 
 #EXAMPLE 2: DATASET MODELLING
 #--------------------------------------------------------
@@ -85,7 +92,7 @@ ages    <- c(45, 23, 66, 44, 23)
 sexes   <- c("male", "female", "female", "male", "male") 
 
 #Matrix of energy consumption reduction: 
-EIchange <- cbind(rep(-100, 365), rep(-200, 365), rep(-200, 365), 
+EIchange <- rbind(rep(-100, 365), rep(-200, 365), rep(-200, 365), 
                   rep(-123, 365), rep(-50, 365))
 
 #Returns a weight change matrix and other matrices
@@ -102,7 +109,7 @@ imbalance on bodyweight}. The Lancet, 2011, vol. 378, no 9793, p. 826-83
 \code{\link{model_mean}} for aggregate data estimation.
 }
 \author{
-Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
-
 Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
+
+Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 }

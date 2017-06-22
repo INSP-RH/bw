@@ -20,17 +20,31 @@ Adult::Adult(NumericVector weight, NumericVector height, NumericVector age_yrs,
     
 }
 
-//Constructor with energy intake vector
+//Constructor with energy intake vector or fat vector
 Adult::Adult(NumericVector weight, NumericVector height, NumericVector age_yrs,
              NumericVector sexstring, NumericMatrix input_EIchange,
              NumericMatrix input_NAchange, NumericVector physicalactivity,
-             NumericVector percentc, NumericVector percentb, NumericVector input_EIntake,
-             bool checkValues){
+             NumericVector percentc, NumericVector percentb, NumericVector extradata,
+             bool checkValues, bool isEnergy){
     
     
     //Build model from parameters
     build(weight, height, age_yrs, sexstring, input_EIchange, input_NAchange,
-          physicalactivity, percentc, percentb, input_EIntake, checkValues);
+          physicalactivity, percentc, percentb, extradata, checkValues, isEnergy);
+    
+}
+
+//Constructor with energy intake vector and fat vector
+Adult::Adult(NumericVector weight, NumericVector height, NumericVector age_yrs,
+             NumericVector sexstring, NumericMatrix input_EIchange,
+             NumericMatrix input_NAchange, NumericVector physicalactivity,
+             NumericVector percentc, NumericVector percentb, NumericVector input_EI,
+             NumericVector input_fat, bool checkValues){
+    
+    
+    //Build model from parameters
+    build(weight, height, age_yrs, sexstring, input_EIchange, input_NAchange,
+          physicalactivity, percentc, percentb, input_EI, input_fat, checkValues);
     
 }
 
@@ -69,7 +83,7 @@ void Adult::build(NumericVector weight, NumericVector height, NumericVector age_
 void Adult::build(NumericVector weight, NumericVector height, NumericVector age_yrs,
                   NumericVector sexstring, NumericMatrix input_EIchange,
                   NumericMatrix input_NAchange, NumericVector physicalactivity,
-                  NumericVector percentc, NumericVector percentb, NumericVector input_EIntake, bool checkValues){
+                  NumericVector percentc, NumericVector percentb, NumericVector extradata, bool checkValues, bool isEnergy){
     
     //Assign parameters
     bw         = weight;
@@ -81,21 +95,69 @@ void Adult::build(NumericVector weight, NumericVector height, NumericVector age_
     PAL        = physicalactivity;
     pcarb      = percentc;
     pcarb_base = percentb;
-    EI         = input_EIntake;
     check      = checkValues;
     
-    //Get energy
+    //Get additional information
     getParameters();
     getRMR();
     getATinit();
     getECFinit();
-    getBaselineMass();
+    
+    if (isEnergy){
+        //Get energy
+        EI     = extradata;
+        
+        //Get bw
+        getBaselineMass();
+    } else {
+        //Get energy
+        getCaloricSteadyState();
+        getEnergy();
+        
+        //Get bw
+        fat  = extradata;
+        lean = bw - (ecfinit + fat + 3.7*G_base);
+    }
+    
     getDelta();
     getK();
     getCarbConstants();
 }
 
+//Function to build a new Adult when input_EIintake is included
+void Adult::build(NumericVector weight, NumericVector height, NumericVector age_yrs,
+                  NumericVector sexstring, NumericMatrix input_EIchange,
+                  NumericMatrix input_NAchange, NumericVector physicalactivity,
+                  NumericVector percentc, NumericVector percentb, NumericVector input_EI,
+                  NumericVector input_fat, bool checkValues){
+    
+    //Assign parameters
+    bw         = weight;
+    ht         = height;
+    age        = age_yrs;
+    sex        = sexstring;
+    EIchange   = input_EIchange;
+    NAchange   = input_NAchange;
+    PAL        = physicalactivity;
+    pcarb      = percentc;
+    pcarb_base = percentb;
+    check      = checkValues;
+    
+    //Get additional information
+    getParameters();
+    getRMR();
+    getATinit();
+    getECFinit();
+    
+    //Inputted ei and fat
+    EI     = input_EI;
+    fat    = input_fat;
+    lean    = bw - (ecfinit + fat + 3.7*G_base);
 
+    getDelta();
+    getK();
+    getCarbConstants();
+}
 
 //Destroyer
 Adult::~Adult(void){
@@ -391,7 +453,7 @@ List Adult::rk4(double days){
         TIME(i) = TIME(i-1) + dt;
         
         //Update age
-        AGE(_,i) = AGE(_,i-1) + dt;
+        AGE(_,i) = AGE(_,i-1) + dt/365.0;
         
         //Get energy intake
         TEI(_,i) = TotalIntake(TIME(i));

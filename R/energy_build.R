@@ -30,24 +30,24 @@
 #' #--------------------------------------------------------
 #' 
 #' #Get energy consumption
-#' myconsumption <- energy_build(c(2751, 1476, 2000), c(0, 365*2, 365*4), "Linear")
-#' plot(0:(365*4), myconsumption, type = "l")
+#' myconsumption <- energy_build(c(0, 200, -500), c(0, 365*2, 365*4), "Linear")
+#' plot(1:(365*4), myconsumption, type = "l")
 #' 
 #' #Change interpolation to exponential
-#' myexponential <- energy_build(c(2751, 1476, 2000), c(0, 365*2, 365*4), "Exponential")
-#' lines(0:(365*4), myexponential, type = "l", col = "red")
+#' myexponential <- energy_build(c(0, 200, -500), c(0, 365*2, 365*4), "Exponential")
+#' lines(1:(365*4), myexponential, type = "l", col = "red")
 #' 
-#' mystepwise    <- energy_build(c(2751, 1476, 2000), c(0, 365*2, 365*4), "Stepwise_R")
-#' lines(0:(365*4), mystepwise, type = "l", col = "blue")
+#' mystepwise    <- energy_build(c(0, 200, -500), c(0, 365*2, 365*4), "Stepwise_R")
+#' lines(1:(365*4), mystepwise, type = "l", col = "blue")
 #' 
-#' mystepwise2    <- energy_build(c(2751, 1476, 2000), c(0, 365*2, 365*4), "Stepwise_L")
-#' lines(0:(365*4), mystepwise2, type = "l", col = "green")
+#' mystepwise2    <- energy_build(c(0, 200, -500), c(0, 365*2, 365*4), "Stepwise_L")
+#' lines(1:(365*4), mystepwise2, type = "l", col = "green")
 #' 
-#' mylogarithmic <- energy_build(c(2751, 1476, 2000), c(0, 365*2, 365*4), "Logarithmic")
-#' lines(0:(365*4), mylogarithmic, type = "l", col = "purple")
+#' mylogarithmic <- energy_build(c(0, 200, -500), c(0, 365*2, 365*4), "Logarithmic")
+#' lines(1:(365*4), mylogarithmic, type = "l", col = "purple")
 #' 
-#' mybrownian    <- energy_build(c(2751, 1476, 2000), c(0, 365*2, 365*4), "Brownian")
-#' lines(0:(365*4), mybrownian, type = "l", col = "forestgreen")
+#' mybrownian    <- energy_build(c(0, 200, -500), c(0, 365*2, 365*4), "Brownian")
+#' lines(1:(365*4), mybrownian, type = "l", col = "forestgreen")
 #' 
 #' #EXAMPLE 2: GROUP MODELLING
 #' #--------------------------------------------------------
@@ -57,7 +57,7 @@
 #'                                  runif(10,1000,2000), 
 #'                                  runif(10,1000,2000)), c(0, 142, 365),
 #'                                  "Brownian")
-#' matplot(0:365, t(multiple), type = "l")
+#' matplot(1:365, t(multiple), type = "l")
 #' @export
 #'
 
@@ -75,6 +75,12 @@ energy_build <- function(energy, time, interpolation = "Brownian"){
                 "in time."))
   }
   
+  #Check that initial kcal change == 0
+  if (length(which(energy[,1] != 0)) > 1){
+    warning(paste0("Initial energy change != 0. If you are interpolating change,", 
+                   "make sure energy change = 0 at time 0"))
+  }
+  
   #Check that first time element is 0
   if (time[1] != 0){
     stop("First element of time, time[1], must always equal 0")
@@ -89,6 +95,6 @@ energy_build <- function(energy, time, interpolation = "Brownian"){
   }
   
   #Run energy builder
-  return( EnergyBuilder(energy, time, interpolation) )
+  return( EnergyBuilder(energy, time, interpolation)[,-1] )
   
 }

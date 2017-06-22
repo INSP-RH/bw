@@ -46,7 +46,7 @@ myweight <- child_weight(5, "female", 12, 4)
 #You can plot all the variables
 model_plot(myweight)
 
-#Or only one of them
+#Or only one of them and specify by age
 model_plot(myweight, "Body_Weight", ncol = 1)
 
 #EXAMPLE 2A: DATASET MODELLING FOR ADULTS
@@ -58,7 +58,7 @@ ages    <- c(45, 23, 66, 44, 23)
 sexes   <- c("male", "female", "female", "male", "male") 
 
 #Matrix of energy consumption reduction: 
-EIchange <- cbind(rep(-100, 365), rep(-200, 365), rep(-200, 365), 
+EIchange <- rbind(rep(-100, 365), rep(-200, 365), rep(-200, 365), 
                   rep(-123, 365), rep(-50, 365))
 
 #Returns a weight change matrix and other matrices

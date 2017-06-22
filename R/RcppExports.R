@@ -5,8 +5,12 @@ adult_weight_wrapper <- function(bw, ht, age, sex, EIchange, NAchange, PAL, pcar
     .Call('bw_adult_weight_wrapper', PACKAGE = 'bw', bw, ht, age, sex, EIchange, NAchange, PAL, pcarb_base, pcarb, days, checkValues)
 }
 
-adult_weight_wrapper_EI <- function(bw, ht, age, sex, EIchange, NAchange, PAL, pcarb_base, pcarb, input_EIntake, days, checkValues) {
-    .Call('bw_adult_weight_wrapper_EI', PACKAGE = 'bw', bw, ht, age, sex, EIchange, NAchange, PAL, pcarb_base, pcarb, input_EIntake, days, checkValues)
+adult_weight_wrapper_EI <- function(bw, ht, age, sex, EIchange, NAchange, PAL, pcarb_base, pcarb, extradata, days, checkValues, isEnergy) {
+    .Call('bw_adult_weight_wrapper_EI', PACKAGE = 'bw', bw, ht, age, sex, EIchange, NAchange, PAL, pcarb_base, pcarb, extradata, days, checkValues, isEnergy)
+}
+
+adult_weight_wrapper_EI_fat <- function(bw, ht, age, sex, EIchange, NAchange, PAL, pcarb_base, pcarb, input_EI, input_fat, days, checkValues) {
+    .Call('bw_adult_weight_wrapper_EI_fat', PACKAGE = 'bw', bw, ht, age, sex, EIchange, NAchange, PAL, pcarb_base, pcarb, input_EI, input_fat, days, checkValues)
 }
 
 child_weight_wrapper <- function(age, sex, FFM, FM, days, checkValues) {

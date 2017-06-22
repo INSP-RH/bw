@@ -27,8 +27,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // adult_weight_wrapper_EI
-List adult_weight_wrapper_EI(NumericVector bw, NumericVector ht, NumericVector age, NumericVector sex, NumericMatrix EIchange, NumericMatrix NAchange, NumericVector PAL, NumericVector pcarb_base, NumericVector pcarb, NumericVector input_EIntake, double days, bool checkValues);
-RcppExport SEXP bw_adult_weight_wrapper_EI(SEXP bwSEXP, SEXP htSEXP, SEXP ageSEXP, SEXP sexSEXP, SEXP EIchangeSEXP, SEXP NAchangeSEXP, SEXP PALSEXP, SEXP pcarb_baseSEXP, SEXP pcarbSEXP, SEXP input_EIntakeSEXP, SEXP daysSEXP, SEXP checkValuesSEXP) {
+List adult_weight_wrapper_EI(NumericVector bw, NumericVector ht, NumericVector age, NumericVector sex, NumericMatrix EIchange, NumericMatrix NAchange, NumericVector PAL, NumericVector pcarb_base, NumericVector pcarb, NumericVector extradata, double days, bool checkValues, bool isEnergy);
+RcppExport SEXP bw_adult_weight_wrapper_EI(SEXP bwSEXP, SEXP htSEXP, SEXP ageSEXP, SEXP sexSEXP, SEXP EIchangeSEXP, SEXP NAchangeSEXP, SEXP PALSEXP, SEXP pcarb_baseSEXP, SEXP pcarbSEXP, SEXP extradataSEXP, SEXP daysSEXP, SEXP checkValuesSEXP, SEXP isEnergySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -41,10 +41,34 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type PAL(PALSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type pcarb_base(pcarb_baseSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type pcarb(pcarbSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type input_EIntake(input_EIntakeSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type extradata(extradataSEXP);
     Rcpp::traits::input_parameter< double >::type days(daysSEXP);
     Rcpp::traits::input_parameter< bool >::type checkValues(checkValuesSEXP);
-    rcpp_result_gen = Rcpp::wrap(adult_weight_wrapper_EI(bw, ht, age, sex, EIchange, NAchange, PAL, pcarb_base, pcarb, input_EIntake, days, checkValues));
+    Rcpp::traits::input_parameter< bool >::type isEnergy(isEnergySEXP);
+    rcpp_result_gen = Rcpp::wrap(adult_weight_wrapper_EI(bw, ht, age, sex, EIchange, NAchange, PAL, pcarb_base, pcarb, extradata, days, checkValues, isEnergy));
+    return rcpp_result_gen;
+END_RCPP
+}
+// adult_weight_wrapper_EI_fat
+List adult_weight_wrapper_EI_fat(NumericVector bw, NumericVector ht, NumericVector age, NumericVector sex, NumericMatrix EIchange, NumericMatrix NAchange, NumericVector PAL, NumericVector pcarb_base, NumericVector pcarb, NumericVector input_EI, NumericVector input_fat, double days, bool checkValues);
+RcppExport SEXP bw_adult_weight_wrapper_EI_fat(SEXP bwSEXP, SEXP htSEXP, SEXP ageSEXP, SEXP sexSEXP, SEXP EIchangeSEXP, SEXP NAchangeSEXP, SEXP PALSEXP, SEXP pcarb_baseSEXP, SEXP pcarbSEXP, SEXP input_EISEXP, SEXP input_fatSEXP, SEXP daysSEXP, SEXP checkValuesSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type bw(bwSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type ht(htSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type age(ageSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sex(sexSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type EIchange(EIchangeSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type NAchange(NAchangeSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type PAL(PALSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type pcarb_base(pcarb_baseSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type pcarb(pcarbSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type input_EI(input_EISEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type input_fat(input_fatSEXP);
+    Rcpp::traits::input_parameter< double >::type days(daysSEXP);
+    Rcpp::traits::input_parameter< bool >::type checkValues(checkValuesSEXP);
+    rcpp_result_gen = Rcpp::wrap(adult_weight_wrapper_EI_fat(bw, ht, age, sex, EIchange, NAchange, PAL, pcarb_base, pcarb, input_EI, input_fat, days, checkValues));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -80,7 +104,8 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"bw_adult_weight_wrapper", (DL_FUNC) &bw_adult_weight_wrapper, 11},
-    {"bw_adult_weight_wrapper_EI", (DL_FUNC) &bw_adult_weight_wrapper_EI, 12},
+    {"bw_adult_weight_wrapper_EI", (DL_FUNC) &bw_adult_weight_wrapper_EI, 13},
+    {"bw_adult_weight_wrapper_EI_fat", (DL_FUNC) &bw_adult_weight_wrapper_EI_fat, 13},
     {"bw_child_weight_wrapper", (DL_FUNC) &bw_child_weight_wrapper, 6},
     {"bw_EnergyBuilder", (DL_FUNC) &bw_EnergyBuilder, 3},
     {NULL, NULL, 0}

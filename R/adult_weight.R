@@ -12,14 +12,15 @@
 #'
 #' \strong{ Optional }
 #' @param EI          (vector) Energy Intake at Baseline.
+#' @param fat         (vector) Vector containing fat mass. Recall that 
 #' @param PAL         (vector) Physical activity level.
 #' @param pcarb       (vector) Percent carbohydrates after intake change.
 #' @param pcarb_base  (vector) Percent carbohydrates at baseline.
 #' @param days        (double) Days to run the model.
 #' @param checkValues (boolean) Check whether the values from the model are biologically feasible.
 #'
-#' @author Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 #' @author Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
+#' @author Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 #' 
 #' @details \code{EIchange} and \code{NAchange} must be consumption
 #' change matrices. Each row should represent consumption at each
@@ -29,12 +30,9 @@
 #' As an example, \code{EIchange <- rep(-100, 50)} represents that 
 #' each day \code{-100} kcals are reduced from consumption. 
 #' 
-#' @note I still haven't solved how to be able to change de
+#' @note Wee still haven't solved how to be able to change de
 #' Rungue-Kutta \code{dt} parameter. For now it is a day; but for faster
 #' models it should be changeable. 
-#' 
-#' @note For faster modelling code should be computed in paralell.
-#' \url{https://rcppcore.github.io/RcppParallel/}
 #' 
 #' @useDynLib bw
 #' @import compiler
@@ -62,6 +60,14 @@
 #' kcalvec <-c(rep(-50, 100), rep(-100, 100), rep(-150, 100), rep(-200, 100))
 #' adult_weight(80, 1.8, 40, "female", kcalvec, days = 400)
 #' 
+#' #Same female with known energy intake
+#' adult_weight(80, 1.8, 40, "female", rep(-100, 365), rep(-25, 365), EI = 2000)
+#' 
+#' #Same female with known fat mass
+#' adult_weight(80, 1.8, 40, "female", rep(-100, 365), rep(-25, 365), fat = 32)
+#' 
+#' #Same female with known fat mass and known energy consumption
+#' adult_weight(80, 1.8, 40, "female", rep(-100, 365), rep(-25, 365), EI = 2000, fat = 32)
 #' 
 #' #EXAMPLE 2: DATASET MODELLING
 #' #--------------------------------------------------------
@@ -73,7 +79,7 @@
 #' sexes   <- c("male", "female", "female", "male", "male") 
 #' 
 #' #Matrix of energy consumption reduction: 
-#' EIchange <- cbind(rep(-100, 365), rep(-200, 365), rep(-200, 365), 
+#' EIchange <- rbind(rep(-100, 365), rep(-200, 365), rep(-200, 365), 
 #'                   rep(-123, 365), rep(-50, 365))
 #' 
 #' #Returns a weight change matrix and other matrices
@@ -84,17 +90,21 @@
 
 
 adult_weight <- function(bw, ht, age, sex, 
-                         EIchange = matrix(0, ncol = length(bw), nrow = ceiling(days)), 
-                         NAchange = matrix(0, ncol = length(bw), nrow = ceiling(days)), 
-                         EI = NA,
+                         EIchange = matrix(0, ncol = ceiling(days), nrow = length(bw)), 
+                         NAchange = matrix(0, ncol = ceiling(days), nrow = length(bw)), 
+                         EI = NA, fat = NA,
                          PAL = rep(1.5, length(bw)), 
                          pcarb_base = rep(0.5, length(bw)), 
                          pcarb = pcarb_base,  days = 365,
                          checkValues = TRUE){
   
-  #Check that dimension of EIchange and Nachange match
-  EIchange <- as.matrix(EIchange)
-  NAchange <- as.matrix(NAchange)
+  #Check that EIchange and Nachange are matrices
+  if (is.vector(EIchange)){
+    EIchange <- matrix(EIchange, nrow = 1)
+  }  
+  if (is.vector(NAchange)){
+    NAchange <- matrix(NAchange, nrow = 1)
+  }
   
   if (any(dim(EIchange) != dim(NAchange))){
     stop("Dimension mismatch. NAchange and EIchange don't have the same dimensions.")
@@ -109,7 +119,7 @@ adult_weight <- function(bw, ht, age, sex,
   }
   
   #Check that they have as many rows as days
-  if (nrow(EIchange) != ceiling(days)){
+  if (ncol(EIchange) != ceiling(days)){
     warning(paste("Dimension mismatch. EIchange and NAchange must have", 
                   ceiling(days), "rows"))
   }
@@ -133,13 +143,28 @@ adult_weight <- function(bw, ht, age, sex,
   newsex                         <- rep(0, length(sex))
   newsex[which(sex == "female")] <- 1
   
-  #Run C program to estimate the loop
-  if (any(is.na(EI))){
+  #Check fat/energy are inputted
+  isfat <- any(is.na(fat))
+  isEI  <- any(is.na(EI))
+  
+  #Change because c++ takes them as transpose
+  EIchange <- t(EIchange)
+  NAchange <- t(NAchange)
+  
+  #Run C++ program to estimate weight there are 3 constructors depending
+  #on if you have energy intake or fat intake or not.
+  if (isfat && isEI){
     wl <- adult_weight_wrapper(bw, ht, age, newsex, EIchange, NAchange,
                                PAL, pcarb_base, pcarb, ceiling(days), checkValues)  
-  } else {
+  } else if (!isEI && isfat) {
     wl <- adult_weight_wrapper_EI(bw, ht, age, newsex, EIchange, NAchange,
-                                PAL, pcarb_base, pcarb, EI, ceiling(days), checkValues)  
+                                PAL, pcarb_base, pcarb, EI, ceiling(days), checkValues, TRUE)  
+  } else if (isEI && !isfat) {
+    wl <- adult_weight_wrapper_EI(bw, ht, age, newsex, EIchange, NAchange,
+                                  PAL, pcarb_base, pcarb, fat, ceiling(days), checkValues, FALSE)  
+  } else if (!isEI && !isfat){
+    wl <- adult_weight_wrapper_EI_fat(bw, ht, age, newsex, EIchange, NAchange,
+                                  PAL, pcarb_base, pcarb, EI, fat, ceiling(days), checkValues)  
   }
   if(wl$Correct_Values[1]==FALSE){
     stop("One of the variables takes either negative values, or NaN, NA or infinity")

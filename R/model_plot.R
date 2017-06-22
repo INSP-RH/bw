@@ -38,7 +38,7 @@
 #' #You can plot all the variables
 #' model_plot(myweight)
 #' 
-#' #Or only one of them
+#' #Or only one of them and specify by age
 #' model_plot(myweight, "Body_Weight", ncol = 1)
 #' 
 #' #EXAMPLE 2A: DATASET MODELLING FOR ADULTS
@@ -50,7 +50,7 @@
 #' sexes   <- c("male", "female", "female", "male", "male") 
 #' 
 #' #Matrix of energy consumption reduction: 
-#' EIchange <- cbind(rep(-100, 365), rep(-200, 365), rep(-200, 365), 
+#' EIchange <- rbind(rep(-100, 365), rep(-200, 365), rep(-200, 365), 
 #'                   rep(-123, 365), rep(-50, 365))
 #' 
 #' #Returns a weight change matrix and other matrices
@@ -85,6 +85,12 @@
 model_plot <- function(weight, 
                        plotvars = names(weight)[-which(names(weight) %in% c("Time", "BMI_Category", "Age", "Correct_Values"))], 
                        timevar  = "Time", title = "Hall's model results", ncol = 2){
+  
+  #Check that we have only one individual
+  if (nrow(as.matrix(weight[[plotvars[1]]])) > 1 && timevar == "Age"){
+    warning("We cannot plot against age for several individuals. Set timevar = 'Time'")
+    timevar  <- "Time"
+  }
   
   #Get time variable
   time <- weight[[timevar]]

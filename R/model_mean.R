@@ -37,7 +37,7 @@
 #' sexes   <- c("male", "female", "female", "male", "male") 
 #' 
 #' #Matrix of energy consumption reduction: 
-#' EIchange <- cbind(rep(-100, 365), rep(-200, 365), rep(-200, 365), 
+#' EIchange <- rbind(rep(-100, 365), rep(-200, 365), rep(-200, 365), 
 #'                   rep(-123, 365), rep(-50, 365))
 #' 
 #' #Create weight change model
@@ -98,9 +98,9 @@
 #' days <- 365
 #' 
 #' #Energy intake matrix
-#' EIchange <- matrix(NA, nrow = days, ncol = 0)
+#' EIchange <- matrix(NA, nrow = 0, ncol = days)
 #' for(i in 1:nrow(datasvy)){
-#'     EIchange <- cbind(EIchange, rep(datasvy$kcal[i], days))
+#'     EIchange <- rbind(EIchange, rep(datasvy$kcal[i], days))
 #' }
 #' 
 #' #Calculate weight change                   
