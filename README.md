@@ -46,7 +46,7 @@ names(wtrajectory)
     ##  [5] "Glycogen"               "Fat_Mass"              
     ##  [7] "Lean_Mass"              "Body_Weight"           
     ##  [9] "Body_Mass_Index"        "BMI_Category"          
-    ## [11] "Energy_Intake"
+    ## [11] "Energy_Intake"          "Correct_Values"
 
 These can be plotted with `model_plot`:
 
@@ -66,7 +66,7 @@ ages    <- c(45, 23, 66, 44, 23)
 sexes   <- c("male", "female", "female", "male", "male") 
 
 #Matrix of energy consumption reduction: 
-EIchange <- cbind(rep(-100, 365), rep(-200, 365), rep(-200, 365), 
+EIchange <- rbind(rep(-100, 365), rep(-200, 365), rep(-200, 365), 
                   rep(-123, 365), rep(-50, 365))
 
 #Returns a weight change matrix and other matrices

@@ -66,7 +66,7 @@ ages    <- c(45, 23, 66, 44, 23)
 sexes   <- c("male", "female", "female", "male", "male") 
 
 #Matrix of energy consumption reduction: 
-EIchange <- cbind(rep(-100, 365), rep(-200, 365), rep(-200, 365), 
+EIchange <- rbind(rep(-100, 365), rep(-200, 365), rep(-200, 365), 
                   rep(-123, 365), rep(-50, 365))
 
 #Returns a weight change matrix and other matrices
