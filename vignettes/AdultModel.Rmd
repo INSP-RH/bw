@@ -269,14 +269,13 @@ Finally, `model_mean` can also be used to estimate `survey` means using the `svy
 ```{r, eval = FALSE}
 require("survey")
 design <- svydesign(ids = ~id, probs = ~prob, data = mydata)
-#THERE IS AN ERROR HERE
-#model_mean(database_model, group = mydata$sex, design = design)
+model_mean(database_model, group = mydata$sex, design = design)
 ```
 
 ```{r, echo = FALSE, message=FALSE, warning = FALSE}
 require("survey")
 design <- svydesign(ids = ~id, probs = ~prob, data = mydata)
-#head(model_mean(database_model, group = mydata$sex, design = design))[,1:5]
+head(model_mean(database_model, group = mydata$sex, design = design))[,1:5]
 ```
 
 The same process can be replicated with `adult_bmi` to obtain Body Mass Index prevalence per day:

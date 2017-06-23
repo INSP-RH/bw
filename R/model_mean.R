@@ -219,7 +219,8 @@ model_mean <- function(weight,
     for (var in 1:nvars){
       
       #Weight update to add variable of interest
-      design <- update(design, myvar = weight[[meanvars[var]]][,days[t]])
+      thisvar <- weight[[meanvars[var]]][,days[t]]
+      design  <- update(design, myvar = thisvar)
       
       #Get mean and var
       mymean <- svyby(~myvar, ~group, design, svymean)

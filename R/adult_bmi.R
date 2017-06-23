@@ -117,7 +117,8 @@ adult_bmi  <- function(weight,
   for(t in 1:length(days)){
     
     #Weight update to add variable of interest
-    design <- update(design, bmi_ = as.factor(weight[["BMI_Category"]][,days[t]]))
+    myvar  <- as.factor(weight[["BMI_Category"]][,days[t]])
+    design <- update(design, bmi_ = myvar)
     
     #Get mean and ci
     mymean    <- svyby(~bmi_, ~group, design, svymean)
