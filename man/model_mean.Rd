@@ -162,7 +162,7 @@ group  <- datasvy$group
     
 #Calculate survey mean and variance for 25 days
 aggregate_data <- model_mean(svyweight, design = design, group = group)
-
+aggregate_data
 #You can plot the mean with ci
 if(require(ggplot2)){
 ggplot(subset(aggregate_data, variable == "Body_Weight")) + 

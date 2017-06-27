@@ -88,7 +88,7 @@
 #' @export
 
 adult_bmi  <- function(weight, 
-                       days   = seq(1, nrow(weight[["BMI_Category"]]), length.out = 25),
+                       days   = seq(0, length(weight[["Time"]])-1, length.out = 25),
                        group  = rep(1,nrow(weight[["BMI_Category"]])),
                        design = svydesign(ids=~1, weights = rep(1,nrow(weight[["BMI_Category"]])),
                                           data = as.data.frame(weight[["BMI_Category"]])),
@@ -108,7 +108,7 @@ adult_bmi  <- function(weight,
   mydata <- as.data.frame(matrix(NA, ncol = 5, nrow = 0))
 
   #Set time to integers
-  days <- ceiling(days)
+  days <- which(weight[["Time"]] %in% floor(days))
   
   #Update design to add group
   design <- update(design, group = group)
@@ -121,17 +121,31 @@ adult_bmi  <- function(weight,
     design <- update(design, bmi_ = myvar)
     
     #Get mean and ci
-    mymean    <- svyby(~bmi_, ~group, design, svymean)
-    confmean  <- confint(mymean, level = confidence)
-    mu        <- coef(mymean)
+    if (length(levels(myvar)) < 2){
+      mu        <- 1
+      confmean  <- matrix(NA, ncol = 2)
+      names(mu) <- levels(myvar)
+    } else {
+      mymean    <- svyby(~bmi_, ~group, design, svymean)
+      confmean  <- confint(mymean, level = confidence)
+      mu        <- coef(mymean)
+    }
+    
+    
     
     #Add to same data frame
     varnames <- unlist(lapply(names(mu), function(x){gsub(".*bmi_","",x)}))
-    today  <- data.frame(Day = days[t], 
-                         Group = mymean$group, 
-                         BMI_Category = varnames, 
-                         Mean = mu,
-                         confmean)
+    
+    #Empty names to allow for data frame to work and bind
+    names(mu)          <- c()
+    colnames(confmean) <- c()
+    
+    #Create data frame
+    today    <- data.frame(Day = weight[["Time"]][days[t]], 
+                           Group = mymean$group, 
+                           BMI_Category = varnames, 
+                           Mean = mu,
+                           confmean)
     
     #Bind to previous data
     mydata <- rbind(mydata, today)

@@ -4,7 +4,7 @@
 \alias{adult_bmi}
 \title{Get BMI prevalence results from Adult Weight Change Model}
 \usage{
-adult_bmi(weight, days = seq(1, nrow(weight[["BMI_Category"]]), length.out =
+adult_bmi(weight, days = seq(0, length(weight[["Time"]]) - 1, length.out =
   25), group = rep(1, nrow(weight[["BMI_Category"]])),
   design = svydesign(ids = ~1, weights = rep(1,
   nrow(weight[["BMI_Category"]])), data =
