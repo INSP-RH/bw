@@ -153,7 +153,7 @@
 #'     
 #' #Calculate survey mean and variance for 25 days
 #' aggregate_data <- model_mean(svyweight, design = design, group = group)
-#' 
+#' aggregate_data
 #' #You can plot the mean with ci
 #' if(require(ggplot2)){
 #' ggplot(subset(aggregate_data, variable == "Body_Weight")) + 
@@ -219,7 +219,7 @@ model_mean <- function(weight,
     for (var in 1:nvars){
       
       #Weight update to add variable of interest
-      thisvar <- weight[[meanvars[var]]][,days[t]]
+      thisvar <- weight[[meanvars[var]]][,days[t]] #Sum 1 as time starts in 0
       design  <- update(design, myvar = thisvar)
       
       #Get mean and var
@@ -231,7 +231,7 @@ model_mean <- function(weight,
       confvar  <- confint(myvar, level = confidence)
       
       #Get into data frame
-      thisdata <- data.frame(days[t], meanvars[var], mymean$group, 
+      thisdata <- data.frame(weight[["Time"]][days[t]], meanvars[var], mymean$group, 
                         coef(mymean), SE(mymean), confmean, 
                         coef(myvar), SE(myvar), confvar)
       
