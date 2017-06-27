@@ -318,7 +318,7 @@ NumericVector Adult::R(double t, NumericVector L, NumericVector G,
 //Classifier for bMI
 StringVector Adult::BMIClassifier(NumericVector BMI){
     StringVector classification(BMI.size());
-    for(int i = 0; i < BMI.size(); i++){
+    /*for(int i = 0; i < BMI.size(); i++){
         classification(i) = "Unknown";
         if (BMI(i) < 16){
             classification(i) = "Severe Thinness";
@@ -336,6 +336,18 @@ StringVector Adult::BMIClassifier(NumericVector BMI){
             classification(i) = "Obese class II";
         } else if (BMI(i) >= 40){
             classification(i) = "Obese class III";
+        }
+    }*/
+    for(int i = 0; i < BMI.size(); i++){
+        classification(i) = "Unknown";
+        if (BMI(i) < 18.5){
+            classification(i) = "Underweight";
+        } else if (BMI(i) >= 18.5 && BMI(i) < 25){
+            classification(i) = "Normal";
+        } else if (BMI(i) >= 25 && BMI(i) < 30){
+            classification(i) = "Pre-Obese";
+        } else if (BMI(i) >= 30 && BMI(i) < 35){
+            classification(i) = "Obese";
         }
     }
     return classification;
@@ -386,11 +398,12 @@ List Adult::rk4(double days){
         
         if (check){
             for (int k = 0; k < nind; k++){
-                if(L(k,i-1)<=0|| !isfinite(L(k,i-1)) || F(k,i-1)<=0|| !isfinite(F(k,i-1))){
+              //Need to correct in windows isfinite does not exist
+                /*if(L(k,i-1)<=0|| !isfinite(L(k,i-1)) || F(k,i-1)<=0|| !isfinite(F(k,i-1))){
                     Rcout << "First error in person "<< k+1 <<std::endl;
                     correctVals = false;
                     break;
-                }
+                }*/
             }
         }
         

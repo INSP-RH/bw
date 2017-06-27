@@ -130,11 +130,12 @@ List Child::rk4 (double days){
     for (int i = 1; i <= nsims; i++){
         if (check){
             for (int k = 0; k < nind; k++){
+                /* //Need to correct in windows there is no isfinite.
                 if(ModelFFM(k,i-1)<=0|| !isfinite(ModelFFM(k,i-1)) || ModelFM(k,i-1)<=0|| !isfinite(ModelFM(k,i-1))){
                     Rcout << "First error in person "<< k+1 <<std::endl;
                     correctVals = false;
                     break;
-                }
+                }*/
             }
         }
         
