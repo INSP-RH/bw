@@ -346,7 +346,7 @@ StringVector Adult::BMIClassifier(NumericVector BMI){
             classification(i) = "Normal";
         } else if (BMI(i) >= 25 && BMI(i) < 30){
             classification(i) = "Pre-Obese";
-        } else if (BMI(i) >= 30 && BMI(i) < 35){
+        } else if (BMI(i) >= 30){
             classification(i) = "Obese";
         }
     }
