@@ -8,11 +8,12 @@
 
 #include "child_weight.h"
 
-Child::Child(NumericVector input_age, NumericVector input_sex, NumericVector input_FFM, NumericVector input_FM, bool checkValues){
+Child::Child(NumericVector input_age, NumericVector input_sex, NumericVector input_FFM, NumericVector input_FM, NumericMatrix input_EIntake, bool checkValues){
     age   = input_age;
     sex   = input_sex;
     FM    = input_FM;
     FFM   = input_FFM;
+    EIntake = input_EIntake;
     check = checkValues;
     build();
 }
@@ -237,8 +238,14 @@ void Child::getParameters(void){
 }
 
 
-//This needs to be an R inputed function
+//Intake in calories
 NumericVector Child::Intake(NumericVector t){
-    return IntakeReference(t);
+    double timeval = t(0) - age(0);
+    return EIntake(floor(timeval),_);
 }
+
+//This needs to be an R inputed function
+/*NumericVector Child::Intake(NumericVector t){
+    return IntakeReference(t);
+}*/
 

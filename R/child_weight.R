@@ -6,6 +6,7 @@
 #' @param sex      (vector) Sex either \code{"female"} or \code{"male"}
 #' @param FM       (vector) Fat Mass at Baseline
 #' @param FFM      (vector) Fat Free Mass at Baseline
+#' @param EI       (matrix) Numeric Matrix with energy intake
 #' 
 #' \strong{ Optional }
 #' @param days     (numeric) Days to run the model.
@@ -28,7 +29,7 @@
 #' #EXAMPLE 1: INDIVIDUAL MODELLING
 #' #--------------------------------------------------------
 #' #For one child 
-#' child_weight(6,"male",2.5, 16)
+#' child_weight(6,"male",2.5, 16, as.matrix(rep(2000, 365)))
 #' 
 #' #EXAMPLE 2: DATASET MODELLING
 #' #--------------------------------------------------------
@@ -37,14 +38,14 @@
 #' Fat     <- c(4.30, 2.02, 3.07, 1.12, 2.93)
 #' ages    <- c(10, 6.2, 5.4, 4, 4.1)
 #' sexes   <- c("male", "female", "female", "male", "male") 
-#' 
+#' eintake <- matrix(rep(2000, 365*5), ncol = 5)
 #' #Returns a weight change matrix and other matrices
-#' model_weight <- child_weight(ages, sexes, Fat, FatFree)
+#' model_weight <- child_weight(ages, sexes, Fat, FatFree, eintake)
 #'          
 #' @export
 #'
 
-child_weight <- function(age, sex, FM, FFM, days = 365, checkValues = TRUE){
+child_weight <- function(age, sex, FM, FFM, EI, days = 365, checkValues = TRUE){
   
   #Check all variables are positive
   if (any(age < 0) || any(FM < 0) || any(FFM < 0)){
@@ -78,7 +79,7 @@ child_weight <- function(age, sex, FM, FFM, days = 365, checkValues = TRUE){
   newsex                         <- rep(0, length(sex))
   newsex[which(sex == "female")] <- 1
   
-  wt <- child_weight_wrapper(age, newsex, FM, FFM, days, checkValues)
+  wt <- child_weight_wrapper(age, newsex, FM, FFM, EI, days, checkValues)
   
   return(wt)
   

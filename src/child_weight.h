@@ -19,7 +19,7 @@ class Child {
 public:
     
     //Constructor and destroyer
-    Child(NumericVector input_age, NumericVector input_sex, NumericVector input_FFM, NumericVector input_FM, bool checkValues);
+    Child(NumericVector input_age, NumericVector input_sex, NumericVector input_FFM, NumericVector input_FM, NumericMatrix input_EIntake, bool checkValues);
     ~Child(void);
     
     //Constants
@@ -27,6 +27,7 @@ public:
     NumericVector sex;  //0 = "male"; 1 = "female"
     NumericVector FFM;  //Fat Free Mass (kg)
     NumericVector FM;   //Fat Mass (kg)
+    NumericMatrix EIntake;
     bool          check; // Check values are correct
     
     //Functions

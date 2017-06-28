@@ -13,8 +13,8 @@ adult_weight_wrapper_EI_fat <- function(bw, ht, age, sex, EIchange, NAchange, PA
     .Call('bw_adult_weight_wrapper_EI_fat', PACKAGE = 'bw', bw, ht, age, sex, EIchange, NAchange, PAL, pcarb_base, pcarb, input_EI, input_fat, days, checkValues)
 }
 
-child_weight_wrapper <- function(age, sex, FFM, FM, days, checkValues) {
-    .Call('bw_child_weight_wrapper', PACKAGE = 'bw', age, sex, FFM, FM, days, checkValues)
+child_weight_wrapper <- function(age, sex, FFM, FM, input_EIntake, days, checkValues) {
+    .Call('bw_child_weight_wrapper', PACKAGE = 'bw', age, sex, FFM, FM, input_EIntake, days, checkValues)
 }
 
 EnergyBuilder <- function(Energy, Time, interpol) {
