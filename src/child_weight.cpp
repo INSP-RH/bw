@@ -103,7 +103,7 @@ NumericVector Child::Expenditure(NumericVector t, NumericVector FFM, NumericVect
 List Child::rk4 (double days){
     
     //Set dt to 1
-    double dt = 1.0/days;
+    double dt = 1.0;
     
     //Initial time
     NumericMatrix k1, k2, k3, k4;
