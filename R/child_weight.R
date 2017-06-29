@@ -78,7 +78,7 @@ child_weight <- function(age, sex, FM, FFM, days = 365, checkValues = TRUE){
   newsex                         <- rep(0, length(sex))
   newsex[which(sex == "female")] <- 1
   
-  wt <- child_weight_wrapper(age, newsex, FM, FFM, days, checkValues)
+  wt <- child_weight_wrapper(age, newsex,  FFM, FM, days, checkValues)
   
   return(wt)
   
