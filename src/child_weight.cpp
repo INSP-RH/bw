@@ -123,7 +123,7 @@ List Child::rk4 (double days){
     ModelFM(_,0)  = FM;
     ModelBW(_,0)  = FFM + FM;
     TIME(0)  = 0.0;
-    AGE(_,0)  = age;
+    AGE(_,0)  = age*365;
     
     //Loop through all other states
     bool correctVals = true;
@@ -162,7 +162,7 @@ List Child::rk4 (double days){
         TIME(i) = TIME(i-1) + 1;
         
         //Update AGE variable
-        AGE(_,i) = AGE(_,i-1) + dt/365;
+        AGE(_,i) = AGE(_,i-1) + dt;
         
     }
     
