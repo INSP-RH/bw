@@ -159,10 +159,10 @@ List Child::rk4 (double days){
         ModelBW(_,i) = ModelFFM(_,i) + ModelFM(_,i);
 
         //Update TIME(i-1)
-        TIME(i) = TIME(i-1) + days*dt;
+        TIME(i) = TIME(i-1) + 1;
         
         //Update AGE variable
-        AGE(_,i) = AGE(_,i-1) + dt;
+        AGE(_,i) = AGE(_,i-1) + dt/365;
         
     }
     
