@@ -146,10 +146,10 @@ List Child::rk4 (double days){
         
         
         //Rungue kutta 4 (https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods)
-        k1 = dMass(AGE(_,i-1)*365, ModelFFM(_,i-1), ModelFM(_,i-1));
-        k2 = dMass(AGE(_,i-1)*365 + 0.5 * dt, ModelFFM(_,i-1) + 0.5 * dt * k1(0,_), ModelFM(_,i-1) + 0.5 * dt * k1(1,_));
-        k3 = dMass(AGE(_,i-1)*365 + 0.5 * dt, ModelFFM(_,i-1) + 0.5 * dt * k2(0,_), ModelFM(_,i-1) + 0.5 * dt * k2(1,_));
-        k4 = dMass(AGE(_,i-1)*365 + dt, ModelFFM(_,i-1) +dt * k3(0,_), ModelFM(_,i-1) + dt * k3(1,_));
+        k1 = dMass(AGE(_,i-1), ModelFFM(_,i-1), ModelFM(_,i-1));
+        k2 = dMass(AGE(_,i-1) + 0.5 * dt, ModelFFM(_,i-1) + 0.5 * dt * k1(0,_), ModelFM(_,i-1) + 0.5 * dt * k1(1,_));
+        k3 = dMass(AGE(_,i-1) + 0.5 * dt, ModelFFM(_,i-1) + 0.5 * dt * k2(0,_), ModelFM(_,i-1) + 0.5 * dt * k2(1,_));
+        k4 = dMass(AGE(_,i-1) + dt, ModelFFM(_,i-1) +dt * k3(0,_), ModelFM(_,i-1) + dt * k3(1,_));
         
         //Update FFM and FM
         ModelFFM(_,i) = ModelFFM(_,i-1) + dt * (k1(0,_) + 2.0*k2(0,_) + 2.0*k3(0,_) + k4(0,_))/6.0;        //ffm
