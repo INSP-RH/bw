@@ -36,3 +36,45 @@ List child_weight_wrapper(NumericVector age, NumericVector sex, NumericVector FF
     
 }
 
+// [[Rcpp::export]]
+NumericMatrix intake_reference_wrapper(NumericVector age, NumericVector sex, NumericVector FFM, NumericVector FM, double days){
+    
+    //Energy intake input empty matrix
+    NumericMatrix EI(1,1);
+    
+    //Create new adult with characteristics
+    Child Person (age,  sex, FFM, FM, EI, false);
+    
+    //Energy matrix
+    NumericMatrix EnergyIntake(age.size(), days);
+    
+    //Get enerfy matrix
+    for (double i = 0; i < days; i++){
+        EnergyIntake(_,i) = Person.IntakeReference(age + i/365.0);
+    }
+    
+    return EnergyIntake;
+    
+}
+
+// [[Rcpp::export]]
+List mass_reference_wrapper(NumericVector age, NumericVector sex){
+    
+    //Input empty matrices
+    NumericMatrix EI(1,1);
+    NumericMatrix inputFM(1,1);
+    NumericMatrix inputFFM(1,1);
+    
+    //Create new adult with characteristics
+    Child Person (age,  sex, inputFFM, inputFM, EI, false);
+    
+    //Energy matrix
+    NumericVector FM  = Person.FFMReference(age);
+    NumericVector FFM = Person.FMReference(age);
+    
+    return List::create(Named("FM")  = FM,
+                        Named("FFM") = FFM);
+    
+}
+
+

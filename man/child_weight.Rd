@@ -4,7 +4,9 @@
 \alias{child_weight}
 \title{Dynamic Children Weight Change Model}
 \usage{
-child_weight(age, sex, FM, FFM, EI, days = 365, checkValues = TRUE)
+child_weight(age, sex, FM = child_reference_FFMandFM(age, sex)$FM,
+  FFM = child_reference_FFMandFM(age, sex)$FFM, EI = child_reference_EI(age,
+  sex, FM, FFM, days), days = 365, checkValues = TRUE)
 }
 \arguments{
 \item{age}{(vector) Age of individual (yrs)}
@@ -29,7 +31,10 @@ Estimates weight given age, sex, fat mass, and fat free mass,
 \examples{
 #EXAMPLE 1: INDIVIDUAL MODELLING
 #--------------------------------------------------------
-#For one child 
+#For one child with default energy intake
+child_weight(6,"male")
+
+#For a child with specific energy intake
 child_weight(6,"male",2.5, 16, as.matrix(rep(2000, 365)))
 
 #EXAMPLE 2: DATASET MODELLING
@@ -39,6 +44,8 @@ FatFree <- c(32, 17.2, 18.8, 20, 24.1)
 Fat     <- c(4.30, 2.02, 3.07, 1.12, 2.93)
 ages    <- c(10, 6.2, 5.4, 4, 4.1)
 sexes   <- c("male", "female", "female", "male", "male") 
+
+#With specific energy intake
 eintake <- matrix(rep(2000, 365*5), ncol = 5)
 #Returns a weight change matrix and other matrices
 model_weight <- child_weight(ages, sexes, Fat, FatFree, eintake)

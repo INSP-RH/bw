@@ -34,6 +34,11 @@ public:
     //---------------------------------------------------------------------------
     List rk4(double days);
     
+    //Reference functions for reference children
+    NumericVector IntakeReference(NumericVector t);
+    NumericVector FFMReference(NumericVector t);
+    NumericVector FMReference(NumericVector t);
+    
 private:
     
     //Private unchanging constants
@@ -102,9 +107,6 @@ private:
                               NumericVector input_tauD);
     NumericVector cP(NumericVector FFM, NumericVector FM);
     NumericVector Delta(NumericVector t);
-    NumericVector FFMReference(NumericVector t);
-    NumericVector FMReference(NumericVector t);
-    NumericVector IntakeReference(NumericVector t);
     NumericVector Expenditure(NumericVector t, NumericVector FFM, NumericVector FM);
     NumericVector Intake(NumericVector t);
     NumericMatrix dMass (NumericVector time, NumericVector FFM, NumericVector FM);

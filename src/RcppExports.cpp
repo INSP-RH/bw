@@ -89,6 +89,33 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// intake_reference_wrapper
+NumericMatrix intake_reference_wrapper(NumericVector age, NumericVector sex, NumericVector FFM, NumericVector FM, double days);
+RcppExport SEXP bw_intake_reference_wrapper(SEXP ageSEXP, SEXP sexSEXP, SEXP FFMSEXP, SEXP FMSEXP, SEXP daysSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type age(ageSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sex(sexSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type FFM(FFMSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type FM(FMSEXP);
+    Rcpp::traits::input_parameter< double >::type days(daysSEXP);
+    rcpp_result_gen = Rcpp::wrap(intake_reference_wrapper(age, sex, FFM, FM, days));
+    return rcpp_result_gen;
+END_RCPP
+}
+// mass_reference_wrapper
+List mass_reference_wrapper(NumericVector age, NumericVector sex);
+RcppExport SEXP bw_mass_reference_wrapper(SEXP ageSEXP, SEXP sexSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type age(ageSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sex(sexSEXP);
+    rcpp_result_gen = Rcpp::wrap(mass_reference_wrapper(age, sex));
+    return rcpp_result_gen;
+END_RCPP
+}
 // EnergyBuilder
 NumericMatrix EnergyBuilder(NumericMatrix Energy, NumericVector Time, std::string interpol);
 RcppExport SEXP bw_EnergyBuilder(SEXP EnergySEXP, SEXP TimeSEXP, SEXP interpolSEXP) {
@@ -108,6 +135,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"bw_adult_weight_wrapper_EI", (DL_FUNC) &bw_adult_weight_wrapper_EI, 13},
     {"bw_adult_weight_wrapper_EI_fat", (DL_FUNC) &bw_adult_weight_wrapper_EI_fat, 13},
     {"bw_child_weight_wrapper", (DL_FUNC) &bw_child_weight_wrapper, 7},
+    {"bw_intake_reference_wrapper", (DL_FUNC) &bw_intake_reference_wrapper, 5},
+    {"bw_mass_reference_wrapper", (DL_FUNC) &bw_mass_reference_wrapper, 2},
     {"bw_EnergyBuilder", (DL_FUNC) &bw_EnergyBuilder, 3},
     {NULL, NULL, 0}
 };

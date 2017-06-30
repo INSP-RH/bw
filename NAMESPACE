@@ -2,6 +2,8 @@
 
 export(adult_bmi)
 export(adult_weight)
+export(child_reference_EI)
+export(child_reference_FFMandFM)
 export(child_weight)
 export(energy_build)
 export(model_mean)

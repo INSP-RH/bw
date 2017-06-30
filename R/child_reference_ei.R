@@ -1,4 +1,4 @@
-#' @title Dynamic Children Weight Change Model
+#' @title Energy Intake Matrix
 #'
 #' @description Estimates weight given age, sex, fat mass, and fat free mass, 
 #'
@@ -6,11 +6,9 @@
 #' @param sex      (vector) Sex either \code{"female"} or \code{"male"}
 #' @param FM       (vector) Fat Mass at Baseline
 #' @param FFM      (vector) Fat Free Mass at Baseline
-#' @param EI       (matrix) Numeric Matrix with energy intake
 #' 
 #' \strong{ Optional }
 #' @param days     (numeric) Days to run the model.
-#' @param checkValues (boolean) Checks whether values of fat mass and free fat mass are possible
 #' @author Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 #' @author Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
 #' 
@@ -25,33 +23,25 @@
 #' @seealso \code{\link{model_plot}} for plotting the results and 
 #' \code{\link{model_mean}} for aggregate data estimation. 
 #' 
-#' @examples 
-#' #EXAMPLE 1: INDIVIDUAL MODELLING
-#' #--------------------------------------------------------
-#' #For one child with default energy intake
-#' child_weight(6,"male")
+#' @examples
+#' #One child
+#' child_reference_EI(6, "male", 2, 4, 10)
 #' 
-#' #For a child with specific energy intake
-#' child_weight(6,"male",2.5, 16, as.matrix(rep(2000, 365)))
+#' #Several children
+#' child_reference_EI(sample(6:12, 10, replace = TRUE), 
+#'                    sample(c("male","female"), 10, replace = TRUE), 
+#'                    sample(2:10, 10, replace = TRUE), 
+#'                    sample(2:10, 10, replace = TRUE),
+#'                    365)
 #' 
-#' #EXAMPLE 2: DATASET MODELLING
-#' #--------------------------------------------------------
-#' #Antropometric data
-#' FatFree <- c(32, 17.2, 18.8, 20, 24.1)
-#' Fat     <- c(4.30, 2.02, 3.07, 1.12, 2.93)
-#' ages    <- c(10, 6.2, 5.4, 4, 4.1)
-#' sexes   <- c("male", "female", "female", "male", "male") 
-#' 
-#' #With specific energy intake
-#' eintake <- matrix(rep(2000, 365*5), ncol = 5)
-#' #Returns a weight change matrix and other matrices
-#' model_weight <- child_weight(ages, sexes, Fat, FatFree, eintake)
-#'          
+#' @keywords internal
 #' @export
-#'
 
-child_weight <- function(age, sex, FM = child_reference_FFMandFM(age, sex)$FM, FFM = child_reference_FFMandFM(age, sex)$FFM, EI = child_reference_EI(age, sex, FM, FFM, days), 
-                         days = 365, checkValues = TRUE){
+child_reference_EI <- function(age, sex, FM, FFM, days){
+  
+  #Change sex to numeric for c++
+  newsex                         <- rep(0, length(sex))
+  newsex[which(sex == "female")] <- 1
   
   #Check all variables are positive
   if (any(age < 0) || any(FM < 0) || any(FFM < 0)){
@@ -81,13 +71,6 @@ child_weight <- function(age, sex, FM = child_reference_FFMandFM(age, sex)$FM, F
                    " instead."))
   }
   
-  #Change sex to numeric for c++
-  newsex                         <- rep(0, length(sex))
-  newsex[which(sex == "female")] <- 1
-  
-  wt <- child_weight_wrapper(age, newsex, FFM, FM, EI, days, checkValues)
-  
-  return(wt)
-  
-  
+  #Get c++ function
+  t(intake_reference_wrapper(age, newsex, FM, FFM, days))
 }

@@ -17,6 +17,14 @@ child_weight_wrapper <- function(age, sex, FFM, FM, input_EIntake, days, checkVa
     .Call('bw_child_weight_wrapper', PACKAGE = 'bw', age, sex, FFM, FM, input_EIntake, days, checkValues)
 }
 
+intake_reference_wrapper <- function(age, sex, FFM, FM, days) {
+    .Call('bw_intake_reference_wrapper', PACKAGE = 'bw', age, sex, FFM, FM, days)
+}
+
+mass_reference_wrapper <- function(age, sex) {
+    .Call('bw_mass_reference_wrapper', PACKAGE = 'bw', age, sex)
+}
+
 EnergyBuilder <- function(Energy, Time, interpol) {
     .Call('bw_EnergyBuilder', PACKAGE = 'bw', Energy, Time, interpol)
 }
