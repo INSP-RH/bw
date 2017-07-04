@@ -288,7 +288,7 @@ adult_bmi(database_model, group = mydata$sex)
 head(adult_bmi(database_model, group = mydata$sex))
 ```
 
-Additional information on the model and other package functions can be obtained in the other package's Vignettes
+Additional information on the Children model and other package functions can be obtained in the other package's Vignettes
 
 ```{r, eval = FALSE}
 browseVignettes("bw")

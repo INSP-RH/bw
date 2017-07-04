@@ -85,7 +85,7 @@ child_weight <- function(age, sex, FM = child_reference_FFMandFM(age, sex)$FM, F
   newsex                         <- rep(0, length(sex))
   newsex[which(sex == "female")] <- 1
   
-  wt <- child_weight_wrapper(age, newsex, FFM, FM, EI, days, checkValues)
+  wt <- child_weight_wrapper(age, newsex, FFM, FM, as.matrix(EI), days, checkValues)
   
   return(wt)
   

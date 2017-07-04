@@ -76,10 +76,10 @@ energy_build <- function(energy, time, interpolation = "Brownian"){
   }
   
   #Check that initial kcal change == 0
-  if (length(which(energy[,1] != 0)) > 1){
-    warning(paste0("Initial energy change != 0. If you are interpolating change,", 
-                   "make sure energy change = 0 at time 0"))
-  }
+  #if (length(which(energy[,1] != 0)) > 1){
+  #  warning(paste0("Initial energy change != 0. If you are interpolating change,", 
+  #                 "make sure energy change = 0 at time 0"))
+  #}
   
   #Check that first time element is 0
   if (time[1] != 0){
