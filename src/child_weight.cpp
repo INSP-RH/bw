@@ -65,11 +65,20 @@ NumericVector Child::Delta(NumericVector t){
 }
 
 NumericVector Child::FFMReference(NumericVector t){
-    return ffm_beta0 + ffm_beta1*t;
+    if(t>18){
+        ffm_ref = ffm_beta0 + ffm_beta1*18
+    }else{
+        ffm_ref = ffm_beta0 + ffm_beta1*t
+    }
+    return ffm_ref;
 }
 
 NumericVector Child::FMReference(NumericVector t){
-    return  fm_beta0 + fm_beta1*t;
+    if(t>18){
+        fm_ref = fm_beta0 + fm_beta1*18
+    }else{
+        fm_ref = fm_beta0 + fm_beta1*t
+    }
 }
 
 NumericVector Child::IntakeReference(NumericVector t){
