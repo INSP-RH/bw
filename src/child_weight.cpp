@@ -7,7 +7,10 @@
 //
 
 #include "child_weight.h"
-
+#include <stdio.h>     
+#include <math.h>
+#include <iostream>   
+#include <algorithm>  
 Child::Child(NumericVector input_age, NumericVector input_sex, NumericVector input_FFM, NumericVector input_FM, NumericMatrix input_EIntake, bool checkValues){
     age   = input_age;
     sex   = input_sex;
@@ -84,7 +87,7 @@ NumericVector Child::FMReference(NumericVector t){
                 230.0/rhoFFM*(p*EB + growth) + 180.0/rhoFM*((1-p)*EB-growth);
 }*/
 NumericVector Child::IntakeReference(NumericVector t){
-    req[min(floor(t),18)]
+    req(std::min(floor(t),18))
 }
 NumericVector Child::Expenditure(NumericVector t, NumericVector FFM, NumericVector FM){
     NumericVector delta     = Delta(t);
