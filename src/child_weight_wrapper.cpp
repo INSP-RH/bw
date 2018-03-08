@@ -69,8 +69,8 @@ List mass_reference_wrapper(NumericVector age, NumericVector sex){
     Child Person (age,  sex, inputFFM, inputFM, EI, false);
     
     //Energy matrix
-    NumericVector FM  = Person.FFMReference(age);
-    NumericVector FFM = Person.FMReference(age);
+    NumericVector FM  = Person.FMReference(age);
+    NumericVector FFM = Person.FFMReference(age);
     
     return List::create(Named("FM")  = FM,
                         Named("FFM") = FFM);
