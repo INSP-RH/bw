@@ -65,7 +65,7 @@ NumericVector Child::Delta(NumericVector t){
 }
 
 NumericVector Child::FFMReference(NumericVector t){
-    if(t>18){
+    if(t>18.0){
         return ffm_beta0 + ffm_beta1*18;
     }else{
         return ffm_beta0 + ffm_beta1*t;
@@ -73,7 +73,7 @@ NumericVector Child::FFMReference(NumericVector t){
 }
 
 NumericVector Child::FMReference(NumericVector t){
-    if(t>18){
+    if(t>18.0){
         return fm_beta0 + fm_beta1*18;
     }else{
         return fm_beta0 + fm_beta1*t;
