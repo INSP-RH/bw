@@ -103,8 +103,8 @@ NumericVector Child::Expenditure(NumericVector t, NumericVector FFM, NumericVect
 List Child::rk4 (double days){
     
     //Set dt to 1
-    //double dt = 1.0;
-    double dt = 1.0/365.0;
+    double dt = 1.0;
+    //double dt = 1.0/365.0;
     //Initial time
     NumericMatrix k1, k2, k3, k4;
     
@@ -162,8 +162,8 @@ List Child::rk4 (double days){
         TIME(i) = TIME(i-1) + 1;
         
         //Update AGE variable
-        //AGE(_,i) = AGE(_,i-1) + dt/365;
-        AGE(_,i) = AGE(_,i-1) + dt;
+        AGE(_,i) = AGE(_,i-1) + dt/365;
+        //AGE(_,i) = AGE(_,i-1) + dt;
     }
     
     return List::create(Named("Time") = TIME,
