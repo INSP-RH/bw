@@ -248,7 +248,7 @@ void Child::getParameters(void){
     tauD1     = 0.69*(1 - sex) + 0.69*sex;
     
     NumericMatrix req(17,nind);
-    req(0,_)   = 948*(1-sex)+865.0*sex;
+    req(0,_)   = 948.0*(1-sex)+865.0*sex;
     req(1,_)   =1129.0*(1 - sex) + 1047.0*sex;
     req(2,_)   =1252.0*(1 - sex) + 1156.0*sex;
     req(3,_)   =1360.0*(1 - sex) + 1241.0*sex;
