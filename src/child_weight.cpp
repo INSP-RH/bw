@@ -73,7 +73,7 @@ NumericVector Child::FMReference(NumericVector t){
         return fm_beta0 + fm_beta1*t;
 }
 
-NumericVector Child::IntakeReference(NumericVector t){
+/*NumericVector Child::IntakeReference(NumericVector t){
     NumericVector EB      = EB_impact(t);
     NumericVector FFMref  = FFMReference(t);
     NumericVector FMref   = FMReference(t);
@@ -83,7 +83,7 @@ NumericVector Child::IntakeReference(NumericVector t){
     NumericVector rhoFFM  = cRhoFFM(FFMref);
     return EB + K + (22.4 + delta)*FFMref + (4.5 + delta)*FMref +
                 230.0/rhoFFM*(p*EB + growth) + 180.0/rhoFM*((1-p)*EB-growth);
-}
+}*/
 NumericVector Child::IntakeReference(NumericVector t){
      NumericVector req_t;
     int j;
@@ -96,7 +96,7 @@ NumericVector Child::IntakeReference(NumericVector t){
    return req_t;
 
 }
-/*NumericVector Child::Expenditure(NumericVector t, NumericVector FFM, NumericVector FM){
+NumericVector Child::Expenditure(NumericVector t, NumericVector FFM, NumericVector FM){
     NumericVector delta     = Delta(t);
     NumericVector Iref      = IntakeReference(t);
     NumericVector Intakeval = Intake(t);
@@ -109,7 +109,7 @@ NumericVector Child::IntakeReference(NumericVector t){
                                 growth*(230.0/rhoFFM -180.0/rhoFM);
     
     return Expend/(1+230/rhoFFM *p + 180/rhoFM*(1-p));
-}*/
+}
 
 //Rungue Kutta 4 method for Adult
 List Child::rk4 (double days){
