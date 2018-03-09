@@ -67,13 +67,13 @@ NumericVector Child::Delta(NumericVector t){
     return deltamin + (deltamax - deltamin)*(1.0 / (1.0 + pow((t / P),h)));
 }
 
-/*NumericVector Child::FFMReference(NumericVector t){
+NumericVector Child::FFMReference(NumericVector t){ //Linear model may be wrong
         return ffm_beta0 + ffm_beta1*t;
 }
 
 NumericVector Child::FMReference(NumericVector t){
         return fm_beta0 + fm_beta1*t;
-}*/
+}
 
 /*NumericVector Child::IntakeReference(NumericVector t){
     NumericVector EB      = EB_impact(t);
@@ -87,7 +87,9 @@ NumericVector Child::FMReference(NumericVector t){
                 230.0/rhoFFM*(p*EB + growth) + 180.0/rhoFM*((1-p)*EB-growth);
 }*/
 NumericVector Child::IntakeReference(NumericVector t){
-   return req(std::min(floor(t),18))
+   //return req(std::min(floor(t),18))
+   return req;
+
 }
 NumericVector Child::Expenditure(NumericVector t, NumericVector FFM, NumericVector FM){
     NumericVector delta     = Delta(t);
