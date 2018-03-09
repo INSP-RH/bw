@@ -263,7 +263,7 @@ void Child::getParameters(void){
     req(13,_)  =2990.0*(1 - sex) + 2249.0*sex;
     req(14,_)  =3178.0*(1 - sex) + 2491.0*sex;
     req(15,_)  =3322.0*(1 - sex) + 2503.0*sex;
-    req(16,_)  =3410.0*(1 - sex) + 2503.0*sex;/*
+    req(16,_)  =3410.0*(1 - sex) + 2503.0*sex;*/
 }
 
 
