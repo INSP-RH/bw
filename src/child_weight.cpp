@@ -99,7 +99,7 @@ NumericVector Child::IntakeReference(NumericVector t){
     req(10,_)  =2341.0*(1 - sex) + 2149.0*sex;
     req(11,_)  =2548.0*(1 - sex) + 2276.0*sex;
     req(12,_)  =2770.0*(1 - sex) + 2379.0*sex;
-    req(13,_)  =2990.0*(1 - sex) + 2249.0*sex;
+    req(13,_)  =2990.0*(1 - sex) + 2449.0*sex;
     req(14,_)  =3178.0*(1 - sex) + 2491.0*sex;
     req(15,_)  =3322.0*(1 - sex) + 2503.0*sex;
     req(16,_)  =3410.0*(1 - sex) + 2503.0*sex;
@@ -108,7 +108,7 @@ NumericVector Child::IntakeReference(NumericVector t){
  int jmax;
  double diff;
  for(int i=0;i<nind;i++){
-  jmin=std::min(floor(t(i)),17.0);
+  jmin=std::min(floor(t(i)),17);
   jmin=std::max(jmin,1);
   jmin=jmin-1;
   jmax= std::min(jmin+1,17);
