@@ -9,10 +9,7 @@
 #include "child_weight.h"
 #include <stdio.h>     
 #include <math.h>
-#include <vector>
 #include <iostream>   
-#include <algorithm>  
-using namespace std;
 
 Child::Child(NumericVector input_age, NumericVector input_sex, NumericVector input_FFM, NumericVector input_FM, NumericMatrix input_EIntake, bool checkValues){
     age   = input_age;
