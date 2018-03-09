@@ -85,15 +85,6 @@ NumericVector Child::FMReference(NumericVector t){
                 230.0/rhoFFM*(p*EB + growth) + 180.0/rhoFM*((1-p)*EB-growth);
 }*/
 NumericVector Child::IntakeReference(NumericVector t){
-     /*NumericVector req_t(nind);
-    int j;
-       for(int i=0;i<nind;i++){
-        j=std::min(floor(t(i)),18.0);
-        j=std::max(j,1);
-        j=j-1;
-        req_t(i)=req(j,i);
-    } 
-   return req_t;*/
   NumericMatrix req(17,nind);
     req(0,_)   = 948.0*(1-sex)+865.0*sex;
     req(1,_)   =1129.0*(1 - sex) + 1047.0*sex;
@@ -112,7 +103,15 @@ NumericVector Child::IntakeReference(NumericVector t){
     req(14,_)  =3178.0*(1 - sex) + 2491.0*sex;
     req(15,_)  =3322.0*(1 - sex) + 2503.0*sex;
     req(16,_)  =3410.0*(1 - sex) + 2503.0*sex;
- return req(12,_);
+ NumericVector req_t(nind);
+    int j;
+       for(int i=0;i<nind;i++){
+        j=std::min(floor(t(i)),18.0);
+        j=std::max(j,1);
+        j=j-1;
+        req_t(i)=req(j,i);
+    } 
+   return req_t;
 
 }
 NumericVector Child::Expenditure(NumericVector t, NumericVector FFM, NumericVector FM){
