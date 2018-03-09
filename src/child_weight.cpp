@@ -87,7 +87,7 @@ NumericVector Child::FMReference(NumericVector t){
                 230.0/rhoFFM*(p*EB + growth) + 180.0/rhoFM*((1-p)*EB-growth);
 }*/
 NumericVector Child::IntakeReference(NumericVector t){
-    req(std::min(floor(t),18))
+   return req(std::min(floor(t),18))
 }
 NumericVector Child::Expenditure(NumericVector t, NumericVector FFM, NumericVector FM){
     NumericVector delta     = Delta(t);
