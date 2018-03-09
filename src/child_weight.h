@@ -95,7 +95,7 @@ private:
     NumericVector fm_beta1;
     
     //WHO energy requirements
-    double req[][];
+    std::matrix<double> req;
 
     //
     void build(void);
