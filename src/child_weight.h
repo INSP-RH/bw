@@ -10,6 +10,7 @@
 #define child_weight_h
 
 #include <math.h>
+#include <vector>
 #include <Rcpp.h>
 using namespace Rcpp;
 
