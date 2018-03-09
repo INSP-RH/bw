@@ -117,7 +117,7 @@ NumericVector Child::IntakeReference(NumericVector t){
   jmin=jmin-1;
   jmax= std::min(jmin+1,17);
   diff= t(i)-floor(t(i));
-  req_t(i)=req(jmin,i)+diff*(req(jmax,i)-req(jmin,i));}
+  req_t(i)=req(jmin,i)+diff*(req(jmax,i)-req(jmin,i));
  } 
 }
    return req_t;
