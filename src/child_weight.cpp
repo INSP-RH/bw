@@ -104,13 +104,17 @@ NumericVector Child::IntakeReference(NumericVector t){
     req(15,_)  =3322.0*(1 - sex) + 2503.0*sex;
     req(16,_)  =3410.0*(1 - sex) + 2503.0*sex;
  NumericVector req_t(nind);
-    int j;
-       for(int i=0;i<nind;i++){
-        j=std::min(floor(t(i)),18.0);
-        j=std::max(j,1);
-        j=j-1;
-        req_t(i)=req(j,i);
-    } 
+ int jmin;
+ int jmax;
+ double diff;
+ for(int i=0;i<nind;i++){
+  jmin=std::min(floor(t(i)),17.0);
+  jmin=std::max(jmin,1);
+  jmin=jmin-1;
+  jmax= std::min(jmin+1,17.0);
+  diff= t(i)-floor(t(i));
+  req_t(i)=req(jmin,i)+diff*(req(jmax,i)-req(jmin,i));
+ } 
    return req_t;
 
 }
