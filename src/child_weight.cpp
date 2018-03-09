@@ -93,11 +93,11 @@ NumericVector Child::IntakeReference(NumericVector t){
     double[] req_t;
     int j;
     for(int i=0;i<=nind;i++){
-        j=min(t(i),18)
+        j=min(t(i),18);
     }
    //return req(std::min(floor(t),18))
    //double req[]  = {7, 5, 16, 8};
-   return 1
+   return 1;
 
 }
 NumericVector Child::Expenditure(NumericVector t, NumericVector FFM, NumericVector FM){
