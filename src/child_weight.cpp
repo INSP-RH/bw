@@ -94,7 +94,7 @@ NumericVector Child::IntakeReference(NumericVector t){
     int j;
     for(int i=0;i<=nind;i++){
         j=std::min(floor(t(i)),18.0);
-        j=std::max(j,1.0);
+        j=std::max(j,1);
         j=j-1;
         req_t[i]=req(j,i);
     }
