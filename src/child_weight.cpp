@@ -105,7 +105,7 @@ NumericVector Child::IntakeReference(NumericVector t){
 }
 NumericVector Child::Expenditure(NumericVector t, NumericVector FFM, NumericVector FM){
     NumericVector delta     = Delta(t);
-    NumericVector Iref      = IntakeReference(t);
+    double Iref[]           = IntakeReference(t);
     NumericVector Intakeval = Intake(t);
     NumericVector DeltaI    = Intakeval - Iref;
     NumericVector p         = cP(FFM, FM);
