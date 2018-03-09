@@ -91,7 +91,7 @@ NumericVector Child::FMReference(NumericVector t){
 }*/
 NumericVector Child::IntakeReference(NumericVector t){
    //return req(std::min(floor(t),18))
-     double req[]  = {7, 5, 16, 8};
+   //double req[]  = {7, 5, 16, 8};
    return req[1];
 
 }
@@ -245,7 +245,7 @@ void Child::getParameters(void){
     tauA1     = 1.0*(1 - sex) + 1.0*sex;
     tauB1     = 0.94*(1 - sex) + 0.94*sex;
     tauD1     = 0.69*(1 - sex) + 0.69*sex;
-   
+    req[]  = {7, 5, 16, 8};
     //req += 948, 1129, 1252, 1360, 1467, 1573, 1692, 1830, 1978, 2150, 2341, 2548, 2770, 2990, 3178, 3322, 3410;
     /*reqboys <- c(948, 1129, 1252, 1360, 1467, 1573, 1692, 1830, 1978, 2150,
              2341, 2548, 2770, 2990, 3178, 3322, 3410)
