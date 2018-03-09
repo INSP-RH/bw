@@ -90,7 +90,7 @@ NumericVector Child::FMReference(NumericVector t){
                 230.0/rhoFFM*(p*EB + growth) + 180.0/rhoFM*((1-p)*EB-growth);
 }*/
 NumericVector Child::IntakeReference(NumericVector t){
-    double req_t[nind];
+     vector <double> req_t[nind];
     int j;
     for(int i=0;i<nind;i++){
         j=std::min(floor(t(i)),18.0);
@@ -105,7 +105,7 @@ NumericVector Child::IntakeReference(NumericVector t){
 }
 NumericVector Child::Expenditure(NumericVector t, NumericVector FFM, NumericVector FM){
     NumericVector delta     = Delta(t);
-    double Iref[]           = IntakeReference(t);
+    NumericVector Iref      = IntakeReference(t);
     NumericVector Intakeval = Intake(t);
     NumericVector DeltaI    = Intakeval - Iref;
     NumericVector p         = cP(FFM, FM);
