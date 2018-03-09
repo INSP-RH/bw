@@ -246,8 +246,8 @@ void Child::getParameters(void){
     tauB1     = 0.94*(1 - sex) + 0.94*sex;
     tauD1     = 0.69*(1 - sex) + 0.69*sex;
     
-    req[1]    = 948*(1-sex)+865.0*sex;
-    req[2]    =1129.0*(1 - sex) + 1047.0*sex;
+    req[1][]    = 948*(1-sex)+865.0*sex;
+    req[2][]    =1129.0*(1 - sex) + 1047.0*sex;
 
     /*req[1]    =948.0*(1 - sex) + 865.0*sex;
     req[2]    =1129.0*(1 - sex) + 1047.0*sex;
