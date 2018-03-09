@@ -94,7 +94,7 @@ private:
     NumericVector fm_beta1;
     
     //WHO energy requirements
-    vector<double> req;
+    Vector req;
 
     //
     void build(void);
