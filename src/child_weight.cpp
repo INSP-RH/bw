@@ -73,7 +73,7 @@ NumericVector Child::FMReference(NumericVector t){
         return fm_beta0 + fm_beta1*t;
 }
 
-NumericVector Child::IntakeReference(NumericVector t){
+/*NumericVector Child::IntakeReference(NumericVector t){
     NumericVector EB      = EB_impact(t);
     NumericVector FFMref  = FFMReference(t);
     NumericVector FMref   = FMReference(t);
@@ -82,9 +82,9 @@ NumericVector Child::IntakeReference(NumericVector t){
     NumericVector p       = cP(FFMref, FMref);
     NumericVector rhoFFM  = cRhoFFM(FFMref);
     return EB + K + (22.4 + delta)*FFMref + (4.5 + delta)*FMref +
-                230.0/rhoFFM*(p*EB + growth) + 180.0/rhoFM*((1-p)*EB-growth);
+                230.0/rhoFFM*(p*EB + growth) + 180.0/rhoFM*((1-p)*EB-growth);*/
 }
-/*NumericVector Child::IntakeReference(NumericVector t){
+NumericVector Child::IntakeReference(NumericVector t){
      NumericVector req_t;
     int j;
        for(int i=0;i<nind;i++){
@@ -95,7 +95,7 @@ NumericVector Child::IntakeReference(NumericVector t){
     } 
    return req_t;
 
-}*/
+}
 NumericVector Child::Expenditure(NumericVector t, NumericVector FFM, NumericVector FM){
     NumericVector delta     = Delta(t);
     NumericVector Iref      = IntakeReference(t);
@@ -247,7 +247,7 @@ void Child::getParameters(void){
     tauB1     = 0.94*(1 - sex) + 0.94*sex;
     tauD1     = 0.69*(1 - sex) + 0.69*sex;
     
-    req(0,_)   = 948*(1-sex)+865.0*sex;
+   /* req(0,_)   = 948*(1-sex)+865.0*sex;
     req(1,_)   =1129.0*(1 - sex) + 1047.0*sex;
     req(2,_)   =1252.0*(1 - sex) + 1156.0*sex;
     req(3,_)   =1360.0*(1 - sex) + 1241.0*sex;
@@ -263,7 +263,7 @@ void Child::getParameters(void){
     req(13,_)  =2990.0*(1 - sex) + 2249.0*sex;
     req(14,_)  =3178.0*(1 - sex) + 2491.0*sex;
     req(15,_)  =3322.0*(1 - sex) + 2503.0*sex;
-    req(16,_)  =3410.0*(1 - sex) + 2503.0*sex;
+    req(16,_)  =3410.0*(1 - sex) + 2503.0*sex;/*
 }
 
 
