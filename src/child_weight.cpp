@@ -85,7 +85,7 @@ NumericVector Child::FMReference(NumericVector t){
                 230.0/rhoFFM*(p*EB + growth) + 180.0/rhoFM*((1-p)*EB-growth);
 }*/
 NumericVector Child::IntakeReference(NumericVector t){
-     NumericVector req_t;
+     NumericVector req_t(nind);
     int j;
        for(int i=0;i<nind;i++){
         j=std::min(floor(t(i)),18.0);
