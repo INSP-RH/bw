@@ -280,7 +280,7 @@ void Child::getParameters(void){
 //Intake in calories
 NumericVector Child::Intake(NumericVector t){
     double timeval = t(0) - age(0);
-    return EIntake(floor(timeval/365),_);
+    return EIntake(floor(timeval*365),_);
 }
 
 //This needs to be an R inputed function
