@@ -66,9 +66,9 @@ NumericVector Child::Delta(NumericVector t){
 }
 
 NumericVector Child::FFMReference(NumericVector t){ 
-        //return ffm_beta0 + ffm_beta1*t;
+        return ffm_beta0 + ffm_beta1*t;
  
-   NumericMatrix ffm_ref(17,nind);
+  /* NumericMatrix ffm_ref(17,nind);
     ffm_ref(0,_)   = 10.134*(1-sex)+9.477*sex;
     ffm_ref(1,_)   =12.099*(1 - sex) + 11.494*sex;
     ffm_ref(2,_)   =14.0*(1 - sex) + 13.2*sex;
@@ -103,13 +103,13 @@ NumericVector Child::FFMReference(NumericVector t){
    ffm_ref_t(i)=ffm_ref(jmin,i)+diff*(ffm_ref(jmax,i)-ffm_ref(jmin,i));
   } 
 }
-  return ffm_ref_t;
+  return ffm_ref_t;*/
 }
 
 NumericVector Child::FMReference(NumericVector t){
-        //return fm_beta0 + fm_beta1*t;
+        return fm_beta0 + fm_beta1*t;
  
-    NumericMatrix fm_ref(17,nind);
+   /* NumericMatrix fm_ref(17,nind);
     fm_ref(0,_)   =2.456*(1-sex)+ 2.433*sex;
     fm_ref(1,_)   =2.576*(1 - sex) + 2.606*sex;
     fm_ref(2,_)   =2.7*(1 - sex) + 2.8*sex;
@@ -143,7 +143,7 @@ NumericVector Child::FMReference(NumericVector t){
    fm_ref_t(i)=fm_ref(jmin,i)+diff*(fm_ref(jmax,i)-fm_ref(jmin,i));
   } 
 }
-  return fm_ref_t;
+  return fm_ref_t;*/
 
 
 }
