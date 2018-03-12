@@ -92,14 +92,14 @@ NumericVector Child::FFMReference(NumericVector t){ //Linear model may be wrong
  double diff;
  for(int i=0;i<nind;i++){
   if(t(i)>=18.0){
-     ffm_ref_t(i)=req(16,i);
+     ffm_ref_t(i)=ffm_ref(16,i);
   }else{
    jmin=floor(t(i));
    jmin=std::max(jmin,2);
    jmin=jmin-2;
    jmax= std::min(jmin+1,17);
    diff= t(i)-floor(t(i));
-   ffm_ref_t(i)=ffm_ref_t(jmin,i)+diff*(ffm_ref_t(jmax,i)-ffm_ref_t(jmin,i));
+   ffm_ref_t(i)=ffm_ref(jmin,i)+diff*(ffm_ref(jmax,i)-ffm_ref(jmin,i));
   } 
 }
   return ffm_ref_t;
@@ -131,14 +131,14 @@ NumericVector Child::FMReference(NumericVector t){
  double diff;
  for(int i=0;i<nind;i++){
   if(t(i)>=18.0){
-     fm_ref_t(i)=req(16,i);
+     fm_ref_t(i)=fm_ref(16,i);
   }else{
    jmin=floor(t(i));
    jmin=std::max(jmin,2);
    jmin=jmin-2;
    jmax= std::min(jmin+1,17);
    diff= t(i)-floor(t(i));
-   fm_ref_t(i)=fm_ref_t(jmin,i)+diff*(fm_ref_t(jmax,i)-fm_ref_t(jmin,i));
+   fm_ref_t(i)=fm_ref(jmin,i)+diff*(fm_ref(jmax,i)-fm_ref(jmin,i));
   } 
 }
   return fm_ref_t;
