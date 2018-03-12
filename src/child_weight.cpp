@@ -102,8 +102,8 @@ NumericVector Child::FFMReference(NumericVector t){ //Linear model may be wrong
    ffm_ref_t(i)=ffm_ref(jmin,i)+diff*(ffm_ref(jmax,i)-ffm_ref(jmin,i));
   } 
 }
-  return ffm_ref_t;
-}*/
+  return ffm_ref_t;*/
+}
 
 NumericVector Child::FMReference(NumericVector t){
         return fm_beta0 + fm_beta1*t;
