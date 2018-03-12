@@ -107,26 +107,26 @@ NumericVector Child::FFMReference(NumericVector t){
 }
 
 NumericVector Child::FMReference(NumericVector t){
-        return fm_beta0 + fm_beta1*t;
- }
-   /* NumericMatrix fm_ref(17,nind);
-    req(0,_)   =2.456*(1-sex)+ 2.433*sex;
-    req(1,_)   =2.576*(1 - sex) + 2.606*sex;
-    req(2,_)   =2.7*(1 - sex) + 2.8*sex;
-    req(3,_)   =2.7*(1 - sex) + 2.9*sex;
-    req(4,_)   =2.8*(1 - sex) + 3.2*sex;
-    req(5,_)   =2.9*(1 - sex) + 3.7*sex;
-    req(6,_)   =3.3*(1 - sex) + 4.3*sex;
-    req(7,_)   =3.7*(1 - sex) + 5.2*sex;
-    req(8,_)   =4.8*(1 - sex) + 7.2*sex;
-    req(9,_)   =5.9*(1 - sex) + 8.5*sex;
-    req(10,_)  =6.7*(1 - sex) + 9.2*sex;
-    req(11,_)  =7.0*(1 - sex) + 10.0*sex;
-    req(12,_)  =7.2*(1 - sex) + 11.3*sex;
-    req(13,_)  =7.5*(1 - sex) + 12.8*sex;
-    req(14,_)  =8.0*(1 - sex) + 14.0*sex;
-    req(15,_)  =8.4*(1 - sex) + 14.3*sex;
-    req(16,_)  =8.8*(1 - sex) + 14.3*sex;
+        //return fm_beta0 + fm_beta1*t;
+ 
+    NumericMatrix fm_ref(17,nind);
+    fm_ref(0,_)   =2.456*(1-sex)+ 2.433*sex;
+    fm_ref(1,_)   =2.576*(1 - sex) + 2.606*sex;
+    fm_ref(2,_)   =2.7*(1 - sex) + 2.8*sex;
+    fm_ref(3,_)   =2.7*(1 - sex) + 2.9*sex;
+    fm_ref(4,_)   =2.8*(1 - sex) + 3.2*sex;
+    fm_ref(5,_)   =2.9*(1 - sex) + 3.7*sex;
+    fm_ref(6,_)   =3.3*(1 - sex) + 4.3*sex;
+    fm_ref(7,_)   =3.7*(1 - sex) + 5.2*sex;
+    fm_ref(8,_)   =4.8*(1 - sex) + 7.2*sex;
+    fm_ref(9,_)   =5.9*(1 - sex) + 8.5*sex;
+    fm_ref(10,_)  =6.7*(1 - sex) + 9.2*sex;
+    fm_ref(11,_)  =7.0*(1 - sex) + 10.0*sex;
+    fm_ref(12,_)  =7.2*(1 - sex) + 11.3*sex;
+    fm_ref(13,_)  =7.5*(1 - sex) + 12.8*sex;
+    fm_ref(14,_)  =8.0*(1 - sex) + 14.0*sex;
+    fm_ref(15,_)  =8.4*(1 - sex) + 14.3*sex;
+    fm_ref(16,_)  =8.8*(1 - sex) + 14.3*sex;
  NumericVector fm_ref_t(nind);
  int jmin;
  int jmax;
@@ -145,7 +145,8 @@ NumericVector Child::FMReference(NumericVector t){
 }
   return fm_ref_t;
 
-*/
+
+}
 
 NumericVector Child::IntakeReference(NumericVector t){
     NumericVector EB      = EB_impact(t);
