@@ -49,7 +49,7 @@ NumericMatrix intake_reference_wrapper(NumericVector age, NumericVector sex, Num
     NumericMatrix EnergyIntake(age.size(), days);
     
     //Get enerfy matrix
-    for (double i = 0; i < days; i++){
+    for (double i = 0; i <= days; i++){
         EnergyIntake(_,i) = Person.IntakeReference(age + i/365.0);
     }
     
