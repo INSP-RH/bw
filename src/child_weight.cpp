@@ -66,9 +66,9 @@ NumericVector Child::Delta(NumericVector t){
 }
 
 NumericVector Child::FFMReference(NumericVector t){ 
-        return ffm_beta0 + ffm_beta1*t;
- }
-   /*NumericMatrix ffm_ref(17,nind);
+        //return ffm_beta0 + ffm_beta1*t;
+ 
+   NumericMatrix ffm_ref(17,nind);
     req(0,_)   = 10.134*(1-sex)+9.477*sex;
     req(1,_)   =12.099*(1 - sex) + 11.494*sex;
     req(2,_)   =14.0*(1 - sex) + 13.2*sex;
@@ -103,8 +103,8 @@ NumericVector Child::FFMReference(NumericVector t){
    ffm_ref_t(i)=ffm_ref(jmin,i)+diff*(ffm_ref(jmax,i)-ffm_ref(jmin,i));
   } 
 }
-  return ffm_ref_t;*/
-
+  return ffm_ref_t;
+}
 
 NumericVector Child::FMReference(NumericVector t){
         return fm_beta0 + fm_beta1*t;
