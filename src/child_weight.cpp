@@ -66,14 +66,86 @@ NumericVector Child::Delta(NumericVector t){
 }
 
 NumericVector Child::FFMReference(NumericVector t){ //Linear model may be wrong
-        return ffm_beta0 + ffm_beta1*t;
+        /*return ffm_beta0 + ffm_beta1*t;*/
+   NumericMatrix ffm_ref(17,nind);
+    req(0,_)   = 10.134*(1-sex)+9.477*sex;
+    req(1,_)   =12.099*(1 - sex) + 11.494*sex;
+    req(2,_)   =14.0*(1 - sex) + 13.2*sex;
+    req(3,_)   =16.0*(1 - sex) + 14.7*sex;
+    req(4,_)   =17.4*(1 - sex) + 16.3*sex;
+    req(5,_)   =19.9*(1 - sex) + 18.2*sex;
+    req(6,_)   =22.0*(1 - sex) + 20.5*sex;
+    req(7,_)   =24.4*(1 - sex) + 23.3*sex;
+    req(8,_)   =27.5*(1 - sex) + 26.4*sex;
+    req(9,_)   =29.5*(1 - sex) + 28.5*sex;
+    req(10,_)  =33.2*(1 - sex) + 32.4*sex;
+    req(11,_)  =38.1*(1 - sex) + 36.1*sex;
+    req(12,_)  =43.6*(1 - sex) + 38.9*sex;
+    req(13,_)  =49.1*(1 - sex) + 40.7*sex;
+    req(14,_)  =54.0*(1 - sex) + 41.7*sex;
+    req(15,_)  =57.7*(1 - sex) + 42.3*sex;
+    req(16,_)  =60.0*(1 - sex) + 42.6*sex;
+ 
+ NumericVector ffm_ref_t(nind);
+ int jmin;
+ int jmax;
+ double diff;
+ for(int i=0;i<nind;i++){
+  if(t(i)>=18.0){
+     ffm_ref_t(i)=req(16,i);
+  }else{
+   jmin=floor(t(i));
+   jmin=std::max(jmin,2);
+   jmin=jmin-2;
+   jmax= std::min(jmin+1,17);
+   diff= t(i)-floor(t(i));
+   ffm_ref_t(i)=ffm_ref_t(jmin,i)+diff*(ffm_ref_t(jmax,i)-ffm_ref_t(jmin,i));
+  } 
+}
+  return ffm_ref_t;
 }
 
 NumericVector Child::FMReference(NumericVector t){
-        return fm_beta0 + fm_beta1*t;
+        /*return fm_beta0 + fm_beta1*t;*/
+    NumericMatrix fm_ref(17,nind);
+    req(0,_)   =2.456*(1-sex)+ 2.433*sex;
+    req(1,_)   =2.576*(1 - sex) + 2.606*sex;
+    req(2,_)   =2.7*(1 - sex) + 2.8*sex;
+    req(3,_)   =2.7*(1 - sex) + 2.9*sex;
+    req(4,_)   =2.8*(1 - sex) + 3.2*sex;
+    req(5,_)   =2.9*(1 - sex) + 3.7*sex;
+    req(6,_)   =3.3*(1 - sex) + 4.3*sex;
+    req(7,_)   =3.7*(1 - sex) + 5.2*sex;
+    req(8,_)   =4.8*(1 - sex) + 7.2*sex;
+    req(9,_)   =5.9*(1 - sex) + 8.5*sex;
+    req(10,_)  =6.7*(1 - sex) + 9.2*sex;
+    req(11,_)  =7.0*(1 - sex) + 10.0*sex;
+    req(12,_)  =7.2*(1 - sex) + 11.3*sex;
+    req(13,_)  =7.5*(1 - sex) + 12.8*sex;
+    req(14,_)  =8.0*(1 - sex) + 14.0*sex;
+    req(15,_)  =8.4*(1 - sex) + 14.3*sex;
+    req(16,_)  =8.8*(1 - sex) + 14.3*sex;
+ NumericVector fm_ref_t(nind);
+ int jmin;
+ int jmax;
+ double diff;
+ for(int i=0;i<nind;i++){
+  if(t(i)>=18.0){
+     fm_ref_t(i)=req(16,i);
+  }else{
+   jmin=floor(t(i));
+   jmin=std::max(jmin,2);
+   jmin=jmin-2;
+   jmax= std::min(jmin+1,17);
+   diff= t(i)-floor(t(i));
+   fm_ref_t(i)=fm_ref_t(jmin,i)+diff*(fm_ref_t(jmax,i)-fm_ref_t(jmin,i));
+  } 
+}
+  return fm_ref_t;
+
 }
 
-/*NumericVector Child::IntakeReference(NumericVector t){
+NumericVector Child::IntakeReference(NumericVector t){
     NumericVector EB      = EB_impact(t);
     NumericVector FFMref  = FFMReference(t);
     NumericVector FMref   = FMReference(t);
@@ -83,8 +155,10 @@ NumericVector Child::FMReference(NumericVector t){
     NumericVector rhoFFM  = cRhoFFM(FFMref);
     return EB + K + (22.4 + delta)*FFMref + (4.5 + delta)*FMref +
                 230.0/rhoFFM*(p*EB + growth) + 180.0/rhoFM*((1-p)*EB-growth);
-}*/
-NumericVector Child::IntakeReference(NumericVector t){
+ 
+ 
+}
+/*NumericVector Child::IntakeReference(NumericVector t){
   NumericMatrix req(17,nind);
     req(0,_)   = 948.0*(1-sex)+865.0*sex;
     req(1,_)   =1129.0*(1 - sex) + 1047.0*sex;
@@ -121,7 +195,7 @@ NumericVector Child::IntakeReference(NumericVector t){
 }
    return req_t;
 
-}
+}*/
 NumericVector Child::Expenditure(NumericVector t, NumericVector FFM, NumericVector FM){
     NumericVector delta     = Delta(t);
     NumericVector Iref      = IntakeReference(t);
