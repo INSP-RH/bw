@@ -156,7 +156,7 @@ NumericVector Child::IntakeReference(NumericVector t){
     NumericVector growth  = Growth_dynamic(t);
     NumericVector p       = cP(FFMref, FMref);
     NumericVector rhoFFM  = cRhoFFM(FFMref);
-    return EB + K + (22.4 + delta)*FFMref + (4.5 + delta)*FMref +
+    return EB + K + (22.4*365 + delta)*FFMref + (4.5*365 + delta)*FMref +
                 230.0/rhoFFM*(p*EB + growth) + 180.0/rhoFM*((1-p)*EB-growth);
  
  
@@ -207,7 +207,7 @@ NumericVector Child::Expenditure(NumericVector t, NumericVector FFM, NumericVect
     NumericVector p         = cP(FFM, FM);
     NumericVector rhoFFM    = cRhoFFM(FFM);
     NumericVector growth    = Growth_dynamic(t);
-    NumericVector Expend    = K + (22.4 + delta)*FFM + (4.5 + delta)*FM +
+    NumericVector Expend    = K + (22.4*365 + delta)*FFM + (4.5*365 + delta)*FM +
                                 0.24*DeltaI + (230.0/rhoFFM *p + 180/rhoFM*(1-p))*Intakeval +
                                 growth*(230.0/rhoFFM -180.0/rhoFM);
     
@@ -218,7 +218,7 @@ NumericVector Child::Expenditure(NumericVector t, NumericVector FFM, NumericVect
 List Child::rk4 (double days){
     
     //Set dt to 1
-    double dt = 1.0;
+    double dt = 1.0/days;
     //double dt = 1.0/365.0;
     //Initial time
     NumericMatrix k1, k2, k3, k4;
@@ -274,10 +274,10 @@ List Child::rk4 (double days){
         ModelBW(_,i) = ModelFFM(_,i) + ModelFM(_,i);
 
         //Update TIME(i-1)
-        TIME(i) = TIME(i-1) + 1;
+        TIME(i) = TIME(i-1) + days*dt;
         
         //Update AGE variable
-        AGE(_,i) = AGE(_,i-1) + dt/365;
+        AGE(_,i) = AGE(_,i-1) + dt;
         //AGE(_,i) = AGE(_,i-1) + dt;
     }
     
@@ -308,7 +308,7 @@ void Child::getParameters(void){
     
     //General constants
     rhoFM    = 9.4*1000;
-    deltamin = 10.0;
+    deltamin = 10.0*365;
     P        = 12.0;
     h        = 10.0;
     
@@ -320,29 +320,29 @@ void Child::getParameters(void){
     ffm_beta1 = 2.9*(1 - sex) + 2.3*sex;
     fm_beta0  = 1.2*(1 - sex) + 0.56*sex;
     fm_beta1  = 0.41*(1 - sex) + 0.74*sex;
-    K         = 800*(1 - sex) + 700*sex;
-    deltamax  = 19*(1 - sex) + 17*sex;
-    A         = 3.2*(1 - sex) + 2.3*sex;
-    B         = 9.6*(1 - sex) + 8.4*sex;
-    D         = 10.1*(1 - sex) + 1.1*sex;
+    K         = 800*(1 - sex)*365 + 700*sex*365;
+    deltamax  = 19*(1 - sex)*365 + 17*sex*365;
+    A         = 3.2*(1 - sex)*365 + 2.3*sex*365;
+    B         = 9.6*(1 - sex)*365 + 8.4*sex*365;
+    D         = 10.1*(1 - sex)*365 + 1.1*sex*365;
     tA        = 4.7*(1 - sex) + 4.5*sex;
     tB        = 12.5*(1 - sex) + 11.7*sex;
     tD        = 15.0*(1-sex) + 16.2*sex;
     tauA      = 2.5*(1 - sex) + 1.0*sex;
     tauB      = 1.0*(1 - sex) + 0.9*sex;
     tauD      = 1.5*(1 - sex) + 0.7*sex;
-    A_EB      = 7.2*(1 - sex) + 16.5*sex;
-    B_EB      = 30*(1 - sex) + 47.0*sex;
-    D_EB      = 21*(1 - sex) + 41.0*sex;
+    A_EB      = 7.2*(1 - sex)*365 + 16.5*sex*365;
+    B_EB      = 30*(1 - sex)*365 + 47.0*sex*365;
+    D_EB      = 21*(1 - sex)*365 + 41.0*sex*365;
     tA_EB     = 5.6*(1 - sex) + 4.8*sex;
     tB_EB     = 9.8*(1 - sex) + 9.1*sex;
     tD_EB     = 15.0*(1 - sex) + 13.5*sex;
     tauA_EB   = 15*(1 - sex) + 7.0*sex;
     tauB_EB   = 1.5*(1 -sex) + 1.0*sex;
     tauD_EB   = 2.0*(1 - sex) + 1.5*sex;
-    A1        = 3.2*(1 - sex) + 2.3*sex;
-    B1        = 9.6*(1 - sex) + 8.4*sex;
-    D1        = 10.0*(1 - sex) + 1.1*sex;
+    A1        = 3.2*(1 - sex)*365 + 2.3*sex*365;
+    B1        = 9.6*(1 - sex)*365 + 8.4*sex*365;
+    D1        = 10.0*(1 - sex)*365 + 1.1*sex*365;
     tA1       = 4.7*(1 - sex) + 4.5*sex;
     tB1       = 12.5*(1 - sex) + 11.7*sex;
     tD1       = 15.0*(1 - sex) + 16.0*sex;
