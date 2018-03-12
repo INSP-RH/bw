@@ -274,10 +274,10 @@ List Child::rk4 (double days){
         ModelBW(_,i) = ModelFFM(_,i) + ModelFM(_,i);
 
         //Update TIME(i-1)
-        TIME(i) = TIME(i-1) + dt/365;
+        TIME(i) = TIME(i-1) + 1;
         
         //Update AGE variable
-        AGE(_,i) = AGE(_,i-1) + 1;
+        AGE(_,i) = AGE(_,i-1) + dt/365;
         //AGE(_,i) = AGE(_,i-1) + dt;
     }
     
@@ -356,7 +356,7 @@ void Child::getParameters(void){
 
 //Intake in calories
 NumericVector Child::Intake(NumericVector t){
-    double timeval = (t(0) - age(0));
+    double timeval = (t(0) - age(0))*365;
     return EIntake(floor(timeval),_);
 }
 
