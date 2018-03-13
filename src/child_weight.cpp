@@ -173,7 +173,7 @@ NumericVector Child::Expenditure(NumericVector t, NumericVector FFM, NumericVect
                                 0.24*DeltaI + (230.0/rhoFFM *p + 180.0/rhoFM*(1-p))*Intakeval +
                                 growth*(230.0/rhoFFM -180.0/rhoFM);
     
-    return Expend/(1+230/rhoFFM *p + 180.0/rhoFM*(1-p));
+    return Expend/(1+230.0/rhoFFM *p + 180.0/rhoFM*(1-p));
 }
 
 //Rungue Kutta 4 method for Adult
