@@ -240,7 +240,6 @@ List Child::rk4 (double days){
         
         //Update AGE variable
         AGE(_,i) = AGE(_,i-1) + dt/365.0;
-        //AGE(_,i) = AGE(_,i-1) + dt;
     }
     
     return List::create(Named("Time") = TIME,
