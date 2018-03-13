@@ -93,10 +93,10 @@ NumericVector Child::Expenditure(NumericVector t, NumericVector FFM, NumericVect
     NumericVector rhoFFM    = cRhoFFM(FFM);
     NumericVector growth    = Growth_dynamic(t);
     NumericVector Expend    = K + (22.4 + delta)*FFM + (4.5 + delta)*FM +
-                                0.24*DeltaI + (230.0/rhoFFM *p + 180/rhoFM*(1-p))*Intakeval +
+                                0.24*DeltaI + (230.0/rhoFFM *p + 180.0/rhoFM*(1-p))*Intakeval +
                                 growth*(230.0/rhoFFM -180.0/rhoFM);
     
-    return Expend/(1+230/rhoFFM *p + 180/rhoFM*(1-p));
+    return Expend/(1+230/rhoFFM *p + 180.0/rhoFM*(1-p));
 }
 
 //Rungue Kutta 4 method for Adult
