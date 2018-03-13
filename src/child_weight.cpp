@@ -356,8 +356,8 @@ void Child::getParameters(void){
 
 //Intake in calories
 NumericVector Child::Intake(NumericVector t){
-    double timeval = (t(0) - age(0))*365;
-    timeval = std::min(timeval, 1);
+    double timeval = (t(0) - age(0))*365-1;
+    timeval = std::max(timeval, 1);
     return EIntake(floor(timeval),_);
 }
 
