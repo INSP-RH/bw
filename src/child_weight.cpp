@@ -64,12 +64,87 @@ NumericVector Child::Delta(NumericVector t){
     return deltamin + (deltamax - deltamin)*(1.0 / (1.0 + pow((t / P),h)));
 }
 
-NumericVector Child::FFMReference(NumericVector t){
-    return ffm_beta0 + ffm_beta1*t;
+NumericVector Child::FFMReference(NumericVector t){ 
+     //   return ffm_beta0 + ffm_beta1*t;
+ 
+   NumericMatrix ffm_ref(17,nind);
+    ffm_ref(0,_)   = 10.134*(1-sex)+9.477*sex;
+    ffm_ref(1,_)   =12.099*(1 - sex) + 11.494*sex;
+    ffm_ref(2,_)   =14.0*(1 - sex) + 13.2*sex;
+    ffm_ref(3,_)   =16.0*(1 - sex) + 14.7*sex;
+    ffm_ref(4,_)   =17.4*(1 - sex) + 16.3*sex;
+    ffm_ref(5,_)   =19.9*(1 - sex) + 18.2*sex;
+    ffm_ref(6,_)   =22.0*(1 - sex) + 20.5*sex;
+    ffm_ref(7,_)   =24.4*(1 - sex) + 23.3*sex;
+    ffm_ref(8,_)   =27.5*(1 - sex) + 26.4*sex;
+    ffm_ref(9,_)   =29.5*(1 - sex) + 28.5*sex;
+    ffm_ref(10,_)  =33.2*(1 - sex) + 32.4*sex;
+    ffm_ref(11,_)  =38.1*(1 - sex) + 36.1*sex;
+    ffm_ref(12,_)  =43.6*(1 - sex) + 38.9*sex;
+    ffm_ref(13,_)  =49.1*(1 - sex) + 40.7*sex;
+    ffm_ref(14,_)  =54.0*(1 - sex) + 41.7*sex;
+    ffm_ref(15,_)  =57.7*(1 - sex) + 42.3*sex;
+    ffm_ref(16,_)  =60.0*(1 - sex) + 42.6*sex;
+ 
+ NumericVector ffm_ref_t(nind);
+ int jmin;
+ int jmax;
+ double diff;
+ for(int i=0;i<nind;i++){
+  if(t(i)>=18.0){
+     ffm_ref_t(i)=ffm_ref(16,i);
+  }else{
+   jmin=floor(t(i));
+   jmin=std::max(jmin,2);
+   jmin=jmin-2;
+   jmax= std::min(jmin+1,17);
+   diff= t(i)-floor(t(i));
+   ffm_ref_t(i)=ffm_ref(jmin,i)+diff*(ffm_ref(jmax,i)-ffm_ref(jmin,i));
+  } 
+}
+  return ffm_ref_t;
 }
 
 NumericVector Child::FMReference(NumericVector t){
-    return  fm_beta0 + fm_beta1*t;
+      //  return fm_beta0 + fm_beta1*t;
+ 
+    NumericMatrix fm_ref(17,nind);
+    fm_ref(0,_)   =2.456*(1-sex)+ 2.433*sex;
+    fm_ref(1,_)   =2.576*(1 - sex) + 2.606*sex;
+    fm_ref(2,_)   =2.7*(1 - sex) + 2.8*sex;
+    fm_ref(3,_)   =2.7*(1 - sex) + 2.9*sex;
+    fm_ref(4,_)   =2.8*(1 - sex) + 3.2*sex;
+    fm_ref(5,_)   =2.9*(1 - sex) + 3.7*sex;
+    fm_ref(6,_)   =3.3*(1 - sex) + 4.3*sex;
+    fm_ref(7,_)   =3.7*(1 - sex) + 5.2*sex;
+    fm_ref(8,_)   =4.8*(1 - sex) + 7.2*sex;
+    fm_ref(9,_)   =5.9*(1 - sex) + 8.5*sex;
+    fm_ref(10,_)  =6.7*(1 - sex) + 9.2*sex;
+    fm_ref(11,_)  =7.0*(1 - sex) + 10.0*sex;
+    fm_ref(12,_)  =7.2*(1 - sex) + 11.3*sex;
+    fm_ref(13,_)  =7.5*(1 - sex) + 12.8*sex;
+    fm_ref(14,_)  =8.0*(1 - sex) + 14.0*sex;
+    fm_ref(15,_)  =8.4*(1 - sex) + 14.3*sex;
+    fm_ref(16,_)  =8.8*(1 - sex) + 14.3*sex;
+ NumericVector fm_ref_t(nind);
+ int jmin;
+ int jmax;
+ double diff;
+ for(int i=0;i<nind;i++){
+  if(t(i)>=18.0){
+     fm_ref_t(i)=fm_ref(16,i);
+  }else{
+   jmin=floor(t(i));
+   jmin=std::max(jmin,2);
+   jmin=jmin-2;
+   jmax= std::min(jmin+1,17);
+   diff= t(i)-floor(t(i));
+   fm_ref_t(i)=fm_ref(jmin,i)+diff*(fm_ref(jmax,i)-fm_ref(jmin,i));
+  } 
+}
+  return fm_ref_t;
+
+
 }
 
 NumericVector Child::IntakeReference(NumericVector t){
@@ -82,6 +157,8 @@ NumericVector Child::IntakeReference(NumericVector t){
     NumericVector rhoFFM  = cRhoFFM(FFMref);
     return EB + K + (22.4 + delta)*FFMref + (4.5 + delta)*FMref +
                 230.0/rhoFFM*(p*EB + growth) + 180.0/rhoFM*((1-p)*EB-growth);
+ 
+ 
 }
 
 NumericVector Child::Expenditure(NumericVector t, NumericVector FFM, NumericVector FM){
@@ -104,7 +181,7 @@ List Child::rk4 (double days){
     
     //Set dt to 1
     double dt = 1.0;
-    /*double dt = 1.0/365.0;*/
+    //double dt = 1.0/365.0;
     //Initial time
     NumericMatrix k1, k2, k3, k4;
     
@@ -234,6 +311,7 @@ void Child::getParameters(void){
     tauB1     = 0.94*(1 - sex) + 0.94*sex;
     tauD1     = 0.69*(1 - sex) + 0.69*sex;
     
+   
 }
 
 
