@@ -96,7 +96,7 @@ NumericVector Child::Expenditure(NumericVector t, NumericVector FFM, NumericVect
                                 0.24*DeltaI + (230.0/rhoFFM *p + 180.0/rhoFM*(1-p))*Intakeval +
                                 growth*(230.0/rhoFFM -180.0/rhoFM);
     
-    return Expend/(1+230/rhoFFM *p + 180.0/rhoFM*(1-p));
+    return Expend/(1+230.0/rhoFFM *p + 180.0/rhoFM*(1-p));
 }
 
 //Rungue Kutta 4 method for Adult
@@ -162,7 +162,7 @@ List Child::rk4 (double days){
         TIME(i) = TIME(i-1) + 1;
         
         //Update AGE variable
-        AGE(_,i) = AGE(_,i-1) + dt/365;
+        AGE(_,i) = AGE(_,i-1) + dt/365.0;
         /*AGE(_,i) = AGE(_,i-1) + dt;*/
     }
     
@@ -240,7 +240,8 @@ void Child::getParameters(void){
 
 //Intake in calories
 NumericVector Child::Intake(NumericVector t){
-    double timeval = t(0) - age(0);
+   double timeval = ((t(0)-1) - age(0))*365;
+    timeval = std::max(timeval, 0.0);
     return EIntake(floor(timeval),_);
 }
 
