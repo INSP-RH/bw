@@ -7,7 +7,6 @@
 //
 
 #include "child_weight.h"
-#include <algorithm>
 
 Child::Child(NumericVector input_age, NumericVector input_sex, NumericVector input_FFM, NumericVector input_FM, NumericMatrix input_EIntake, bool checkValues){
     age   = input_age;
@@ -161,44 +160,7 @@ NumericVector Child::IntakeReference(NumericVector t){
  
  
 }
-/*NumericVector Child::IntakeReference(NumericVector t){
-  NumericMatrix req(17,nind);
-    req(0,_)   = 948.0*(1-sex)+865.0*sex;
-    req(1,_)   =1129.0*(1 - sex) + 1047.0*sex;
-    req(2,_)   =1252.0*(1 - sex) + 1156.0*sex;
-    req(3,_)   =1360.0*(1 - sex) + 1241.0*sex;
-    req(4,_)   =1467.0*(1 - sex) + 1330.0*sex;
-    req(5,_)   =1573.0*(1 - sex) + 1428.0*sex;
-    req(6,_)   =1692.0*(1 - sex) + 1554.0*sex;
-    req(7,_)   =1830.0*(1 - sex) + 1698.0*sex;
-    req(8,_)   =1978.0*(1 - sex) + 1854.0*sex;
-    req(9,_)   =2150.0*(1 - sex) + 2006.0*sex;
-    req(10,_)  =2341.0*(1 - sex) + 2149.0*sex;
-    req(11,_)  =2548.0*(1 - sex) + 2276.0*sex;
-    req(12,_)  =2770.0*(1 - sex) + 2379.0*sex;
-    req(13,_)  =2990.0*(1 - sex) + 2449.0*sex;
-    req(14,_)  =3178.0*(1 - sex) + 2491.0*sex;
-    req(15,_)  =3322.0*(1 - sex) + 2503.0*sex;
-    req(16,_)  =3410.0*(1 - sex) + 2503.0*sex;
- NumericVector req_t(nind);
- int jmin;
- int jmax;
- double diff;
- for(int i=0;i<nind;i++){
-  if(t(i)>=17.0){
-     req_t(i)=req(16,i);
-  }else{
-   jmin=floor(t(i));
-   jmin=std::max(jmin,1);
-   jmin=jmin-1;
-   jmax= std::min(jmin+1,17);
-   diff= t(i)-floor(t(i));
-   req_t(i)=req(jmin,i)+diff*(req(jmax,i)-req(jmin,i));
-  } 
-}
-   return req_t;
 
-}*/
 NumericVector Child::Expenditure(NumericVector t, NumericVector FFM, NumericVector FM){
     NumericVector delta     = Delta(t);
     NumericVector Iref      = IntakeReference(t);
