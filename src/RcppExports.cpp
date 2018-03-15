@@ -7,7 +7,7 @@ using namespace Rcpp;
 
 // adult_weight_wrapper
 List adult_weight_wrapper(NumericVector bw, NumericVector ht, NumericVector age, NumericVector sex, NumericMatrix EIchange, NumericMatrix NAchange, NumericVector PAL, NumericVector pcarb_base, NumericVector pcarb, double days, bool checkValues);
-RcppExport SEXP bw_adult_weight_wrapper(SEXP bwSEXP, SEXP htSEXP, SEXP ageSEXP, SEXP sexSEXP, SEXP EIchangeSEXP, SEXP NAchangeSEXP, SEXP PALSEXP, SEXP pcarb_baseSEXP, SEXP pcarbSEXP, SEXP daysSEXP, SEXP checkValuesSEXP) {
+RcppExport SEXP _bw_adult_weight_wrapper(SEXP bwSEXP, SEXP htSEXP, SEXP ageSEXP, SEXP sexSEXP, SEXP EIchangeSEXP, SEXP NAchangeSEXP, SEXP PALSEXP, SEXP pcarb_baseSEXP, SEXP pcarbSEXP, SEXP daysSEXP, SEXP checkValuesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -28,7 +28,7 @@ END_RCPP
 }
 // adult_weight_wrapper_EI
 List adult_weight_wrapper_EI(NumericVector bw, NumericVector ht, NumericVector age, NumericVector sex, NumericMatrix EIchange, NumericMatrix NAchange, NumericVector PAL, NumericVector pcarb_base, NumericVector pcarb, NumericVector extradata, double days, bool checkValues, bool isEnergy);
-RcppExport SEXP bw_adult_weight_wrapper_EI(SEXP bwSEXP, SEXP htSEXP, SEXP ageSEXP, SEXP sexSEXP, SEXP EIchangeSEXP, SEXP NAchangeSEXP, SEXP PALSEXP, SEXP pcarb_baseSEXP, SEXP pcarbSEXP, SEXP extradataSEXP, SEXP daysSEXP, SEXP checkValuesSEXP, SEXP isEnergySEXP) {
+RcppExport SEXP _bw_adult_weight_wrapper_EI(SEXP bwSEXP, SEXP htSEXP, SEXP ageSEXP, SEXP sexSEXP, SEXP EIchangeSEXP, SEXP NAchangeSEXP, SEXP PALSEXP, SEXP pcarb_baseSEXP, SEXP pcarbSEXP, SEXP extradataSEXP, SEXP daysSEXP, SEXP checkValuesSEXP, SEXP isEnergySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -51,7 +51,7 @@ END_RCPP
 }
 // adult_weight_wrapper_EI_fat
 List adult_weight_wrapper_EI_fat(NumericVector bw, NumericVector ht, NumericVector age, NumericVector sex, NumericMatrix EIchange, NumericMatrix NAchange, NumericVector PAL, NumericVector pcarb_base, NumericVector pcarb, NumericVector input_EI, NumericVector input_fat, double days, bool checkValues);
-RcppExport SEXP bw_adult_weight_wrapper_EI_fat(SEXP bwSEXP, SEXP htSEXP, SEXP ageSEXP, SEXP sexSEXP, SEXP EIchangeSEXP, SEXP NAchangeSEXP, SEXP PALSEXP, SEXP pcarb_baseSEXP, SEXP pcarbSEXP, SEXP input_EISEXP, SEXP input_fatSEXP, SEXP daysSEXP, SEXP checkValuesSEXP) {
+RcppExport SEXP _bw_adult_weight_wrapper_EI_fat(SEXP bwSEXP, SEXP htSEXP, SEXP ageSEXP, SEXP sexSEXP, SEXP EIchangeSEXP, SEXP NAchangeSEXP, SEXP PALSEXP, SEXP pcarb_baseSEXP, SEXP pcarbSEXP, SEXP input_EISEXP, SEXP input_fatSEXP, SEXP daysSEXP, SEXP checkValuesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -74,7 +74,7 @@ END_RCPP
 }
 // child_weight_wrapper
 List child_weight_wrapper(NumericVector age, NumericVector sex, NumericVector FFM, NumericVector FM, NumericMatrix input_EIntake, double days, bool checkValues);
-RcppExport SEXP bw_child_weight_wrapper(SEXP ageSEXP, SEXP sexSEXP, SEXP FFMSEXP, SEXP FMSEXP, SEXP input_EIntakeSEXP, SEXP daysSEXP, SEXP checkValuesSEXP) {
+RcppExport SEXP _bw_child_weight_wrapper(SEXP ageSEXP, SEXP sexSEXP, SEXP FFMSEXP, SEXP FMSEXP, SEXP input_EIntakeSEXP, SEXP daysSEXP, SEXP checkValuesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -91,7 +91,7 @@ END_RCPP
 }
 // intake_reference_wrapper
 NumericMatrix intake_reference_wrapper(NumericVector age, NumericVector sex, NumericVector FFM, NumericVector FM, double days);
-RcppExport SEXP bw_intake_reference_wrapper(SEXP ageSEXP, SEXP sexSEXP, SEXP FFMSEXP, SEXP FMSEXP, SEXP daysSEXP) {
+RcppExport SEXP _bw_intake_reference_wrapper(SEXP ageSEXP, SEXP sexSEXP, SEXP FFMSEXP, SEXP FMSEXP, SEXP daysSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -106,7 +106,7 @@ END_RCPP
 }
 // mass_reference_wrapper
 List mass_reference_wrapper(NumericVector age, NumericVector sex);
-RcppExport SEXP bw_mass_reference_wrapper(SEXP ageSEXP, SEXP sexSEXP) {
+RcppExport SEXP _bw_mass_reference_wrapper(SEXP ageSEXP, SEXP sexSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -118,7 +118,7 @@ END_RCPP
 }
 // EnergyBuilder
 NumericMatrix EnergyBuilder(NumericMatrix Energy, NumericVector Time, std::string interpol);
-RcppExport SEXP bw_EnergyBuilder(SEXP EnergySEXP, SEXP TimeSEXP, SEXP interpolSEXP) {
+RcppExport SEXP _bw_EnergyBuilder(SEXP EnergySEXP, SEXP TimeSEXP, SEXP interpolSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -131,13 +131,13 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"bw_adult_weight_wrapper", (DL_FUNC) &bw_adult_weight_wrapper, 11},
-    {"bw_adult_weight_wrapper_EI", (DL_FUNC) &bw_adult_weight_wrapper_EI, 13},
-    {"bw_adult_weight_wrapper_EI_fat", (DL_FUNC) &bw_adult_weight_wrapper_EI_fat, 13},
-    {"bw_child_weight_wrapper", (DL_FUNC) &bw_child_weight_wrapper, 7},
-    {"bw_intake_reference_wrapper", (DL_FUNC) &bw_intake_reference_wrapper, 5},
-    {"bw_mass_reference_wrapper", (DL_FUNC) &bw_mass_reference_wrapper, 2},
-    {"bw_EnergyBuilder", (DL_FUNC) &bw_EnergyBuilder, 3},
+    {"_bw_adult_weight_wrapper", (DL_FUNC) &_bw_adult_weight_wrapper, 11},
+    {"_bw_adult_weight_wrapper_EI", (DL_FUNC) &_bw_adult_weight_wrapper_EI, 13},
+    {"_bw_adult_weight_wrapper_EI_fat", (DL_FUNC) &_bw_adult_weight_wrapper_EI_fat, 13},
+    {"_bw_child_weight_wrapper", (DL_FUNC) &_bw_child_weight_wrapper, 7},
+    {"_bw_intake_reference_wrapper", (DL_FUNC) &_bw_intake_reference_wrapper, 5},
+    {"_bw_mass_reference_wrapper", (DL_FUNC) &_bw_mass_reference_wrapper, 2},
+    {"_bw_EnergyBuilder", (DL_FUNC) &_bw_EnergyBuilder, 3},
     {NULL, NULL, 0}
 };
 

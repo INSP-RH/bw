@@ -1,17 +1,25 @@
 Package: bw
-Title: A speedy implementation of Hall's weight change model
 Version: 0.5.0
-Authors@R: c(person("Rodrigo", "Zepeda-Tello", email = "rzepeda17@gmail.com",role = c("aut")), person("Dalia", "Camacho-García-Formentí", email = "daliaf172@gmail.com", role = c("aut", "cre")))
-Description: bw is awesome package of Hall model. It allows for awesomeness.
-Depends: R (>= 3.4.0)
+Title: Dynamic Body Weight Models for Children and Adults
+Description: Implementation of the dynamic weight change models for adults from "The Dynamics of Human Body Weight Change" by Chow & Hall as well as the children weightchange model from " Dynamics of childhood growth and obesity: development and validation of a quantitative mathematical model" by Hall, Butte et al. These model the physiological processes related to weight change in each individual by considering each of the biological processes involved.
+Authors@R: c(person("Rodrigo", "Zepeda-Tello", email = "rzepeda17@gmail.com", role = c("aut")), person("Dalia", "Camacho-García-Formentí", email = "daliaf172@gmail.com", role = c("aut","cre")))
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
+ByteCompile: true
 Type: Package
-Suggests: testthat, knitr, rmarkdown
 VignetteBuilder: knitr
 LazyLoad: yes
-stringsAsFactors: FALSE
 LinkingTo: Rcpp
-Imports: Rcpp, compiler, ggplot2, gridExtra, reshape2, survey
 RoxygenNote: 6.0.1
+Suggests: 
+    testthat,
+    knitr,
+    rmarkdown
+Imports: 
+    Rcpp,
+    compiler,
+    ggplot2,
+    gridExtra,
+    reshape2,
+    survey

@@ -202,7 +202,7 @@ mydata <- data.frame(
 eichange      <- energy_build(cbind(runif(5, 1500, 2000), mydata$energy), c(0, 365))
 
 #Returns a weight change matrix and other matrices
-database_model <- child_weight(mydata$age, mydata$sex, EI = eichange)
+database_model <- child_weight(mydata$age, mydata$sex, EI = t(eichange))
 ```
 
 Plots can also be obtained for the population with the same command `model_plot`:
