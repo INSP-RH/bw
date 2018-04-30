@@ -17,8 +17,9 @@
 #' @param pcarb       (vector) Percent carbohydrates after intake change.
 #' @param pcarb_base  (vector) Percent carbohydrates at baseline.
 #' @param days        (double) Days to run the model.
+#' @param dt          (double) Time step for model; default 1 day (\code{dt = 1})
 #' @param checkValues (boolean) Check whether the values from the model are biologically feasible.
-#'
+#' 
 #' @author Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
 #' @author Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 #' 
@@ -90,12 +91,12 @@
 
 
 adult_weight <- function(bw, ht, age, sex, 
-                         EIchange = matrix(0, ncol = ceiling(days), nrow = length(bw)), 
-                         NAchange = matrix(0, ncol = ceiling(days), nrow = length(bw)), 
+                         EIchange = matrix(0, ncol = ceiling(days/dt), nrow = length(bw)), 
+                         NAchange = matrix(0, ncol = ceiling(days/dt), nrow = length(bw)), 
                          EI = NA, fat = NA,
                          PAL = rep(1.5, length(bw)), 
                          pcarb_base = rep(0.5, length(bw)), 
-                         pcarb = pcarb_base,  days = 365,
+                         pcarb = pcarb_base,  days = 365, dt = 1,
                          checkValues = TRUE){
   
   #Check that EIchange and Nachange are matrices
@@ -119,9 +120,9 @@ adult_weight <- function(bw, ht, age, sex,
   }
   
   #Check that they have as many rows as days
-  if (ncol(EIchange) != ceiling(days)){
+  if (ncol(EIchange) != ceiling(days/dt)){
     warning(paste("Dimension mismatch. EIchange and NAchange must have", 
-                  ceiling(days), "rows"))
+                  ceiling(days/dt), "rows"))
   }
   
   #Check that age, bw and height are positive
@@ -137,6 +138,11 @@ adult_weight <- function(bw, ht, age, sex,
   #Check sex is "male" and "female"
   if (length(which(!(sex %in% c("male","female")))) > 0){
     stop(paste0("Invalid sex. Please specify either 'male' of 'female'"))
+  }
+  
+  #Check that dt is > 0
+  if (dt < 0 || dt > days){
+    stop(paste0("Invalid time step dt; please choose 0 < dt < days"))
   }
   
   #Change sex to numeric for c++
@@ -155,16 +161,16 @@ adult_weight <- function(bw, ht, age, sex,
   #on if you have energy intake or fat intake or not.
   if (isfat && isEI){
     wl <- adult_weight_wrapper(bw, ht, age, newsex, EIchange, NAchange,
-                               PAL, pcarb_base, pcarb, ceiling(days), checkValues)  
+                               PAL, pcarb_base, pcarb, dt, ceiling(days), checkValues)  
   } else if (!isEI && isfat) {
     wl <- adult_weight_wrapper_EI(bw, ht, age, newsex, EIchange, NAchange,
-                                PAL, pcarb_base, pcarb, EI, ceiling(days), checkValues, TRUE)  
+                                PAL, pcarb_base, pcarb, dt, EI, ceiling(days), checkValues, TRUE)  
   } else if (isEI && !isfat) {
     wl <- adult_weight_wrapper_EI(bw, ht, age, newsex, EIchange, NAchange,
-                                  PAL, pcarb_base, pcarb, fat, ceiling(days), checkValues, FALSE)  
+                                  PAL, pcarb_base, pcarb, dt, fat, ceiling(days), checkValues, FALSE)  
   } else if (!isEI && !isfat){
     wl <- adult_weight_wrapper_EI_fat(bw, ht, age, newsex, EIchange, NAchange,
-                                  PAL, pcarb_base, pcarb, EI, fat, ceiling(days), checkValues)  
+                                  PAL, pcarb_base, pcarb, dt, EI, fat, ceiling(days), checkValues)  
   }
   if(wl$Correct_Values[1]==FALSE){
     stop("One of the variables takes either negative values, or NaN, NA or infinity")

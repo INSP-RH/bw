@@ -4,11 +4,11 @@
 \alias{adult_weight}
 \title{Dynamic Adult Weight Change Model}
 \usage{
-adult_weight(bw, ht, age, sex, EIchange = matrix(0, ncol = ceiling(days), nrow
-  = length(bw)), NAchange = matrix(0, ncol = ceiling(days), nrow =
+adult_weight(bw, ht, age, sex, EIchange = matrix(0, ncol = ceiling(days/dt),
+  nrow = length(bw)), NAchange = matrix(0, ncol = ceiling(days/dt), nrow =
   length(bw)), EI = NA, fat = NA, PAL = rep(1.5, length(bw)),
   pcarb_base = rep(0.5, length(bw)), pcarb = pcarb_base, days = 365,
-  checkValues = TRUE)
+  dt = 1, checkValues = TRUE)
 }
 \arguments{
 \item{bw}{(vector) Body weight for model (kg)}
@@ -36,6 +36,8 @@ adult_weight(bw, ht, age, sex, EIchange = matrix(0, ncol = ceiling(days), nrow
 \item{pcarb}{(vector) Percent carbohydrates after intake change.}
 
 \item{days}{(double) Days to run the model.}
+
+\item{dt}{(double) Time step for model; default 1 day (\code{dt = 1})}
 
 \item{checkValues}{(boolean) Check whether the values from the model are biologically feasible.}
 }

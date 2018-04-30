@@ -1,10 +1,10 @@
 ---
-title: "Using the Children Weight Change Model"
+title: "Using the Children Weight Model"
 author: "Rodrigo Zepeda Tello & Dalia Camacho García Formentí"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{Children Model}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

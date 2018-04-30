@@ -22,20 +22,21 @@ public:
     Adult(NumericVector weight, NumericVector height, NumericVector age_yrs,
           NumericVector sexstring, NumericMatrix input_EIchange,
           NumericMatrix input_NAchange, NumericVector physicalactivity,
-          NumericVector percentc, NumericVector percentb, bool checkValues);
+          NumericVector percentc, NumericVector percentb, double dt, bool checkValues);
     
     //Constructor for when initial energy or initial fat intake is added by user
     Adult(NumericVector weight, NumericVector height, NumericVector age_yrs,
           NumericVector sexstring, NumericMatrix input_EIchange,
           NumericMatrix input_NAchange, NumericVector physicalactivity,
-          NumericVector percentc, NumericVector percentb, NumericVector extradata, bool checkValues, bool isEnergy);
+          NumericVector percentc, NumericVector percentb, double dt,
+          NumericVector extradata, bool checkValues, bool isEnergy);
     
     //Constructor for when initial energy intake and initial fat is added by user
     Adult(NumericVector weight, NumericVector height, NumericVector age_yrs,
           NumericVector sexstring, NumericMatrix input_EIchange,
           NumericMatrix input_NAchange, NumericVector physicalactivity,
-          NumericVector percentc, NumericVector percentb, NumericVector input_EI,
-          NumericVector input_fat, bool checkValues);
+          NumericVector percentc, NumericVector percentb, double dt,
+          NumericVector input_EI, NumericVector input_fat, bool checkValues);
     
     //Destroyer
     ~ Adult();
@@ -118,16 +119,16 @@ private:
     void build(NumericVector weight, NumericVector height, NumericVector age_yrs,
                NumericVector sexstring, NumericMatrix input_EIchange,
                NumericMatrix input_NAchange, NumericVector physicalactivity,
-               NumericVector percentc, NumericVector percentb, bool checkValues);
+               NumericVector percentc, NumericVector percentb, double dt, bool checkValues);
     void build(NumericVector weight, NumericVector height, NumericVector age_yrs,
                NumericVector sexstring, NumericMatrix input_EIchange,
                NumericMatrix input_NAchange, NumericVector physicalactivity,
-               NumericVector percentc, NumericVector percentb, NumericVector extradata,
+               NumericVector percentc, NumericVector percentb, double dt, NumericVector extradata,
                bool checkValues, bool isEnergy);
     void build(NumericVector weight, NumericVector height, NumericVector age_yrs,
                NumericVector sexstring, NumericMatrix input_EIchange,
                NumericMatrix input_NAchange, NumericVector physicalactivity,
-               NumericVector percentc, NumericVector percentb, NumericVector input_EI,
+               NumericVector percentc, NumericVector percentb, double dt, NumericVector input_EI,
                NumericVector input_fat,bool checkValues);
     NumericVector TotalIntake (double t);
     StringVector  BMIClassifier(NumericVector BMI);

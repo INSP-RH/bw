@@ -12,11 +12,11 @@
 Adult::Adult(NumericVector weight, NumericVector height, NumericVector age_yrs,
              NumericVector sexstring, NumericMatrix input_EIchange,
              NumericMatrix input_NAchange, NumericVector physicalactivity,
-             NumericVector percentc, NumericVector percentb, bool checkValues){
+             NumericVector percentc, NumericVector percentb, double input_dt, bool checkValues){
     
     //Build model from parameters
     build(weight, height, age_yrs, sexstring, input_EIchange, input_NAchange,
-          physicalactivity, percentc, percentb, checkValues);
+          physicalactivity, percentc, percentb, input_dt, checkValues);
     
 }
 
@@ -24,13 +24,13 @@ Adult::Adult(NumericVector weight, NumericVector height, NumericVector age_yrs,
 Adult::Adult(NumericVector weight, NumericVector height, NumericVector age_yrs,
              NumericVector sexstring, NumericMatrix input_EIchange,
              NumericMatrix input_NAchange, NumericVector physicalactivity,
-             NumericVector percentc, NumericVector percentb, NumericVector extradata,
+             NumericVector percentc, NumericVector percentb, double input_dt, NumericVector extradata,
              bool checkValues, bool isEnergy){
     
     
     //Build model from parameters
     build(weight, height, age_yrs, sexstring, input_EIchange, input_NAchange,
-          physicalactivity, percentc, percentb, extradata, checkValues, isEnergy);
+          physicalactivity, percentc, percentb, input_dt, extradata, checkValues, isEnergy);
     
 }
 
@@ -38,13 +38,13 @@ Adult::Adult(NumericVector weight, NumericVector height, NumericVector age_yrs,
 Adult::Adult(NumericVector weight, NumericVector height, NumericVector age_yrs,
              NumericVector sexstring, NumericMatrix input_EIchange,
              NumericMatrix input_NAchange, NumericVector physicalactivity,
-             NumericVector percentc, NumericVector percentb, NumericVector input_EI,
+             NumericVector percentc, NumericVector percentb, double input_dt, NumericVector input_EI,
              NumericVector input_fat, bool checkValues){
     
     
     //Build model from parameters
     build(weight, height, age_yrs, sexstring, input_EIchange, input_NAchange,
-          physicalactivity, percentc, percentb, input_EI, input_fat, checkValues);
+          physicalactivity, percentc, percentb, input_dt ,input_EI, input_fat, checkValues);
     
 }
 
@@ -52,9 +52,10 @@ Adult::Adult(NumericVector weight, NumericVector height, NumericVector age_yrs,
 void Adult::build(NumericVector weight, NumericVector height, NumericVector age_yrs,
                   NumericVector sexstring, NumericMatrix input_EIchange,
                   NumericMatrix input_NAchange, NumericVector physicalactivity,
-                  NumericVector percentc, NumericVector percentb, bool checkValues){
+                  NumericVector percentc, NumericVector percentb, double input_dt, bool checkValues){
     
     //Assign parameters
+    dt         = input_dt; //Time step set to 1 because of matrix use (each time is a row in EIchange)
     bw         = weight;
     ht         = height;
     age        = age_yrs;
@@ -83,9 +84,11 @@ void Adult::build(NumericVector weight, NumericVector height, NumericVector age_
 void Adult::build(NumericVector weight, NumericVector height, NumericVector age_yrs,
                   NumericVector sexstring, NumericMatrix input_EIchange,
                   NumericMatrix input_NAchange, NumericVector physicalactivity,
-                  NumericVector percentc, NumericVector percentb, NumericVector extradata, bool checkValues, bool isEnergy){
+                  NumericVector percentc, NumericVector percentb, double input_dt,
+                  NumericVector extradata, bool checkValues, bool isEnergy){
     
     //Assign parameters
+    dt         = input_dt; //For rk4
     bw         = weight;
     ht         = height;
     age        = age_yrs;
@@ -128,10 +131,11 @@ void Adult::build(NumericVector weight, NumericVector height, NumericVector age_
 void Adult::build(NumericVector weight, NumericVector height, NumericVector age_yrs,
                   NumericVector sexstring, NumericMatrix input_EIchange,
                   NumericMatrix input_NAchange, NumericVector physicalactivity,
-                  NumericVector percentc, NumericVector percentb, NumericVector input_EI,
-                  NumericVector input_fat, bool checkValues){
+                  NumericVector percentc, NumericVector percentb, double input_dt,
+                  NumericVector input_EI, NumericVector input_fat, bool checkValues){
     
     //Assign parameters
+    dt         = input_dt; //For rk4
     bw         = weight;
     ht         = height;
     age        = age_yrs;
@@ -359,7 +363,6 @@ List Adult::rk4(double days){
     
     //Initial TIME(i-1)
     NumericVector k1, k2, k3, k4;
-    dt         = 1.0; //Time step set to 1 because of matrix use (each time is a row in EIchange)
     
     //Estimate number of elements to loop into
     const int nsims = std::min(ceil(days/dt), EIchange.nrow() - 1.0);
@@ -492,11 +495,11 @@ List Adult::rk4(double days){
 
 //Change in calories
 NumericVector Adult::deltaEI(double t){
-    return EIchange(floor(t),_);
+    return EIchange(floor(t/dt),_);
 }
 
-//Change in sodium
+//Change in sodiumxs
 NumericVector Adult::deltaNA(double t){
-    return NAchange(floor(t),_);
+    return NAchange(floor(t/dt),_);
 }
 
