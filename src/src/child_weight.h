@@ -19,7 +19,7 @@ class Child {
 public:
     
     //Constructor and destroyer
-    Child(NumericVector input_age, NumericVector input_sex, NumericVector input_FFM, NumericVector input_FM, NumericMatrix input_EIntake, bool checkValues);
+    Child(NumericVector input_age, NumericVector input_sex, NumericVector input_FFM, NumericVector input_FM, NumericMatrix input_EIntake, double input_dt, bool checkValues);
     ~Child(void);
     
     //Constants
@@ -46,6 +46,7 @@ private:
     double deltamin;
     double P;
     double h;
+    double dt;
     
     //Number of individuals
     int nind;
