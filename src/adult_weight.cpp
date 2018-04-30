@@ -8,7 +8,7 @@
 
 #include "adult_weight.h"
 
-//Default Constructor
+//Default Constructor for an Adult.
 Adult::Adult(NumericVector weight, NumericVector height, NumericVector age_yrs,
              NumericVector sexstring, NumericMatrix input_EIchange,
              NumericMatrix input_NAchange, NumericVector physicalactivity,
@@ -79,7 +79,7 @@ void Adult::build(NumericVector weight, NumericVector height, NumericVector age_
     getCarbConstants();
 }
 
-//Function to build a new Adult when input_EIintake is included
+//Function to build a new Adult when input_EIintake and fat are included
 void Adult::build(NumericVector weight, NumericVector height, NumericVector age_yrs,
                   NumericVector sexstring, NumericMatrix input_EIchange,
                   NumericMatrix input_NAchange, NumericVector physicalactivity,

@@ -47,7 +47,7 @@ NumericMatrix EnergyBuilder(NumericMatrix Energy, NumericVector Time,
    
   } else {
     
-    //Case linear
+    //Case; exponential; logarithmic or stepwise
     for (int i = 0; i < days; i++){
       
       //Linear case
@@ -62,7 +62,6 @@ NumericMatrix EnergyBuilder(NumericMatrix Energy, NumericVector Time,
         Evalues(_,i) =  exp((log(Energy(_, j + 1) - Energy(_, j) + K) - log(K))/(Time(j+1) - Time(j))*(i - Time(j)) + log(K)) - K + Energy(_, j);
       } else if (interpol.compare("Logarithmic") == 0){
         Evalues(_,i) =  1000*log( (exp( (Energy(_, j + 1) - Energy(_, j))/1000) -1)/(Time(j+1) - Time(j))*(i - Time(j)) + 1) + Energy(_,j);
-        //Evalues(_,i) =  log( (exp(Energy(_,j+1) - Energy(_,j)) - 1)/(Time(j+1) - Time(j))*(i - Time(j)) + 1) + Energy(_,j);
       } 
       
       //Update to next time

@@ -93,10 +93,7 @@ private:
     NumericVector fm_beta0;
     NumericVector fm_beta1;
     
-    //WHO energy requirements
-    NumericMatrix req;
-
-    //
+    //Function s involved
     void build(void);
     void getParameters();
     NumericVector Growth_dynamic(NumericVector t); //Growth function from Dynamics...
