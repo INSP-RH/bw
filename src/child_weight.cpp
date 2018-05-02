@@ -8,13 +8,37 @@
 
 #include "child_weight.h"
 
-Child::Child(NumericVector input_age, NumericVector input_sex, NumericVector input_FFM, NumericVector input_FM, NumericMatrix input_EIntake, bool checkValues){
+//Default (classic) constructor for energy matrix
+Child::Child(NumericVector input_age, NumericVector input_sex, NumericVector input_FFM, NumericVector input_FM, NumericMatrix input_EIntake,
+             double input_dt, bool checkValues){
     age   = input_age;
     sex   = input_sex;
     FM    = input_FM;
     FFM   = input_FFM;
+    dt    = input_dt;
     EIntake = input_EIntake;
     check = checkValues;
+    generalized_logistic = false;
+    build();
+}
+
+//Constructor which uses Richard's curve with the parameters of https://en.wikipedia.org/wiki/Generalised_logistic_function
+Child::Child(NumericVector input_age, NumericVector input_sex, NumericVector input_FFM, NumericVector input_FM, double input_K,
+             double input_Q, double input_A, double input_B, double input_nu, double input_C, 
+             double input_dt, bool checkValues){
+    age   = input_age;
+    sex   = input_sex;
+    FM    = input_FM;
+    FFM   = input_FFM;
+    dt    = input_dt;
+    K_logistic = input_K;
+    A_logistic = input_A;
+    Q_logistic = input_Q;
+    B_logistic = input_B;
+    nu_logistic = input_nu;
+    C_logistic = input_C;
+    check = checkValues;
+    generalized_logistic = true;
     build();
 }
 
@@ -69,22 +93,22 @@ NumericVector Child::FFMReference(NumericVector t){
  
    NumericMatrix ffm_ref(17,nind);
     ffm_ref(0,_)   = 10.134*(1-sex)+9.477*sex;
-    ffm_ref(1,_)   =12.099*(1 - sex) + 11.494*sex;
-    ffm_ref(2,_)   =14.0*(1 - sex) + 13.2*sex;
-    ffm_ref(3,_)   =16.0*(1 - sex) + 14.7*sex;
-    ffm_ref(4,_)   =17.4*(1 - sex) + 16.3*sex;
-    ffm_ref(5,_)   =19.9*(1 - sex) + 18.2*sex;
-    ffm_ref(6,_)   =22.0*(1 - sex) + 20.5*sex;
-    ffm_ref(7,_)   =24.4*(1 - sex) + 23.3*sex;
-    ffm_ref(8,_)   =27.5*(1 - sex) + 26.4*sex;
-    ffm_ref(9,_)   =29.5*(1 - sex) + 28.5*sex;
-    ffm_ref(10,_)  =33.2*(1 - sex) + 32.4*sex;
-    ffm_ref(11,_)  =38.1*(1 - sex) + 36.1*sex;
-    ffm_ref(12,_)  =43.6*(1 - sex) + 38.9*sex;
-    ffm_ref(13,_)  =49.1*(1 - sex) + 40.7*sex;
-    ffm_ref(14,_)  =54.0*(1 - sex) + 41.7*sex;
-    ffm_ref(15,_)  =57.7*(1 - sex) + 42.3*sex;
-    ffm_ref(16,_)  =60.0*(1 - sex) + 42.6*sex;
+    ffm_ref(1,_)   = 12.099*(1 - sex) + 11.494*sex;
+    ffm_ref(2,_)   = 14.0*(1 - sex) + 13.2*sex;
+    ffm_ref(3,_)   = 16.0*(1 - sex) + 14.7*sex;
+    ffm_ref(4,_)   = 17.4*(1 - sex) + 16.3*sex;
+    ffm_ref(5,_)   = 19.9*(1 - sex) + 18.2*sex;
+    ffm_ref(6,_)   = 22.0*(1 - sex) + 20.5*sex;
+    ffm_ref(7,_)   = 24.4*(1 - sex) + 23.3*sex;
+    ffm_ref(8,_)   = 27.5*(1 - sex) + 26.4*sex;
+    ffm_ref(9,_)   = 29.5*(1 - sex) + 28.5*sex;
+    ffm_ref(10,_)  = 33.2*(1 - sex) + 32.4*sex;
+    ffm_ref(11,_)  = 38.1*(1 - sex) + 36.1*sex;
+    ffm_ref(12,_)  = 43.6*(1 - sex) + 38.9*sex;
+    ffm_ref(13,_)  = 49.1*(1 - sex) + 40.7*sex;
+    ffm_ref(14,_)  = 54.0*(1 - sex) + 41.7*sex;
+    ffm_ref(15,_)  = 57.7*(1 - sex) + 42.3*sex;
+    ffm_ref(16,_)  = 60.0*(1 - sex) + 42.6*sex;
  
  NumericVector ffm_ref_t(nind);
  int jmin;
@@ -109,23 +133,23 @@ NumericVector Child::FMReference(NumericVector t){
       //  return fm_beta0 + fm_beta1*t;
  
     NumericMatrix fm_ref(17,nind);
-    fm_ref(0,_)   =2.456*(1-sex)+ 2.433*sex;
-    fm_ref(1,_)   =2.576*(1 - sex) + 2.606*sex;
-    fm_ref(2,_)   =2.7*(1 - sex) + 2.8*sex;
-    fm_ref(3,_)   =2.7*(1 - sex) + 2.9*sex;
-    fm_ref(4,_)   =2.8*(1 - sex) + 3.2*sex;
-    fm_ref(5,_)   =2.9*(1 - sex) + 3.7*sex;
-    fm_ref(6,_)   =3.3*(1 - sex) + 4.3*sex;
-    fm_ref(7,_)   =3.7*(1 - sex) + 5.2*sex;
-    fm_ref(8,_)   =4.8*(1 - sex) + 7.2*sex;
-    fm_ref(9,_)   =5.9*(1 - sex) + 8.5*sex;
-    fm_ref(10,_)  =6.7*(1 - sex) + 9.2*sex;
-    fm_ref(11,_)  =7.0*(1 - sex) + 10.0*sex;
-    fm_ref(12,_)  =7.2*(1 - sex) + 11.3*sex;
-    fm_ref(13,_)  =7.5*(1 - sex) + 12.8*sex;
-    fm_ref(14,_)  =8.0*(1 - sex) + 14.0*sex;
-    fm_ref(15,_)  =8.4*(1 - sex) + 14.3*sex;
-    fm_ref(16,_)  =8.8*(1 - sex) + 14.3*sex;
+    fm_ref(0,_)   = 2.456*(1-sex)+ 2.433*sex;
+    fm_ref(1,_)   = 2.576*(1 - sex) + 2.606*sex;
+    fm_ref(2,_)   = 2.7*(1 - sex) + 2.8*sex;
+    fm_ref(3,_)   = 2.7*(1 - sex) + 2.9*sex;
+    fm_ref(4,_)   = 2.8*(1 - sex) + 3.2*sex;
+    fm_ref(5,_)   = 2.9*(1 - sex) + 3.7*sex;
+    fm_ref(6,_)   = 3.3*(1 - sex) + 4.3*sex;
+    fm_ref(7,_)   = 3.7*(1 - sex) + 5.2*sex;
+    fm_ref(8,_)   = 4.8*(1 - sex) + 7.2*sex;
+    fm_ref(9,_)   = 5.9*(1 - sex) + 8.5*sex;
+    fm_ref(10,_)  = 6.7*(1 - sex) + 9.2*sex;
+    fm_ref(11,_)  = 7.0*(1 - sex) + 10.0*sex;
+    fm_ref(12,_)  = 7.2*(1 - sex) + 11.3*sex;
+    fm_ref(13,_)  = 7.5*(1 - sex) + 12.8*sex;
+    fm_ref(14,_)  = 8.0*(1 - sex) + 14.0*sex;
+    fm_ref(15,_)  = 8.4*(1 - sex) + 14.3*sex;
+    fm_ref(16,_)  = 8.8*(1 - sex) + 14.3*sex;
  NumericVector fm_ref_t(nind);
  int jmin;
  int jmax;
@@ -172,21 +196,17 @@ NumericVector Child::Expenditure(NumericVector t, NumericVector FFM, NumericVect
     NumericVector Expend    = K + (22.4 + delta)*FFM + (4.5 + delta)*FM +
                                 0.24*DeltaI + (230.0/rhoFFM *p + 180.0/rhoFM*(1-p))*Intakeval +
                                 growth*(230.0/rhoFFM -180.0/rhoFM);
-    
     return Expend/(1+230.0/rhoFFM *p + 180.0/rhoFM*(1-p));
 }
 
 //Rungue Kutta 4 method for Adult
 List Child::rk4 (double days){
     
-    //Set dt to 1
-    double dt = 1.0;
-    //double dt = 1.0/365.0;
     //Initial time
     NumericMatrix k1, k2, k3, k4;
     
     //Estimate number of elements to loop into
-    int nsims = days; //Need to control here for > 18 yrs
+    int nsims = floor(days/dt);
     
     //Create array of states
     NumericMatrix ModelFFM(nind, nsims + 1); //in rcpp
@@ -207,14 +227,14 @@ List Child::rk4 (double days){
     
     for (int i = 1; i <= nsims; i++){
         if (check){
-            for (int k = 0; k < nind; k++){
-                /* //Need to correct in windows there is no isfinite.
+            /*for (int k = 0; k < nind; k++){
+                //Need to correct in windows there is no isfinite.
                 if(ModelFFM(k,i-1)<=0|| !isfinite(ModelFFM(k,i-1)) || ModelFM(k,i-1)<=0|| !isfinite(ModelFM(k,i-1))){
                     Rcout << "First error in person "<< k+1 <<std::endl;
                     correctVals = false;
                     break;
-                }*/
-            }
+                }
+            }*/
         }
         
         if (!correctVals) {
@@ -234,7 +254,7 @@ List Child::rk4 (double days){
         
         //Update weight
         ModelBW(_,i) = ModelFFM(_,i) + ModelFM(_,i);
-
+        
         //Update TIME(i-1)
         TIME(i) = TIME(i-1) + 1;
         
@@ -277,53 +297,51 @@ void Child::getParameters(void){
     nind     = age.size();
     
     //Sex specific constants
-    ffm_beta0 = 2.9*(1 - sex) + 3.8*sex;
-    ffm_beta1 = 2.9*(1 - sex) + 2.3*sex;
-    fm_beta0  = 1.2*(1 - sex) + 0.56*sex;
+    ffm_beta0 = 2.9*(1 - sex)  + 3.8*sex;
+    ffm_beta1 = 2.9*(1 - sex)  + 2.3*sex;
+    fm_beta0  = 1.2*(1 - sex)  + 0.56*sex;
     fm_beta1  = 0.41*(1 - sex) + 0.74*sex;
-    K         = 800*(1 - sex) + 700*sex;
-    deltamax  = 19*(1 - sex) + 17*sex;
-    A         = 3.2*(1 - sex) + 2.3*sex;
-    B         = 9.6*(1 - sex) + 8.4*sex;
+    K         = 800*(1 - sex)  + 700*sex;
+    deltamax  = 19*(1 - sex)   + 17*sex;
+    A         = 3.2*(1 - sex)  + 2.3*sex;
+    B         = 9.6*(1 - sex)  + 8.4*sex;
     D         = 10.1*(1 - sex) + 1.1*sex;
-    tA        = 4.7*(1 - sex) + 4.5*sex;
+    tA        = 4.7*(1 - sex)  + 4.5*sex;
     tB        = 12.5*(1 - sex) + 11.7*sex;
-    tD        = 15.0*(1-sex) + 16.2*sex;
-    tauA      = 2.5*(1 - sex) + 1.0*sex;
-    tauB      = 1.0*(1 - sex) + 0.9*sex;
-    tauD      = 1.5*(1 - sex) + 0.7*sex;
-    A_EB      = 7.2*(1 - sex) + 16.5*sex;
-    B_EB      = 30*(1 - sex) + 47.0*sex;
-    D_EB      = 21*(1 - sex) + 41.0*sex;
-    tA_EB     = 5.6*(1 - sex) + 4.8*sex;
-    tB_EB     = 9.8*(1 - sex) + 9.1*sex;
+    tD        = 15.0*(1-sex)   + 16.2*sex;
+    tauA      = 2.5*(1 - sex)  + 1.0*sex;
+    tauB      = 1.0*(1 - sex)  + 0.9*sex;
+    tauD      = 1.5*(1 - sex)  + 0.7*sex;
+    A_EB      = 7.2*(1 - sex)  + 16.5*sex;
+    B_EB      = 30*(1 - sex)   + 47.0*sex;
+    D_EB      = 21*(1 - sex)   + 41.0*sex;
+    tA_EB     = 5.6*(1 - sex)  + 4.8*sex;
+    tB_EB     = 9.8*(1 - sex)  + 9.1*sex;
     tD_EB     = 15.0*(1 - sex) + 13.5*sex;
-    tauA_EB   = 15*(1 - sex) + 7.0*sex;
-    tauB_EB   = 1.5*(1 -sex) + 1.0*sex;
-    tauD_EB   = 2.0*(1 - sex) + 1.5*sex;
-    A1        = 3.2*(1 - sex) + 2.3*sex;
-    B1        = 9.6*(1 - sex) + 8.4*sex;
+    tauA_EB   = 15*(1 - sex)   + 7.0*sex;
+    tauB_EB   = 1.5*(1 -sex)   + 1.0*sex;
+    tauD_EB   = 2.0*(1 - sex)  + 1.5*sex;
+    A1        = 3.2*(1 - sex)  + 2.3*sex;
+    B1        = 9.6*(1 - sex)  + 8.4*sex;
     D1        = 10.0*(1 - sex) + 1.1*sex;
-    tA1       = 4.7*(1 - sex) + 4.5*sex;
+    tA1       = 4.7*(1 - sex)  + 4.5*sex;
     tB1       = 12.5*(1 - sex) + 11.7*sex;
     tD1       = 15.0*(1 - sex) + 16.0*sex;
-    tauA1     = 1.0*(1 - sex) + 1.0*sex;
+    tauA1     = 1.0*(1 - sex)  + 1.0*sex;
     tauB1     = 0.94*(1 - sex) + 0.94*sex;
     tauD1     = 0.69*(1 - sex) + 0.69*sex;
-    
-   
 }
 
 
 //Intake in calories
 NumericVector Child::Intake(NumericVector t){
-    double timeval = ((t(0)-1) - age(0))*365;
-    timeval = std::max(timeval, 0.0);
-    return EIntake(floor(timeval),_);
+    if (generalized_logistic) {
+        return A_logistic + (K_logistic - A_logistic)/pow(C_logistic + Q_logistic*exp(-B_logistic*t/365.0), 1/nu_logistic);
+    } else {
+        int timeval = floor(t(0) - age(0));
+        return EIntake(timeval,_);
+    }
+    
 }
 
-//This needs to be an R inputed function
-/*NumericVector Child::Intake(NumericVector t){
-    return IntakeReference(t);
-}*/
 

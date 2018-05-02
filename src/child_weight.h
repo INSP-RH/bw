@@ -19,7 +19,10 @@ class Child {
 public:
     
     //Constructor and destroyer
-    Child(NumericVector input_age, NumericVector input_sex, NumericVector input_FFM, NumericVector input_FM, NumericMatrix input_EIntake, bool checkValues);
+    Child(NumericVector input_age, NumericVector input_sex, NumericVector input_FFM, NumericVector input_FM, NumericMatrix input_EIntake, double input_dt, bool checkValues);
+    Child(NumericVector input_age, NumericVector input_sex, NumericVector input_FFM, NumericVector input_FM,  double input_K, double input_Q, double input_A, double input_B, double input_nu, double input_C,
+          double input_dt, bool checkValues);
+    
     ~Child(void);
     
     //Constants
@@ -46,6 +49,8 @@ private:
     double deltamin;
     double P;
     double h;
+    double dt;
+    bool generalized_logistic;
     
     //Number of individuals
     int nind;
@@ -53,6 +58,14 @@ private:
     //Constants additional
     NumericVector K;
     NumericVector deltamax;
+    
+    //Constants for Robinson's curve
+    double K_logistic;
+    double Q_logistic;
+    double A_logistic;
+    double B_logistic;
+    double nu_logistic;
+    double C_logistic;
     
     //Constants for g FROM DYNAMICS PAPER
     NumericVector A;

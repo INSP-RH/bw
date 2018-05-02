@@ -13,12 +13,16 @@ adult_weight_wrapper_EI_fat <- function(bw, ht, age, sex, EIchange, NAchange, PA
     .Call('_bw_adult_weight_wrapper_EI_fat', PACKAGE = 'bw', bw, ht, age, sex, EIchange, NAchange, PAL, pcarb_base, pcarb, dt, input_EI, input_fat, days, checkValues)
 }
 
-child_weight_wrapper <- function(age, sex, FFM, FM, input_EIntake, days, checkValues) {
-    .Call('_bw_child_weight_wrapper', PACKAGE = 'bw', age, sex, FFM, FM, input_EIntake, days, checkValues)
+child_weight_wrapper <- function(age, sex, FFM, FM, input_EIntake, days, dt, checkValues) {
+    .Call('_bw_child_weight_wrapper', PACKAGE = 'bw', age, sex, FFM, FM, input_EIntake, days, dt, checkValues)
 }
 
-intake_reference_wrapper <- function(age, sex, FFM, FM, days) {
-    .Call('_bw_intake_reference_wrapper', PACKAGE = 'bw', age, sex, FFM, FM, days)
+child_weight_wrapper_richardson <- function(age, sex, FFM, FM, K, Q, A, B, nu, C, days, dt, checkValues) {
+    .Call('_bw_child_weight_wrapper_richardson', PACKAGE = 'bw', age, sex, FFM, FM, K, Q, A, B, nu, C, days, dt, checkValues)
+}
+
+intake_reference_wrapper <- function(age, sex, FFM, FM, days, dt) {
+    .Call('_bw_intake_reference_wrapper', PACKAGE = 'bw', age, sex, FFM, FM, days, dt)
 }
 
 mass_reference_wrapper <- function(age, sex) {

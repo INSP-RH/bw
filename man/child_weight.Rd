@@ -5,8 +5,9 @@
 \title{Dynamic Children Weight Change Model}
 \usage{
 child_weight(age, sex, FM = child_reference_FFMandFM(age, sex)$FM,
-  FFM = child_reference_FFMandFM(age, sex)$FFM, EI = child_reference_EI(age,
-  sex, FM, FFM, days), days = 365, checkValues = TRUE)
+  FFM = child_reference_FFMandFM(age, sex)$FFM, EI = NA,
+  richardsonparams = list(K = NA, Q = NA, B = NA, A = NA, nu = NA, C = NA),
+  days = 365, dt = 1, checkValues = TRUE)
 }
 \arguments{
 \item{age}{(vector) Age of individual (yrs)}
@@ -17,16 +18,26 @@ child_weight(age, sex, FM = child_reference_FFMandFM(age, sex)$FM,
 
 \item{FFM}{(vector) Fat Free Mass at Baseline}
 
-\item{EI}{(matrix) Numeric Matrix with energy intake
+\item{EI}{(matrix) Numeric Matrix with energy intake}
+
+\item{richardsonparams}{(list) List of parameters for Richardson's curve for energy. See details.
 
 \strong{ Optional }}
 
 \item{days}{(numeric) Days to run the model.}
 
+\item{dt}{(double) Time step for Rungue-Kutta method}
+
 \item{checkValues}{(boolean) Checks whether values of fat mass and free fat mass are possible}
 }
 \description{
 Estimates weight given age, sex, fat mass, and fat free mass,
+}
+\details{
+\code{richardsonparams} is a named list of parameters:
+\code{K}, \code{A}, \code{Q}, \code{C}, \code{B}, \code{nu}
+which result in Richardon's cure:
+\deqn{A + \frac{K-A}{(C + Q exp(-B*t))^{1/nu}}}
 }
 \examples{
 #EXAMPLE 1: INDIVIDUAL MODELLING
@@ -36,6 +47,11 @@ child_weight(6,"male")
 
 #For a child with specific energy intake
 child_weight(6,"male",2.5, 16, as.matrix(rep(2000, 365)))
+
+#Using Richardson's energy
+girl <- child_weight(6,"female", days=365, dt = 5, 
+                     richardsonparams = list(K = 2700, Q = 10, B = 12, A = 3, nu = 4, C = 1))
+plot(girl$Body_Weight[1,])
 
 #EXAMPLE 2: DATASET MODELLING
 #--------------------------------------------------------
@@ -47,8 +63,12 @@ sexes   <- c("male", "female", "female", "male", "male")
 
 #With specific energy intake
 eintake <- matrix(rep(2000, 365*5), ncol = 5)
+
 #Returns a weight change matrix and other matrices
 model_weight <- child_weight(ages, sexes, Fat, FatFree, eintake)
+
+model_weight_2 <- child_weight(ages, sexes, Fat, FatFree, 
+                    richardsonparams = list(K = 2700, Q = 10, B = 12, A = 3, nu = 4, C = 1))
          
 }
 \references{

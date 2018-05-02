@@ -7,12 +7,20 @@
 #' @param FM       (vector) Fat Mass at Baseline
 #' @param FFM      (vector) Fat Free Mass at Baseline
 #' @param EI       (matrix) Numeric Matrix with energy intake
+#' @param richardsonparams (list) List of parameters for Richardson's curve for energy. See details.
 #' 
 #' \strong{ Optional }
 #' @param days     (numeric) Days to run the model.
 #' @param checkValues (boolean) Checks whether values of fat mass and free fat mass are possible
+#' @param dt       (double) Time step for Rungue-Kutta method
+#' 
 #' @author Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 #' @author Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
+#' 
+#' @details \code{richardsonparams} is a named list of parameters:
+#' \code{K}, \code{A}, \code{Q}, \code{C}, \code{B}, \code{nu}
+#' which result in Richardon's cure:
+#' \deqn{A + \frac{K-A}{(C + Q exp(-B*t))^{1/nu}}}
 #' 
 #' @useDynLib bw
 #' @import compiler
@@ -34,6 +42,11 @@
 #' #For a child with specific energy intake
 #' child_weight(6,"male",2.5, 16, as.matrix(rep(2000, 365)))
 #' 
+#' #Using Richardson's energy
+#' girl <- child_weight(6,"female", days=365, dt = 5, 
+#'                      richardsonparams = list(K = 2700, Q = 10, B = 12, A = 3, nu = 4, C = 1))
+#' plot(girl$Body_Weight[1,])
+#' 
 #' #EXAMPLE 2: DATASET MODELLING
 #' #--------------------------------------------------------
 #' #Antropometric data
@@ -44,14 +57,21 @@
 #' 
 #' #With specific energy intake
 #' eintake <- matrix(rep(2000, 365*5), ncol = 5)
+#' 
 #' #Returns a weight change matrix and other matrices
 #' model_weight <- child_weight(ages, sexes, Fat, FatFree, eintake)
+#' 
+#' model_weight_2 <- child_weight(ages, sexes, Fat, FatFree, 
+#'                     richardsonparams = list(K = 2700, Q = 10, B = 12, A = 3, nu = 4, C = 1))
 #'          
 #' @export
 #'
 
-child_weight <- function(age, sex, FM = child_reference_FFMandFM(age, sex)$FM, FFM = child_reference_FFMandFM(age, sex)$FFM, EI = child_reference_EI(age, sex, FM, FFM, days), 
-                         days = 365, checkValues = TRUE){
+child_weight <- function(age, sex, FM = child_reference_FFMandFM(age, sex)$FM, 
+                         FFM = child_reference_FFMandFM(age, sex)$FFM, 
+                         EI = NA, 
+                         richardsonparams = list(K = NA, Q = NA, B = NA, A = NA, nu = NA, C = NA),
+                         days = 365, dt = 1, checkValues = TRUE){
   
   #Check all variables are positive
   if (any(age < 0) || any(FM < 0) || any(FFM < 0)){
@@ -81,11 +101,32 @@ child_weight <- function(age, sex, FM = child_reference_FFMandFM(age, sex)$FM, F
                    " instead."))
   }
   
+  #Check that dt is > 0
+  if (dt < 0 || dt > days){
+    stop(paste0("Invalid time step dt; please choose 0 < dt < days"))
+  }
+  
+  #Check if is na logistic and params
+  if (!is.matrix(EI) & (is.na(richardsonparams$K) || is.na(richardsonparams$Q) || 
+                   is.na(richardsonparams$A) || is.na(richardsonparams$B) || 
+                   is.na(richardsonparams$nu) || is.na(richardsonparams$C))){
+    EI <- child_reference_EI(age, sex, FM, FFM, days, dt)
+  }
+  
   #Change sex to numeric for c++
   newsex                         <- rep(0, length(sex))
   newsex[which(sex == "female")] <- 1
   
-  wt <- child_weight_wrapper(age, newsex, FFM, FM, as.matrix(EI), days, checkValues)
+  #Choose between richardson curve or given energy intake
+  if (is.matrix(EI)){
+    wt <- child_weight_wrapper(age, newsex, FFM, FM, as.matrix(EI), days, dt, checkValues)  
+  } else {
+    wt <- child_weight_wrapper_richardson(age, newsex, FFM, FM, richardsonparams$K, 
+                               richardsonparams$Q, richardsonparams$A, 
+                               richardsonparams$B, richardsonparams$nu, 
+                               richardsonparams$C, days, dt, checkValues)
+  }
+  
   
   return(wt)
   

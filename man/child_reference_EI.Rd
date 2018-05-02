@@ -4,7 +4,7 @@
 \alias{child_reference_EI}
 \title{Energy Intake Matrix}
 \usage{
-child_reference_EI(age, sex, FM, FFM, days)
+child_reference_EI(age, sex, FM, FFM, days, dt = 1)
 }
 \arguments{
 \item{age}{(vector) Age of individual (yrs)}
@@ -18,6 +18,8 @@ child_reference_EI(age, sex, FM, FFM, days)
 \strong{ Optional }}
 
 \item{days}{(numeric) Days to run the model.}
+
+\item{dt}{(double) Step for RK4}
 }
 \description{
 Estimates weight given age, sex, fat mass, and fat free mass,

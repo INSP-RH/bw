@@ -6,9 +6,11 @@
 #' @param sex      (vector) Sex either \code{"female"} or \code{"male"}
 #' @param FM       (vector) Fat Mass at Baseline
 #' @param FFM      (vector) Fat Free Mass at Baseline
-#' 
+#'
 #' \strong{ Optional }
 #' @param days     (numeric) Days to run the model.
+#' @param dt       (double) Step for RK4
+#' 
 #' @author Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}
 #' @author Dalia Camacho-García-Formentí \email{daliaf172@gmail.com}
 #' 
@@ -37,7 +39,7 @@
 #' @keywords internal
 #' @export
 
-child_reference_EI <- function(age, sex, FM, FFM, days){
+child_reference_EI <- function(age, sex, FM, FFM, days, dt = 1){
   
   #Change sex to numeric for c++
   newsex                         <- rep(0, length(sex))
@@ -71,6 +73,11 @@ child_reference_EI <- function(age, sex, FM, FFM, days){
                    " instead."))
   }
   
+  #Check that dt is > 0
+  if (dt < 0 || dt > days){
+    stop(paste0("Invalid time step dt; please choose 0 < dt < days"))
+  }
+  
   #Get c++ function
-  t(intake_reference_wrapper(age, newsex, FM, FFM, days))
+  t(intake_reference_wrapper(age, newsex, FM, FFM, days, dt))
 }
