@@ -251,12 +251,25 @@ List Child::rk4 (double days){
         //Update FFM and FM
         ModelFFM(_,i) = ModelFFM(_,i-1) + dt * (k1(0,_) + 2.0*k2(0,_) + 2.0*k3(0,_) + k4(0,_))/6.0;        //ffm
         ModelFM(_,i)  = ModelFM(_,i-1) + dt * (k1(1,_) + 2.0*k2(1,_) + 2.0*k3(1,_) + k4(1,_))/6.0;        //fm
+      
+      /*//Lo que según yo entiendo tendría que ser el RK4
+      
+        k1 = dMass(AGE(_,i-1), ModelFFM(_,i-1), ModelFM(_,i-1));
+        k2 = dMass(AGE(_,i-1) + 0.5 * dt, ModelFFM(_,i-1) + 0.5 * k1(0,_), ModelFM(_,i-1) + 0.5 * k1(1,_));
+        k3 = dMass(AGE(_,i-1) + 0.5 * dt, ModelFFM(_,i-1) + 0.5 * k2(0,_), ModelFM(_,i-1) + 0.5 * k2(1,_));
+        k4 = dMass(AGE(_,i-1) + dt, ModelFFM(_,i-1) + k3(0,_), ModelFM(_,i-1) +  k3(1,_));
+        
+        //Update FFM and FM
+        ModelFFM(_,i) = ModelFFM(_,i-1) + dt * (k1(0,_) + 2.0*k2(0,_) + 2.0*k3(0,_) + k4(0,_))/6.0;        //ffm
+        ModelFM(_,i)  = ModelFM(_,i-1) + dt * (k1(1,_) + 2.0*k2(1,_) + 2.0*k3(1,_) + k4(1,_))/6.0;        //
+      
+      */
         
         //Update weight
         ModelBW(_,i) = ModelFFM(_,i) + ModelFM(_,i);
         
         //Update TIME(i-1)
-        TIME(i) = TIME(i-1) + 1;
+        TIME(i) = TIME(i-1) + dt;
         
         //Update AGE variable
         AGE(_,i) = AGE(_,i-1) + dt/365.0;
