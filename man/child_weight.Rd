@@ -46,7 +46,7 @@ which result in Richardon's cure:
 child_weight(6,"male")
 
 #For a child with specific energy intake
-child_weight(6,"male",2.5, 16, as.matrix(rep(2000, 365)))
+child_weight(6,"male",2.5, 16, as.matrix(rep(2000, 365)), days = 365)
 
 #Using Richardson's energy
 girl <- child_weight(6,"female", days=365, dt = 5, 

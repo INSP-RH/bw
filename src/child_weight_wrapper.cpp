@@ -20,7 +20,27 @@
 //  Dalia Camacho-García-Formentí
 //  Rodrigo Zepeda-Tello
 //
-//  Copyright: Instituto Nacional de Salud Pública de México
+//----------------------------------------------------------------------------------------
+// License: MIT
+// Copyright 2018 Instituto Nacional de Salud Pública de México
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+// and associated documentation files (the "Software"), to deal in the Software without restriction,
+// including without limitation the rights to use, copy, modify, merge, publish, distribute,
+// sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
+// is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all copies
+// or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+// BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//----------------------------------------------------------------------------------------
+
+
+
 
 #include <Rcpp.h>
 #include "child_weight.h"
@@ -32,7 +52,7 @@ List child_weight_wrapper(NumericVector age, NumericVector sex, NumericVector FF
     Child Person (age,  sex, FFM, FM, input_EIntake, dt, checkValues);
     
     //Run model using RK4
-    return Person.rk4(days);
+    return Person.rk4(days - 1); //days - 1 to account for extra day (c++ indexing starts in 0; R in 1)
     
 }
 
@@ -43,7 +63,7 @@ List child_weight_wrapper_richardson(NumericVector age, NumericVector sex, Numer
     Child Person (age,  sex, FFM, FM, K, Q, A, B, nu, C, dt, checkValues);
     
     //Run model using RK4
-    return Person.rk4(days);
+    return Person.rk4(days - 1); //days - 1 to account for extra day (c++ indexing starts in 0; R in 1)
     
 }
 

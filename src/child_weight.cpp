@@ -89,8 +89,7 @@ NumericVector Child::Delta(NumericVector t){
 }
 
 NumericVector Child::FFMReference(NumericVector t){ 
-    return ffm_beta0 + ffm_beta1*t;
- /*
+  /*  return ffm_beta0 + ffm_beta1*t; */
    NumericMatrix ffm_ref(17,nind);
     ffm_ref(0,_)   = 10.134*(1-sex)+9.477*sex;
     ffm_ref(1,_)   = 12.099*(1 - sex) + 11.494*sex;
@@ -124,14 +123,13 @@ NumericVector Child::FFMReference(NumericVector t){
    jmax= std::min(jmin+1,17);
    diff= t(i)-floor(t(i));
    ffm_ref_t(i)=ffm_ref(jmin,i)+diff*(ffm_ref(jmax,i)-ffm_ref(jmin,i));
-  } 
-}
-  return ffm_ref_t;*/
+    }
+    }
+  return ffm_ref_t;
 }
 
 NumericVector Child::FMReference(NumericVector t){
-    return fm_beta0 + fm_beta1*t;
- /*
+   /* return fm_beta0 + fm_beta1*t;*/
     NumericMatrix fm_ref(17,nind);
     fm_ref(0,_)   = 2.456*(1-sex)+ 2.433*sex;
     fm_ref(1,_)   = 2.576*(1 - sex) + 2.606*sex;
@@ -167,8 +165,6 @@ NumericVector Child::FMReference(NumericVector t){
   } 
 }
   return fm_ref_t;
-*/
-
 }
 
 NumericVector Child::IntakeReference(NumericVector t){
@@ -181,8 +177,6 @@ NumericVector Child::IntakeReference(NumericVector t){
     NumericVector rhoFFM  = cRhoFFM(FFMref);
     return EB + K + (22.4 + delta)*FFMref + (4.5 + delta)*FMref +
                 230.0/rhoFFM*(p*EB + growth) + 180.0/rhoFM*((1-p)*EB-growth);
- 
- 
 }
 
 NumericVector Child::Expenditure(NumericVector t, NumericVector FFM, NumericVector FM){
@@ -224,7 +218,6 @@ List Child::rk4 (double days){
     
     //Loop through all other states
     bool correctVals = true;
-    
     for (int i = 1; i <= nsims; i++){
         /*if (check){
             for (int k = 0; k < nind; k++){
@@ -248,18 +241,20 @@ List Child::rk4 (double days){
         k3 = dMass(AGE(_,i-1) + 0.5 * dt/365.0, ModelFFM(_,i-1) + 0.5 * k2(0,_), ModelFM(_,i-1) + 0.5 * k2(1,_));
         k4 = dMass(AGE(_,i-1) + dt/365.0, ModelFFM(_,i-1) + k3(0,_), ModelFM(_,i-1) +  k3(1,_));
         
-        //Update FFM and FM
-        ModelFFM(_,i) = ModelFFM(_,i-1) + dt/365.0 * (k1(0,_) + 2.0*k2(0,_) + 2.0*k3(0,_) + k4(0,_))/6.0;        //ffm
-        ModelFM(_,i)  = ModelFM(_,i-1) + dt/365.0 * (k1(1,_) + 2.0*k2(1,_) + 2.0*k3(1,_) + k4(1,_))/6.0;        //
+        //Update of function values
+        //Note: The dt is factored from the k1, k2, k3, k4 defined on the Wikipedia page and that is why
+        //      it appears here.
+        ModelFFM(_,i) = ModelFFM(_,i-1) + dt*(k1(0,_) + 2.0*k2(0,_) + 2.0*k3(0,_) + k4(0,_))/6.0;        //ffm
+        ModelFM(_,i)  = ModelFM(_,i-1)  + dt*(k1(1,_) + 2.0*k2(1,_) + 2.0*k3(1,_) + k4(1,_))/6.0;        //fm
         
         //Update weight
         ModelBW(_,i) = ModelFFM(_,i) + ModelFM(_,i);
         
         //Update TIME(i-1)
-        TIME(i) = TIME(i-1) + dt; // dt/365.0 ??
+        TIME(i) = TIME(i-1) + dt; // Currently time counts the time (days) passed since start of model
         
         //Update AGE variable
-        AGE(_,i) = AGE(_,i-1) + dt/365.0;
+        AGE(_,i) = AGE(_,i-1) + dt/365.0; //Age is variable in years
     }
     
     return List::create(Named("Time") = TIME,
@@ -306,12 +301,12 @@ void Child::getParameters(void){
     A         = 3.2*(1 - sex)  + 2.3*sex;
     B         = 9.6*(1 - sex)  + 8.4*sex;
     D         = 10.1*(1 - sex) + 1.1*sex;
-    tA        = 4.7*(1 - sex)  + 4.5*sex;
-    tB        = 12.5*(1 - sex) + 11.7*sex;
-    tD        = 15.0*(1-sex)   + 16.2*sex;
-    tauA      = 2.5*(1 - sex)  + 1.0*sex;
-    tauB      = 1.0*(1 - sex)  + 0.9*sex;
-    tauD      = 1.5*(1 - sex)  + 0.7*sex;
+    tA        = 4.7*(1 - sex)  + 4.5*sex;       //years
+    tB        = 12.5*(1 - sex) + 11.7*sex;      //years
+    tD        = 15.0*(1-sex)   + 16.2*sex;      //years
+    tauA      = 2.5*(1 - sex)  + 1.0*sex;       //years
+    tauB      = 1.0*(1 - sex)  + 0.9*sex;       //years
+    tauD      = 1.5*(1 - sex)  + 0.7*sex;       //years
     A_EB      = 7.2*(1 - sex)  + 16.5*sex;
     B_EB      = 30*(1 - sex)   + 47.0*sex;
     D_EB      = 21*(1 - sex)   + 41.0*sex;
@@ -336,9 +331,9 @@ void Child::getParameters(void){
 //Intake in calories
 NumericVector Child::Intake(NumericVector t){
     if (generalized_logistic) {
-        return A_logistic + (K_logistic - A_logistic)/pow(C_logistic + Q_logistic*exp(-B_logistic*t/365.0), 1/nu_logistic);
+        return A_logistic + (K_logistic - A_logistic)/pow(C_logistic + Q_logistic*exp(-B_logistic*t), 1/nu_logistic); //t in years
     } else {
-        int timeval = floor(t(0) - age(0));
+        int timeval = floor(365.0*(t(0) - age(0))/dt); //Example: Age: 6 and t: 7.1 => timeval = 401 which corresponds to the 401 entry of matrix
         return EIntake(timeval,_);
     }
     

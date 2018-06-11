@@ -171,12 +171,12 @@ model_stepwise_l  <- child_weight(10, "male", EI = EIstepwise_l, days = 730)
 Which look as follows:
 ```{r, echo = FALSE, fig.width=7, fig.height=4}
 ggplot() +
-  geom_line(aes(x = 0:730, y = as.vector(model_linear[["Body_Weight"]]), color = "Linear")) + 
-  geom_line(aes(x = 0:730, y = as.vector(model_exponential[["Body_Weight"]]), color = "Exponential")) + 
-  geom_line(aes(x = 0:730, y = as.vector(model_logarithmic[["Body_Weight"]]), color = "Logarithmic")) + 
-  geom_line(aes(x = 0:730, y = as.vector(model_stepwise_r[["Body_Weight"]]), color = "Right Stepwise")) + 
-  geom_line(aes(x = 0:730, y = as.vector(model_stepwise_l[["Body_Weight"]]), color = "Left Stepwise")) + 
-  geom_line(aes(x = 0:730, y = as.vector(model_brownian[["Body_Weight"]]), color = "Brownian")) +
+  geom_line(aes(x = 1:730, y = as.vector(model_linear[["Body_Weight"]]), color = "Linear")) + 
+  geom_line(aes(x = 1:730, y = as.vector(model_exponential[["Body_Weight"]]), color = "Exponential")) + 
+  geom_line(aes(x = 1:730, y = as.vector(model_logarithmic[["Body_Weight"]]), color = "Logarithmic")) + 
+  geom_line(aes(x = 1:730, y = as.vector(model_stepwise_r[["Body_Weight"]]), color = "Right Stepwise")) + 
+  geom_line(aes(x = 1:730, y = as.vector(model_stepwise_l[["Body_Weight"]]), color = "Left Stepwise")) + 
+  geom_line(aes(x = 1:730, y = as.vector(model_brownian[["Body_Weight"]]), color = "Brownian")) +
   xlab("Days") + ylab("Weight (kg)") + 
   ggtitle("Weight change under different energy interpolations") + 
     scale_color_manual("Interpolation", 
