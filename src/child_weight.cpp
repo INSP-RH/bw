@@ -89,8 +89,8 @@ NumericVector Child::Delta(NumericVector t){
 }
 
 NumericVector Child::FFMReference(NumericVector t){ 
-     //   return ffm_beta0 + ffm_beta1*t;
- 
+    return ffm_beta0 + ffm_beta1*t;
+ /*
    NumericMatrix ffm_ref(17,nind);
     ffm_ref(0,_)   = 10.134*(1-sex)+9.477*sex;
     ffm_ref(1,_)   = 12.099*(1 - sex) + 11.494*sex;
@@ -126,12 +126,12 @@ NumericVector Child::FFMReference(NumericVector t){
    ffm_ref_t(i)=ffm_ref(jmin,i)+diff*(ffm_ref(jmax,i)-ffm_ref(jmin,i));
   } 
 }
-  return ffm_ref_t;
+  return ffm_ref_t;*/
 }
 
 NumericVector Child::FMReference(NumericVector t){
-      //  return fm_beta0 + fm_beta1*t;
- 
+    return fm_beta0 + fm_beta1*t;
+ /*
     NumericMatrix fm_ref(17,nind);
     fm_ref(0,_)   = 2.456*(1-sex)+ 2.433*sex;
     fm_ref(1,_)   = 2.576*(1 - sex) + 2.606*sex;
@@ -167,7 +167,7 @@ NumericVector Child::FMReference(NumericVector t){
   } 
 }
   return fm_ref_t;
-
+*/
 
 }
 
@@ -256,7 +256,7 @@ List Child::rk4 (double days){
         ModelBW(_,i) = ModelFFM(_,i) + ModelFM(_,i);
         
         //Update TIME(i-1)
-        TIME(i) = TIME(i-1) + dt;
+        TIME(i) = TIME(i-1) + dt; // dt/365.0 ??
         
         //Update AGE variable
         AGE(_,i) = AGE(_,i-1) + dt/365.0;
@@ -288,7 +288,7 @@ NumericMatrix  Child::dMass (NumericVector t, NumericVector FFM, NumericVector F
 void Child::getParameters(void){
     
     //General constants
-    rhoFM    = 9.4*1000;
+    rhoFM    = 9.4*1000.0;
     deltamin = 10.0;
     P        = 12.0;
     h        = 10.0;
