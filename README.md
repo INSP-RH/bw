@@ -10,7 +10,7 @@ To install the latest version please run the following code:
 
 ``` r
 if (!require(devtools)){install.packages("devtools")}
-devtools::install_github("INSP-RH/bw", build_vignettes = TRUE)
+devtools::install_github("INSP-RH/bw")
 ```
 
 Adult Model
