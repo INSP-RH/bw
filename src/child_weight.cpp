@@ -1,10 +1,52 @@
 //
-//  Child.cpp
-//  AdultHall
+//  child_weight.cpp
 //
-//  Created by Rodrigo Zepeda Tello on 26/05/17.
-//  Copyright © 2017 Instituto Nacional de Salud Publica. All rights reserved.
+//  This is a function that calculates
+//  weight change for children using the dynamic
+//  weight model by Kevin D. Hall et al. and
+//  Runge Kutta method to solve the ODE system.
 //
+//  Input:
+//  age             .-  Years since individual first arrived to Earth
+//  sex             .-  Either 1 = "female" or 0 = "male"
+//  FFM             .-  Fat Free Mass (kg) of the individual
+//  FM              .-  Fat Mass (kg) of the individual
+//  input_EIntake   .-  Energy intake (kcal) of individual per day
+//  days            .-  Days to model (integer)
+//  dt              .-  Time step used to solve the ODE system numerically
+//  K               .-  Richardson parameter
+//  Q               .-  Richardson parameter
+//  A               .-  Richardson parameter
+//  B               .-  Richardson parameter
+//  nu              .-  Richardson parameter
+//  C               .-  Richardson parameter
+//  Note:
+//  Weight = FFM + FM. No extracellular fluid or glycogen is considered
+//  Please see child_weight.hpp for additional information
+//
+//  Authors:
+//  Dalia Camacho-García-Formentí
+//  Rodrigo Zepeda-Tello
+//
+//----------------------------------------------------------------------------------------
+// License: MIT
+// Copyright 2018 Instituto Nacional de Salud Pública de México
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+// and associated documentation files (the "Software"), to deal in the Software without restriction,
+// including without limitation the rights to use, copy, modify, merge, publish, distribute,
+// sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
+// is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all copies
+// or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+// BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//----------------------------------------------------------------------------------------
+
 
 #include "child_weight.h"
 

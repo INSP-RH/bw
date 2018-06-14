@@ -54,11 +54,6 @@ change is non-cummulative and it's all from baseline.
 As an example, \code{EIchange <- rep(-100, 50)} represents that 
 each day \code{-100} kcals are reduced from consumption.
 }
-\note{
-Wee still haven't solved how to be able to change de
-Rungue-Kutta \code{dt} parameter. For now it is a day; but for faster
-models it should be changeable.
-}
 \examples{
 #EXAMPLE 1: INDIVIDUAL MODELLING
 #--------------------------------------------------------

@@ -2,16 +2,23 @@
 //  child_weight_wrapper.cpp
 //
 //  This is a function that uses Rcpp to return
-//  weight change for Children using the dynamic
+//  weight change for children using the dynamic
 //  weight model by Kevin D. Hall et al.
 //
 //  Input:
-//  age  .-  Years since individual first arrived to Earth
-//  sex  .-  Either 1 = "female" or 0 = "male"
-//  FFM  .-  Fat Free Mass (kg) of the individual
-//  FM   .-  Fat Mass (kg) of the individual
-//  days .-  Days to model (integer)
-//
+//  age             .-  Years since individual first arrived to Earth
+//  sex             .-  Either 1 = "female" or 0 = "male"
+//  FFM             .-  Fat Free Mass (kg) of the individual
+//  FM              .-  Fat Mass (kg) of the individual
+//  input_EIntake   .-  Energy intake (kcal) of individual per day
+//  days            .-  Days to model (integer)
+//  dt              .-  Time step used to solve the ODE system numerically
+//  K               .-  Richardson parameter
+//  Q               .-  Richardson parameter
+//  A               .-  Richardson parameter
+//  B               .-  Richardson parameter
+//  nu              .-  Richardson parameter
+//  C               .-  Richardson parameter
 //  Note:
 //  Weight = FFM + FM. No extracellular fluid or glycogen is considered
 //  Please see child_weight.hpp for additional information

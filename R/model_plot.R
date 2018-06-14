@@ -123,6 +123,9 @@ model_plot <- function(weight,
     
   }
   
-  do.call("grid.arrange", c(plotlist, ncol= ncol, top = title))
+  if (nplots == 1){ plotlist[[1]] } else {
+    do.call("grid.arrange", c(plotlist, ncol= ncol, top = title))  
+  }
+  
   
 }

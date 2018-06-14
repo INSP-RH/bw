@@ -31,9 +31,6 @@
 #' As an example, \code{EIchange <- rep(-100, 50)} represents that 
 #' each day \code{-100} kcals are reduced from consumption. 
 #' 
-#' @note Wee still haven't solved how to be able to change de
-#' Rungue-Kutta \code{dt} parameter. For now it is a day; but for faster
-#' models it should be changeable. 
 #' 
 #' @useDynLib bw
 #' @import compiler
