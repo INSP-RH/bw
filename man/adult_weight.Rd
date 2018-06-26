@@ -4,11 +4,12 @@
 \alias{adult_weight}
 \title{Dynamic Adult Weight Change Model}
 \usage{
-adult_weight(bw, ht, age, sex, EIchange = matrix(0, ncol = ceiling(days/dt),
-  nrow = length(bw)), NAchange = matrix(0, ncol = ceiling(days/dt), nrow =
-  length(bw)), EI = NA, fat = NA, PAL = rep(1.5, length(bw)),
-  pcarb_base = rep(0.5, length(bw)), pcarb = pcarb_base, days = 365,
-  dt = 1, checkValues = TRUE)
+adult_weight(bw, ht, age, sex, EIchange = matrix(0, ncol =
+  abs(ceiling(days/dt)), nrow = length(bw)), NAchange = matrix(0, ncol =
+  abs(ceiling(days/dt)), nrow = length(bw)), EI = NA, fat = rep(NA,
+  length(bw)), PAL = rep(1.5, length(bw)), pcarb_base = rep(0.5,
+  length(bw)), pcarb = pcarb_base, days = 365, dt = 1,
+  checkValues = TRUE)
 }
 \arguments{
 \item{bw}{(vector) Body weight for model (kg)}

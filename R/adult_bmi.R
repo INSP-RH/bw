@@ -94,9 +94,22 @@ adult_bmi  <- function(weight,
                                           data = as.data.frame(weight[["BMI_Category"]])),
                        confidence = 0.95){
   
-  #Throw warning that it will take time
+  #Throw message that it will take time
   if (length(days) > 50){
-    warning("This process will take some time...")
+    message("This process will take some time...")
+  }
+  
+  # Check time values
+  if(any(unlist(lapply(days, function(day){
+    if(day %in% weight$Time){TRUE}
+    else{FALSE}})))==FALSE){
+    stop("Some time values are not available in object weight")
+  }
+  
+  # Check groups do not exceed individuals
+  if(length(group)>1 & length(group)!=nrow(weight$BMI_Category)){
+    stop(paste("Dimension mismatch.",
+               "Group must be defined for every individual or a unique for all individuals."))
   }
   
   #Check confidence
@@ -106,7 +119,7 @@ adult_bmi  <- function(weight,
   
   #Create empty data frame
   mydata <- as.data.frame(matrix(NA, ncol = 5, nrow = 0))
-
+  
   #Set time to integers
   days <- which(weight[["Time"]] %in% floor(days))
   
@@ -141,11 +154,20 @@ adult_bmi  <- function(weight,
     colnames(confmean) <- c()
     
     #Create data frame
-    today    <- data.frame(Day = weight[["Time"]][days[t]], 
-                           Group = mymean$group, 
-                           BMI_Category = varnames, 
-                           Mean = mu,
-                           confmean)
+    if(exists("mymean")){
+      today    <- data.frame(Day = weight[["Time"]][days[t]], 
+                             Group = mymean$group, 
+                             BMI_Category = varnames, 
+                             Mean = mu,
+                             confmean)
+    }else{
+      today    <- data.frame(Day = weight[["Time"]][days[t]], 
+                             Group = NA, 
+                             BMI_Category = varnames, 
+                             Mean = mu,
+                             confmean)
+    }
+
     
     #Bind to previous data
     mydata <- rbind(mydata, today)

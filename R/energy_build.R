@@ -68,6 +68,11 @@ energy_build <- function(energy, time, interpolation = "Brownian"){
     energy <- matrix(energy, nrow = 1)
   }
   
+  #Check that time is a vector
+  if(is.vector(time)==FALSE){
+    stop("Variable time should be a vector. Time values are the same for all individuals")
+  }
+  
   #Check that energy has same columns as time length
   if (ncol(energy) != length(time)){
     stop(paste0("energy matrix has different number of columns than length(time).",
@@ -75,15 +80,25 @@ energy_build <- function(energy, time, interpolation = "Brownian"){
                 "in time."))
   }
   
-  #Check that initial kcal change == 0
-  #if (length(which(energy[,1] != 0)) > 1){
-  #  warning(paste0("Initial energy change != 0. If you are interpolating change,", 
-  #                 "make sure energy change = 0 at time 0"))
-  #}
+  # Check that time values are non negative
+  if(any(time<0)){
+    stop("Values in time should be positive.")
+  }
+  
+  # Check that time values are integers
+  if(any((round(time)!=time))){
+    stop("Values in time should be integer.")
+  }
   
   #Check that first time element is 0
   if (time[1] != 0){
     stop("First element of time, time[1], must always equal 0")
+  }
+  
+  # Check that time is increasing
+  
+  if(any(time!=time[order(time)]) || length(time)!= length(unique(time))){
+    stop("Time values should be increasing, and there should be no repeated values.")
   }
   
   #Check that interpolation in list

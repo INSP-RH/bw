@@ -2,17 +2,15 @@
 % Please edit documentation in R/model_mean.R
 \name{model_mean}
 \alias{model_mean}
-\title{Get Mean results from Adult Weight Change Model}
+\title{Get Mean results from Adult model Change Model}
 \usage{
-model_mean(weight, meanvars = names(weight)[-which(names(weight) \%in\%
-  c("Time", "BMI_Category", "Correct_Values"))], days = seq(0,
-  length(weight[["Time"]]) - 1, length.out = 25), group = rep(1,
-  nrow(weight[[meanvars[1]]])), design = svydesign(ids = ~1, weights = rep(1,
-  nrow(weight[[meanvars[1]]])), data = as.data.frame(weight[meanvars[1]])),
-  confidence = 0.95)
+model_mean(model, meanvars = names(model)[-which(names(model) \%in\% c("Time",
+  "BMI_Category", "Correct_Values", "Model_Type"))], days = seq(0,
+  length(model[["Time"]]) - 1, length.out = 25), group = rep(1,
+  nrow(model[[meanvars[1]]])), design = NA, confidence = 0.95)
 }
 \arguments{
-\item{weight}{(list) List from \code{\link{adult_weight}} or \code{\link{adult_weight}}.
+\item{model}{(list) List from \code{\link{adult_weight}} or \code{\link{adult_weight}}.
 
 \strong{ Optional }}
 
@@ -40,7 +38,7 @@ The default \code{design} is that of simple random sampling.
 #--------------------------------------------------------
 
 #Antropometric data
-weights <- c(45, 67, 58, 92, 81)
+models <- c(45, 67, 58, 92, 81)
 heights <- c(1.30, 1.73, 1.77, 1.92, 1.73)
 ages    <- c(45, 23, 66, 44, 23)
 sexes   <- c("male", "female", "female", "male", "male") 
@@ -49,21 +47,21 @@ sexes   <- c("male", "female", "female", "male", "male")
 EIchange <- rbind(rep(-100, 365), rep(-200, 365), rep(-200, 365), 
                   rep(-123, 365), rep(-50, 365))
 
-#Create weight change model
-model_weight <- adult_weight(weights, heights, ages, sexes, 
+#Create model change model
+model_model <- adult_weight(models, heights, ages, sexes, 
                              EIchange)
                              
 #Calculate survey mean and variance for 25 days
-aggregate_data <- model_mean(model_weight)
+aggregate_data <- model_mean(model_model)
 
 #You can plot the mean with ci
 \dontrun{
 if(require(ggplot2)){
-ggplot(subset(aggregate_data, variable == "Body_Weight")) + 
+ggplot(subset(aggregate_data, variable == "Body_model")) + 
     geom_line(aes(x = time, y = mean)) +
     geom_line(aes(x = time, y = Lower_CI_mean), linetype = "dashed") +
     geom_line(aes(x = time, y = Upper_CI_mean), linetype = "dashed") +
-    theme_classic() + xlab("Days") + ylab("Mean Body Weight (kg)")
+    theme_classic() + xlab("Days") + ylab("Mean Body model (kg)")
 }
 
 #EXAMPLE 1C: RANDOM SAMPLE MODELLING FOR CHILDREN
@@ -74,19 +72,19 @@ Fat     <- c(4.30, 2.02, 3.07, 1.12, 2.93)
 ages    <- c(10, 6.2, 5.4, 4, 4.1)
 sexes   <- c("male", "female", "female", "male", "male") 
 
-#Returns a weight change matrix and other matrices
-model_weight <- child_weight(ages, sexes, Fat, FatFree)
+#Returns a model change matrix and other matrices
+model_model <- child_weight(ages, sexes, Fat, FatFree)
 
 #Calculate survey mean and variance for 25 days
-aggregate_data <- model_mean(model_weight)
+aggregate_data <- model_mean(model_model)
 
 #You can plot the mean with ci
 if(require(ggplot2)){
-ggplot(subset(aggregate_data, variable == "Body_Weight")) + 
+ggplot(subset(aggregate_data, variable == "Body_model")) + 
     geom_line(aes(x = time, y = mean)) +
     geom_line(aes(x = time, y = Lower_CI_mean), linetype = "dashed") +
     geom_line(aes(x = time, y = Upper_CI_mean), linetype = "dashed") +
-    theme_classic() + xlab("Days") + ylab("Mean Body Weight (kg)")
+    theme_classic() + xlab("Days") + ylab("Mean Body model (kg)")
 }
   
 #EXAMPLE 2A: SURVEY DATA FOR ADULTS
@@ -112,27 +110,27 @@ for(i in 1:nrow(datasvy)){
     EIchange <- rbind(EIchange, rep(datasvy$kcal[i], days))
 }
 
-#Calculate weight change                   
-svyweight <- adult_weight(datasvy$bw, datasvy$ht, datasvy$age, 
+#Calculate model change                   
+svymodel <- adult_weight(datasvy$bw, datasvy$ht, datasvy$age, 
                           datasvy$sex, EIchange)
                           
 #Create survey design using survey package                           
-design <- survey::svydesign(id = ~id, weights = datasvy$svyw, 
+design <- survey::svydesign(id = ~id, models = datasvy$svyw, 
 data = datasvy)
 
 #Group to calculate means
 group  <- datasvy$group     
     
 #Calculate survey mean and variance for 25 days
-aggregate_data <- model_mean(svyweight, design = design, group = group)
+aggregate_data <- model_mean(svymodel, design = design, group = group)
 
 #You can plot the mean with ci
 if(require(ggplot2)){
-ggplot(subset(aggregate_data, variable == "Body_Weight")) + 
+ggplot(subset(aggregate_data, variable == "Body_model")) + 
     geom_ribbon(aes(x = time, ymin = Lower_CI_mean, ymax = Upper_CI_mean,
     fill = factor(group)), alpha = 0.25) +
     geom_line(aes(x = time, y = mean, color = factor(group)), size = 2) +
-    theme_classic() + xlab("Days") + ylab("Mean Body Weight (kg)") 
+    theme_classic() + xlab("Days") + ylab("Mean Body model (kg)") 
 }
 #EXAMPLE 2A: SURVEY DATA FOR CHILDREN
 #-------------------------------------------------------
@@ -150,26 +148,26 @@ datasvy <- data.frame(
 #Days
 days <- 365
 
-#Calculate weight change                   
-svyweight <- child_weight(datasvy$age, datasvy$sex, datasvy$fat, datasvy$fatfree)
+#Calculate model change                   
+svymodel <- child_weight(datasvy$age, datasvy$sex, datasvy$fat, datasvy$fatfree)
                           
 #Create survey design using survey package                           
-design <- survey::svydesign(id = ~id, weights = datasvy$svyw, 
+design <- survey::svydesign(id = ~id, models = datasvy$svyw, 
 data = datasvy)
 
 #Group to calculate means
 group  <- datasvy$group     
     
 #Calculate survey mean and variance for 25 days
-aggregate_data <- model_mean(svyweight, design = design, group = group)
+aggregate_data <- model_mean(svymodel, design = design, group = group)
 aggregate_data
 #You can plot the mean with ci
 if(require(ggplot2)){
-ggplot(subset(aggregate_data, variable == "Body_Weight")) + 
+ggplot(subset(aggregate_data, variable == "Body_model")) + 
     geom_ribbon(aes(x = time, ymin = Lower_CI_mean, ymax = Upper_CI_mean,
     fill = factor(group)), alpha = 0.25) +
     geom_line(aes(x = time, y = mean, color = factor(group)), size = 2) +
-    theme_classic() + xlab("Days") + ylab("Mean Body Weight (kg)") 
+    theme_classic() + xlab("Days") + ylab("Mean Body model (kg)") 
 }                     
 }                                                             
 }

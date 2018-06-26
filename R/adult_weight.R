@@ -88,9 +88,9 @@
 
 
 adult_weight <- function(bw, ht, age, sex, 
-                         EIchange = matrix(0, ncol = ceiling(days/dt), nrow = length(bw)), 
-                         NAchange = matrix(0, ncol = ceiling(days/dt), nrow = length(bw)), 
-                         EI = NA, fat = NA,
+                         EIchange = matrix(0, ncol = abs(ceiling(days/dt)), nrow = length(bw)), 
+                         NAchange = matrix(0, ncol = abs(ceiling(days/dt)), nrow = length(bw)), 
+                         EI = NA, fat = rep(NA, length(bw)),
                          PAL = rep(1.5, length(bw)), 
                          pcarb_base = rep(0.5, length(bw)), 
                          pcarb = pcarb_base,  days = 365, dt = 1,
@@ -111,20 +111,63 @@ adult_weight <- function(bw, ht, age, sex,
   #Check that all parameters have same length
   if (length(bw) != length(ht)  || length(bw) != length(age) || 
       length(bw) != length(sex) || length(bw) != length(PAL) || 
-      length(bw) != length(pcarb_base) || length(bw) != length(pcarb)){
-    stop(paste0("Dimension mismatch. bw, ht, age, sex, PAL, pcarb_base", 
+      length(bw) != length(pcarb_base) || length(bw) != length(pcarb) ||
+      length(bw) != length(fat)){
+    stop(paste0("Dimension mismatch. bw, ht, age, sex, PAL, fat, pcarb_base", 
                 "and pcarb don't have the same length"))
   }
   
-  #Check that they have as many rows as days
-  if (ncol(EIchange) != ceiling(days/dt)){
-    warning(paste("Dimension mismatch. EIchange and NAchange must have", 
-                  ceiling(days/dt), "rows"))
+  
+  #Check that dt is > 0
+  if (dt < 0 || dt > days){
+    stop(paste0("Invalid time step dt; please choose 0 < dt < days"))
   }
   
+  #Check that EIchange has the same number of rows as the length of bw
+  if (nrow(EIchange) != length(bw)){
+    stop(paste("Dimension mismatch. EIchange must have the", 
+               "same amount of rows as individuals."))
+  }
+  
+  #Check that they have as many columns as days
+  if (ncol(EIchange) != ceiling(days/dt)){
+    warning(paste("Dimension mismatch. EIchange and NAchange must have", 
+                  ceiling(days/dt), "columns"))
+  }
+
+  
   #Check that age, bw and height are positive
-  if (any(bw < 0) || any(ht < 0) || any(age < 0)){
-    stop("Don't know how to handle negative values in bw, ht or age")
+  if (any(bw <= 0) || any(ht <= 0) || any(age < 0)){
+    stop(paste0("Don't know how to handle negative or zero values ",
+                "in bw and ht. Nor  negative values in age."))
+  }
+  
+  #Check that age is greater than 18
+  if(any(age<18)){
+    warning(paste0("Some individuals' age is less than 18. Results",
+                   " are not be accurate for children and adolescents.",
+                   "Please use child_weight instead."))
+  }
+  
+  # Check pcarb and pcarb_base are between 0 and 1
+  if(any(pcarb_base > 1) || any(pcarb_base<0) || any(pcarb > 1) || any(pcarb<0)){
+    stop(paste0("The variables pcarb and pcarb_base are ",
+                "the proportion of carbohydrates consumed.",
+                "Therefore they must take values between 0 and 1."))
+  }
+  # Check PAL values
+  if(any(PAL <=0)){
+    stop("PAL must have a positive value")
+  }else if(any(PAL<1.4)){
+    warning(paste("Some individuals have a PAL less than 1.4, which is only",
+                  "viable in extreme cases such as: elderly mental patients,",
+                  "adolescents with cerebral palsy or myelodysplasia",
+                  "and resting adults confined to a whole body calorimeter." ,
+                  "(WHO, ENERGY REQUIREMENTS OF ADULTS)"))
+  }else if(any(PAL > 2.4)){
+    warning(paste("Some individuals have a PAL greater than 2.4, which rarely occurs",
+                 "and is not sustainable in the long term.",
+                 "(WHO, ENERGY REQUIREMENTS OF ADULTS)"))
   }
   
   #Check days > 0
@@ -137,10 +180,6 @@ adult_weight <- function(bw, ht, age, sex,
     stop(paste0("Invalid sex. Please specify either 'male' of 'female'"))
   }
   
-  #Check that dt is > 0
-  if (dt < 0 || dt > days){
-    stop(paste0("Invalid time step dt; please choose 0 < dt < days"))
-  }
   
   #Change sex to numeric for c++
   newsex                         <- rep(0, length(sex))
@@ -161,13 +200,13 @@ adult_weight <- function(bw, ht, age, sex,
                                PAL, pcarb_base, pcarb, dt, ceiling(days), checkValues)  
   } else if (!isEI && isfat) {
     wl <- adult_weight_wrapper_EI(bw, ht, age, newsex, EIchange, NAchange,
-                                PAL, pcarb_base, pcarb, dt, EI, ceiling(days), checkValues, TRUE)  
+                                  PAL, pcarb_base, pcarb, dt, EI, ceiling(days), checkValues, TRUE)  
   } else if (isEI && !isfat) {
     wl <- adult_weight_wrapper_EI(bw, ht, age, newsex, EIchange, NAchange,
                                   PAL, pcarb_base, pcarb, dt, fat, ceiling(days), checkValues, FALSE)  
   } else if (!isEI && !isfat){
     wl <- adult_weight_wrapper_EI_fat(bw, ht, age, newsex, EIchange, NAchange,
-                                  PAL, pcarb_base, pcarb, dt, EI, fat, ceiling(days), checkValues)  
+                                      PAL, pcarb_base, pcarb, dt, EI, fat, ceiling(days), checkValues)  
   }
   if(wl$Correct_Values[1]==FALSE){
     stop("One of the variables takes either negative values, or NaN, NA or infinity")

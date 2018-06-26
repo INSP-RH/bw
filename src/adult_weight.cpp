@@ -528,7 +528,8 @@ List Adult::rk4(double days){
                         Named("Body_Mass_Index") = BMI,
                         Named("BMI_Category") = CAT,
                         Named("Energy_Intake") = TEI,
-                        Named("Correct_Values")=correctVals);
+                        Named("Correct_Values")=correctVals,
+                        Named("Model_Type")="Adult");
     
 }
 

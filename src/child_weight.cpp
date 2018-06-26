@@ -137,7 +137,7 @@ NumericVector Child::FFMReference(NumericVector t){
     ffm_ref(1,_)   = 12.099*(1 - sex) + 11.494*sex;
     ffm_ref(2,_)   = 14.0*(1 - sex) + 13.2*sex;
     ffm_ref(3,_)   = 16.0*(1 - sex) + 14.7*sex;
-    ffm_ref(4,_)   = 17.4*(1 - sex) + 16.3*sex;
+    ffm_ref(4,_)   = 17.9*(1 - sex) + 16.3*sex;
     ffm_ref(5,_)   = 19.9*(1 - sex) + 18.2*sex;
     ffm_ref(6,_)   = 22.0*(1 - sex) + 20.5*sex;
     ffm_ref(7,_)   = 24.4*(1 - sex) + 23.3*sex;
@@ -304,7 +304,8 @@ List Child::rk4 (double days){
                         Named("Fat_Free_Mass") = ModelFFM,
                         Named("Fat_Mass") = ModelFM,
                         Named("Body_Weight") = ModelBW,
-                        Named("Correct_Values")=correctVals);
+                        Named("Correct_Values")=correctVals,
+                        Named("Model_Type")="Children");
 
 
 }

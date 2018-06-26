@@ -1,9 +1,9 @@
-#' @title Get Mean results from Adult Weight Change Model
+#' @title Get Mean results from Adult model Change Model
 #'
 #' @description Gets survey means \code{\link[survey]{svymean}}, standard error and
 #' confidence interval estimates of \code{\link{adult_weight}} or \code{\link{child_weight}}.
 #'
-#' @param weight     (list) List from \code{\link{adult_weight}} or \code{\link{adult_weight}}.
+#' @param model     (list) List from \code{\link{adult_weight}} or \code{\link{adult_weight}}.
 #'
 #' \strong{ Optional }
 #' @param design A \code{survey.design} object. See \code{\link[survey]{svydesign}} 
@@ -31,7 +31,7 @@
 #' #--------------------------------------------------------
 #' 
 #' #Antropometric data
-#' weights <- c(45, 67, 58, 92, 81)
+#' models <- c(45, 67, 58, 92, 81)
 #' heights <- c(1.30, 1.73, 1.77, 1.92, 1.73)
 #' ages    <- c(45, 23, 66, 44, 23)
 #' sexes   <- c("male", "female", "female", "male", "male") 
@@ -40,21 +40,21 @@
 #' EIchange <- rbind(rep(-100, 365), rep(-200, 365), rep(-200, 365), 
 #'                   rep(-123, 365), rep(-50, 365))
 #' 
-#' #Create weight change model
-#' model_weight <- adult_weight(weights, heights, ages, sexes, 
+#' #Create model change model
+#' model_model <- adult_weight(models, heights, ages, sexes, 
 #'                              EIchange)
 #'                              
 #' #Calculate survey mean and variance for 25 days
-#' aggregate_data <- model_mean(model_weight)
+#' aggregate_data <- model_mean(model_model)
 #' 
 #' #You can plot the mean with ci
 #' \dontrun{
 #' if(require(ggplot2)){
-#' ggplot(subset(aggregate_data, variable == "Body_Weight")) + 
+#' ggplot(subset(aggregate_data, variable == "Body_model")) + 
 #'     geom_line(aes(x = time, y = mean)) +
 #'     geom_line(aes(x = time, y = Lower_CI_mean), linetype = "dashed") +
 #'     geom_line(aes(x = time, y = Upper_CI_mean), linetype = "dashed") +
-#'     theme_classic() + xlab("Days") + ylab("Mean Body Weight (kg)")
+#'     theme_classic() + xlab("Days") + ylab("Mean Body model (kg)")
 #' }
 #' 
 #' #EXAMPLE 1C: RANDOM SAMPLE MODELLING FOR CHILDREN
@@ -65,19 +65,19 @@
 #' ages    <- c(10, 6.2, 5.4, 4, 4.1)
 #' sexes   <- c("male", "female", "female", "male", "male") 
 #' 
-#' #Returns a weight change matrix and other matrices
-#' model_weight <- child_weight(ages, sexes, Fat, FatFree)
+#' #Returns a model change matrix and other matrices
+#' model_model <- child_weight(ages, sexes, Fat, FatFree)
 #' 
 #' #Calculate survey mean and variance for 25 days
-#' aggregate_data <- model_mean(model_weight)
+#' aggregate_data <- model_mean(model_model)
 #' 
 #' #You can plot the mean with ci
 #' if(require(ggplot2)){
-#' ggplot(subset(aggregate_data, variable == "Body_Weight")) + 
+#' ggplot(subset(aggregate_data, variable == "Body_model")) + 
 #'     geom_line(aes(x = time, y = mean)) +
 #'     geom_line(aes(x = time, y = Lower_CI_mean), linetype = "dashed") +
 #'     geom_line(aes(x = time, y = Upper_CI_mean), linetype = "dashed") +
-#'     theme_classic() + xlab("Days") + ylab("Mean Body Weight (kg)")
+#'     theme_classic() + xlab("Days") + ylab("Mean Body model (kg)")
 #' }
 #'   
 #' #EXAMPLE 2A: SURVEY DATA FOR ADULTS
@@ -103,27 +103,27 @@
 #'     EIchange <- rbind(EIchange, rep(datasvy$kcal[i], days))
 #' }
 #' 
-#' #Calculate weight change                   
-#' svyweight <- adult_weight(datasvy$bw, datasvy$ht, datasvy$age, 
+#' #Calculate model change                   
+#' svymodel <- adult_weight(datasvy$bw, datasvy$ht, datasvy$age, 
 #'                           datasvy$sex, EIchange)
 #'                           
 #' #Create survey design using survey package                           
-#' design <- survey::svydesign(id = ~id, weights = datasvy$svyw, 
+#' design <- survey::svydesign(id = ~id, models = datasvy$svyw, 
 #' data = datasvy)
 #' 
 #' #Group to calculate means
 #' group  <- datasvy$group     
 #'     
 #' #Calculate survey mean and variance for 25 days
-#' aggregate_data <- model_mean(svyweight, design = design, group = group)
+#' aggregate_data <- model_mean(svymodel, design = design, group = group)
 #' 
 #' #You can plot the mean with ci
 #' if(require(ggplot2)){
-#' ggplot(subset(aggregate_data, variable == "Body_Weight")) + 
+#' ggplot(subset(aggregate_data, variable == "Body_model")) + 
 #'     geom_ribbon(aes(x = time, ymin = Lower_CI_mean, ymax = Upper_CI_mean,
 #'     fill = factor(group)), alpha = 0.25) +
 #'     geom_line(aes(x = time, y = mean, color = factor(group)), size = 2) +
-#'     theme_classic() + xlab("Days") + ylab("Mean Body Weight (kg)") 
+#'     theme_classic() + xlab("Days") + ylab("Mean Body model (kg)") 
 #' }
 #' #EXAMPLE 2A: SURVEY DATA FOR CHILDREN
 #' #-------------------------------------------------------
@@ -141,36 +141,35 @@
 #' #Days
 #' days <- 365
 #' 
-#' #Calculate weight change                   
-#' svyweight <- child_weight(datasvy$age, datasvy$sex, datasvy$fat, datasvy$fatfree)
+#' #Calculate model change                   
+#' svymodel <- child_weight(datasvy$age, datasvy$sex, datasvy$fat, datasvy$fatfree)
 #'                           
 #' #Create survey design using survey package                           
-#' design <- survey::svydesign(id = ~id, weights = datasvy$svyw, 
+#' design <- survey::svydesign(id = ~id, models = datasvy$svyw, 
 #' data = datasvy)
 #' 
 #' #Group to calculate means
 #' group  <- datasvy$group     
 #'     
 #' #Calculate survey mean and variance for 25 days
-#' aggregate_data <- model_mean(svyweight, design = design, group = group)
+#' aggregate_data <- model_mean(svymodel, design = design, group = group)
 #' aggregate_data
 #' #You can plot the mean with ci
 #' if(require(ggplot2)){
-#' ggplot(subset(aggregate_data, variable == "Body_Weight")) + 
+#' ggplot(subset(aggregate_data, variable == "Body_model")) + 
 #'     geom_ribbon(aes(x = time, ymin = Lower_CI_mean, ymax = Upper_CI_mean,
 #'     fill = factor(group)), alpha = 0.25) +
 #'     geom_line(aes(x = time, y = mean, color = factor(group)), size = 2) +
-#'     theme_classic() + xlab("Days") + ylab("Mean Body Weight (kg)") 
+#'     theme_classic() + xlab("Days") + ylab("Mean Body model (kg)") 
 #' }                     
 #' }                                                             
 #' @export
 
-model_mean <- function(weight, 
-                       meanvars = names(weight)[-which(names(weight) %in% c("Time", "BMI_Category", "Correct_Values"))], 
-                       days     = seq(0, length(weight[["Time"]]) - 1, length.out = 25),
-                       group    = rep(1,nrow(weight[[meanvars[1]]])),
-                       design   = svydesign(ids=~1, weights = rep(1,nrow(weight[[meanvars[1]]])),
-                                            data = as.data.frame(weight[meanvars[1]])),
+model_mean <- function(model, 
+                       meanvars = names(model)[-which(names(model) %in% c("Time", "BMI_Category", "Correct_Values", "Model_Type"))], 
+                       days     = seq(0, length(model[["Time"]]) - 1, length.out = 25),
+                       group    = rep(1,nrow(model[[meanvars[1]]])),
+                       design   = NA,
                        confidence = 0.95){
   
   #Throw warning that it will take time
@@ -185,29 +184,44 @@ model_mean <- function(weight,
   
   #Check that BMI_Category not in meanvars
   if ("BMI_Category" %in% meanvars){
-    stop("Cannot estimate BMI_Category mean. Please use 'adult_bmi' function instead.")
+    stop("Cannot estimate BMI_Category mean. Please use 'adult_bmi' function for adults instead.")
   }
   
-  #Check that meanvars are in names(weight)
-  if (!all(meanvars %in% names(weight))){
+  #Check that meanvars are in names(model)
+  if (!all(meanvars %in% names(model))){
     stop(paste0("Not all variables specified in meanvars are available ",
-                "in weight. You must use one of the following: '", 
-                paste0(names(weight)[-which(names(weight) %in% c("Time", "BMI_Category", "Age"))], collapse = "', '"),"'."))
+                "in model. You must use one of the following: '", 
+                paste0(names(model)[-which(names(model) %in% c("Time", "BMI_Category", "Age", 'Correct_Values', 'Model_Type'))], collapse = "', '"),"'."))
   }
   
-  #Check that time is part of weight
-  if (!("Time" %in% names(weight))){
-    stop("Invalid weight parameter. Weight must include vector 'Time'.")
+  #Check that time is part of model
+  if (!("Time" %in% names(model))){
+    stop("Invalid model parameter. Model must include vector 'Time'.")
+  }
+  
+  #If there is only one individual in model; replicate individual to make it
+  #work with survey
+  if (nrow(model$Body_Weight) == 1){
+      warning("Only one individual in model: trying to adapt survey to single case.")
+      for (vname in meanvars){
+        model[[vname]] <- rbind(model[[vname]], model[[vname]])
+      }
+  }
+  
+  if (all(is.na(design))){
+      warning("Using pre-specified design.")
+      design <- svydesign(ids=~1, models = rep(1,nrow(model[[meanvars[1]]])),
+                          data = as.data.frame(model[meanvars[1]])) 
   }
   
   #Set time to integers
-  days <- which(weight[["Time"]] %in% floor(days))
+  days <- which(model[["Time"]] %in% floor(days))
   
   #Get number of variables to plot
   nvars <- length(meanvars) 
   
   #Create empty data frame
-  weightdata <- data.frame(matrix(NA, nrow = 0, ncol = 11))
+  modeldata <- data.frame(matrix(NA, nrow = 0, ncol = 11))
   
   #Update design to add group
   design <- update(design, group = group)
@@ -218,8 +232,8 @@ model_mean <- function(weight,
     #Loop through each of the variables under consideration
     for (var in 1:nvars){
       
-      #Weight update to add variable of interest
-      thisvar <- weight[[meanvars[var]]][,days[t]] #Sum 1 as time starts in 0
+      #model update to add variable of interest
+      thisvar <- model[[meanvars[var]]][,days[t]] #Sum 1 as time starts in 0
       design  <- update(design, myvar = thisvar)
       
       #Get mean and var
@@ -231,26 +245,26 @@ model_mean <- function(weight,
       confvar  <- confint(myvar, level = confidence)
       
       #Get into data frame
-      thisdata <- data.frame(weight[["Time"]][days[t]], meanvars[var], mymean$group, 
+      thisdata <- data.frame(model[["Time"]][days[t]], meanvars[var], mymean$group, 
                         coef(mymean), SE(mymean), confmean, 
                         coef(myvar), SE(myvar), confvar)
       
       #Bind together
-      weightdata <- rbind(weightdata, thisdata)
+      modeldata <- rbind(modeldata, thisdata)
       
     }
   }
   
   #Add column names
-  colnames(weightdata) <- c("time", "variable", "group", "mean", "SE_mean",
+  colnames(modeldata) <- c("time", "variable", "group", "mean", "SE_mean",
                             "Lower_CI_mean", "Upper_CI_mean", "variance",
                             "SE_variance", "Lower_CI_variance", 
                             "Upper_CI_variance")
   
   #Remove rownames
-  rownames(weightdata) <- c()
+  rownames(modeldata) <- c()
   
   #Return data frame
-  return(weightdata)
+  return(modeldata)
   
 }
