@@ -7,6 +7,7 @@ vignette: >
   %\VignetteIndexEntry{Children Model}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+bibliography: Referencias.bib  
 ---
 
 ```{r, echo = FALSE, message=FALSE, warning = FALSE}
@@ -14,15 +15,18 @@ require("bw")
 require("ggplot2")
 ```
 
-<!--#The model
+> In this vignette we explain how to use the model for children in R; we develop and explain the equations involved both for casual and advanced readers. 
 
-The Adult Weight Change Model estimates weight change for adult individuals from the paper in [https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3880593/]. 
--->
+#Contents 
 
-#Usage in R
++ [Usage in R](#user)
++ [Basic model explanation](#basic)
++ [Advanced model explanation](#advanced)
+
+#Usage in R {#user}
 
 ##Inputs
-The main inputs for the body weight change model are:
+The main inputs for the body weight change model in children are:
 
 | Input | Meaning | Optional | Default |
 |------:|------:|------:|------:|
@@ -31,7 +35,7 @@ The main inputs for the body weight change model are:
 
 As an example consider a `7` year old `'female'`: 
 
-```{r}
+```{r, message = FALSE}
 female_model1 <- child_weight(age = 7, sex = "female")
 ```
 
@@ -44,7 +48,7 @@ Furthermore, the model allows the user to input Fat and Fat Free Mass compositio
 
 For example, our female might have `19.9` kg of Fat Mass and `5.74` kg of Fat Free Mass:
 
-```{r}
+```{r, message = FALSE}
 female_model2 <- child_weight(age = 7, sex = "female", FM = 19.9, FFM = 5.74)
 ```
 
@@ -67,6 +71,7 @@ Other (optional) inputs include:
 | Input | Meaning | Optional | Default |
 |------:|------:|------:|------:|
 |  `days`         |  Number of days to run de model  | Yes | $365$ |
+| `dt`            | Time step for Rungue-Kutta 4        | Yes | $1$ |
 |  `checkValues`  |  Boolean indicating whether the model should check parameters make sense   | Yes | `TRUE` |
 
 All inputs used in the model are:
@@ -79,11 +84,12 @@ All inputs used in the model are:
 |  `FFM`  | Fat Free Mass (kg) | Yes | Model estimate |
 |  `EI`  | Energy Intake per day | Yes | Model estimate |
 | `days`        | Time period (days) to run the model | Yes | $365$ |
+| `dt`          | Time step for Rungue-Kutta 4        | Yes | $1$ |
 | `checkValues` | Check for internal consistency | Yes | `TRUE` |
 
-Finally, we remark that one can also input data from a database to estimate individual-level weight change (see the [related section](#estimating-weight-change-of-a-database)
+Finally, we remark that one can also input data from a database to estimate individual-level weight change (see the [related section](#estimating-weight-change-of-a-database))
 
-```{r}
+```{r, message = FALSE}
 #Database information
 ages    <- c(8, 10, 7, 7, 12)
 sexes   <- c("male", "female", "female", "male", "male") 
@@ -99,7 +105,7 @@ Result plots can be obtained by `model_plot` function:
 model_plot(female_model2, "Body_Weight")
 ```
 
-Plotting options include `"Body_Weight"`, `Fat_Mass`, `Lean_Mass`, `Glycogen`, `Extracellular_Fluid` and `Adaptive_Thermogenesis`. Several can be chosen at the same time:
+Plotting options include `"Body_Weight"`, `Fat_Mass`, and `Fat_Free_Mass`. Several can be chosen at the same time:
 
 ```{r, fig.width=7, fig.height=4}
 model_plot(female_model2, c("Body_Weight", "Fat_Mass"))
@@ -121,13 +127,14 @@ EIbrownian <- energy_build(c(1600, 1750, 1820), c(0, 365, 730))
 The interpolation looks like this:
 
 ```{r, fig.width=7, fig.height=4}
-ggplot() + geom_line(aes(x = 1:730, y = EI), data = data.frame(EI = EIbrownian)) + 
+ggplot() + geom_line(aes(x = 1:730, y = EI), data = data.frame(EI = EIbrownian)) +
+  theme_classic() +
   xlab("Days") + ylab("Energy intake (kcals)") + ggtitle("Energy interpolation")
 ```
 
 Such energy change matrix can be directly inputed in the model:
 
-```{r}
+```{r, message = FALSE}
 model_brownian <- child_weight(10, "male", EI = EIbrownian, days = 730)
 ```
 
@@ -145,13 +152,20 @@ Which look like this:
 
 ```{r, fig.width=7, fig.height=4}
 ggplot() + 
-  geom_line(aes(x = 1:730, y = EI, color = "Brownian"), data = data.frame(EI = EIbrownian)) + 
-  geom_line(aes(x = 1:730, y = EI, color = "Linear"), data = data.frame(EI = EIlinear)) + 
-  geom_line(aes(x = 1:730, y = EI, color = "Exponential"), data = data.frame(EI = EIexponential)) + 
-  geom_step(aes(x = 1:730, y = EI, color = "Right Stepwise"), data = data.frame(EI = EIstepwise_r)) + 
-  geom_step(aes(x = 1:730, y = EI, color = "Left Stepwise"), data = data.frame(EI = EIstepwise_l)) + 
-  geom_line(aes(x = 1:730, y = EI, color = "Logarithmic"), data = data.frame(EI = EIlogarithmic)) + 
-  xlab("Days") + ylab("Energy change (kcals)") + ggtitle("Energy interpolation") +
+  geom_line(aes(x = 1:730, y = EI, color = "Brownian"), 
+            data = data.frame(EI = EIbrownian)) + 
+  geom_line(aes(x = 1:730, y = EI, color = "Linear"), 
+            data = data.frame(EI = EIlinear)) + 
+  geom_line(aes(x = 1:730, y = EI, color = "Exponential"), 
+            data = data.frame(EI = EIexponential)) + 
+  geom_step(aes(x = 1:730, y = EI, color = "Right Stepwise"), 
+            data = data.frame(EI = EIstepwise_r)) + 
+  geom_step(aes(x = 1:730, y = EI, color = "Left Stepwise"), 
+            data = data.frame(EI = EIstepwise_l)) + 
+  geom_line(aes(x = 1:730, y = EI, color = "Logarithmic"), 
+            data = data.frame(EI = EIlogarithmic)) + 
+  xlab("Days") + ylab("Energy change (kcals)") + 
+  ggtitle("Energy interpolation") +
   theme_classic() + 
   scale_color_manual("Interpolation", 
                      values = c("Brownian" = "red", "Linear" = "deepskyblue3",
@@ -160,7 +174,7 @@ ggplot() +
 ```
 
 These models result in different weight changes: 
-```{r}
+```{r, message = FALSE}
 model_linear      <- child_weight(10, "male", EI = EIlinear, days = 730)
 model_exponential <- child_weight(10, "male", EI = EIexponential, days = 730)
 model_logarithmic <- child_weight(10, "male", EI = EIlogarithmic, days = 730)
@@ -178,6 +192,7 @@ ggplot() +
   geom_line(aes(x = 1:730, y = as.vector(model_stepwise_l[["Body_Weight"]]), color = "Left Stepwise")) + 
   geom_line(aes(x = 1:730, y = as.vector(model_brownian[["Body_Weight"]]), color = "Brownian")) +
   xlab("Days") + ylab("Weight (kg)") + 
+  theme_classic()+
   ggtitle("Weight change under different energy interpolations") + 
     scale_color_manual("Interpolation", 
                      values = c("Brownian" = "red", "Linear" = "deepskyblue3",
@@ -189,7 +204,7 @@ ggplot() +
 
 Vector data can also be used in the model to calculate weight change for several individuals at a time (which is quite faster than doing them individually). As an example consider the following dataset:
 
-```{r}
+```{r, message = FALSE}
 #Database information
 mydata <- data.frame(
   id = 1:5,
@@ -217,7 +232,7 @@ Summary measures can be obtained via `model_mean` which quantifies mean for `'Bo
 model_mean(database_model, "Body_Weight")
 ```
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, warning = FALSE}
 head(model_mean(database_model, "Body_Weight"))[,1:5]
 ```
 
@@ -237,7 +252,7 @@ Mean can also be grouped by a variable (say, `sex`):
 model_mean(database_model, "Body_Weight", days = 1:365, group = mydata$sex)
 ```
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, warning = FALSE}
 head(model_mean(database_model, "Body_Weight", days = 1:365, group = mydata$sex))[,1:5]
 ```
 
@@ -260,3 +275,140 @@ Additional information on the model for adults and other package functions can b
 ```{r, eval = FALSE}
 browseVignettes("bw")
 ```
+
+#Basic explanation on model's equations {#basic}
+
+#Advanced explanation on model's equations {#advanced}
+
+The children weight model [@katan2016impact, @hall2013dynamics] considers the interactions between fat mass $FM := FM(t)$; fat free mass $FFM := FFM(t)$; an energy intake function $EI:= EI(t)$; an energy expenditure function $E := E(t)$ adjusted by a body-growth term $g(t)$. In this model, body weight is given by the sum of fat mass and fat free mass:
+\begin{equation}
+    BW:= BW(t) = FM(t) + FFM(t).
+\end{equation}
+In particular, the body weight function (as a function of time $t$) depends on the individual's sex ($\textrm{Sex}$), initial fat mass ($FM_0$), initial fat free mass ($FFM_0$), energy consumption function ($EI(t)$).
+
+The components of body weight, $FM$ and $FFM$, are determined by a system of ordinary differential equations: 
+\begin{equation}\label{diff}
+    \begin{aligned}
+    \rho_{FFM} \cdot \dfrac{d FFM}{dt} & = p \cdot (EI - E) + g \\\\
+    \rho_{FM} \cdot \dfrac{d FFM}{dt} & = (1-p) \cdot (EI - E) - g 
+    \end{aligned}
+\end{equation}
+where $p = C/(C + FM)$ a ratio established by Forbes with $C = 10.4 \rho_{FFM} / \rho_{FM}$. The parameters $\rho_{FM} = 9.4 kcal/g$ ($= 9400 \textrm{ kcal}/\textrm{kg}$ and $\rho_{FFM} = (4.3 \cdot FFM_0 + 837) \textrm{ kcal}/\textrm{kg}$ where $FFM_0$ represents the amount of fat free mass (kg) at baseline. 
+
+The growth term is given by:
+\begin{equation}\label{growth}
+    g:= g(t) = A e^{-(t - t_{A})/\tau_{A}} + B e^{-(t - t_{B})^2/2\tau_{B}^2} + D e^{-(t - t_{D})^2/2\tau_{D}^2},
+\end{equation}
+where the parameters for each sex are given by table \ref{gparams}.
+
+\begin{table}[!htb]
+    \centering
+    \begin{tabular}{lrrr}
+    \bf Parameter & \bf Males & \bf Females & \bf Scale \\
+    \hline
+    \hline
+    $A$ & 3.2 & 2.3 & kcal/day \\
+    $B$ & 9.6 & 8.4 & kcal/day\\
+    $D$ & 10.1 & 1.1 & kcal/day\\
+    $\tau_{A}$ & 2.5 & 1 & years\\
+    $\tau_{B}$ & 9.6 & 8.4 & years \\
+    $\tau_{D}$ & 1.5 & 0.7 & years \\
+    $t_{A}$ & 4.7 & 4.5 & years \\
+    $t_{B}$ & 12.5 & 11.7 & years \\
+    $t_{D}$ & 15 & 16.2 & years \\
+    \hline
+    \hline
+    \end{tabular}
+    \caption{Parameters for the growth function $g$ as established in \eqref{growth}}
+    \label{gparams}
+\end{table}
+
+Energy expenditure in  \eqref{energy} is given by:
+\begin{equation}\label{energy}
+    E = K + \gamma_{FFM} FFM + \gamma_{FM} FM + \beta \Delta I + \delta \cdot BW + \eta_{FFM} \cdot \dfrac{dFFM}{dt} + \eta_{FM} \cdot \dfrac{dFM}{dt},
+\end{equation}
+where $K$ represents an energy expenditure constant determined by the initial energy balance ($K = 800 \textrm{ kcal}/\textrm{d}$ for males; $K = 700 \textrm{ kcal}/\textrm{d}$ for females); $\beta = 0.24$ stands for the adaptation of energy expenditure when intake is perturbed $\Delta I$;  $\eta_{FM} = 180 \textrm{ kcal}/\textrm{kg}$ and $\eta_{FFM} = 230 \textrm{ kcal}/\textrm{kg}$ account for ``biochemical efficiencies associated to fat and protein synthesis'' \cite{hall2013dynamics}. 
+
+In particular, the function for physical activity $\delta$ in \eqref{energy} is given by: 
+\begin{equation}
+    \delta(t) = \delta_{min} + \dfrac{(\delta_{max}-\delta_{min}) P^{h}}{t^h + P^h}
+\end{equation}
+with $\delta_{min} = 10 \textrm{ kcal}/\textrm{kg}/\textrm{d}$ represents the average activity of young adults whilst $\delta_{max}$ ($\delta_{max} = 19  \textrm{ kcal}/\textrm{kg}/\textrm{d}$ and $\delta_{max} = 17 \textrm{ kcal}/\textrm{kg}/\textrm{d}$ for males and females respectively) stands for the average physical activity for young children. The parameter $P = 12 \textrm{ years}$ stands for the point of maximum physical activity whilst the constant $h = 10$ represents the rate of decline as a function of age. 
+
+The  perturbation of energy intake $\Delta I$ represents the shift away from the intake associated to normal growth ($\Delta I$ in \eqref{energy}). It was estimated by:
+\begin{equation}
+    \Delta I(t) = EI(t) - I_{ref}(t)
+\end{equation}
+where:
+\begin{equation}\label{iref}
+\begin{aligned}
+     I_{ref}(t) & = EB_{ref} + K + (\gamma_{FFM} + \delta) FFM_{ref} + (\gamma_{FM} + \delta) FM_{ref} + \dfrac{\eta_{FFM}}{\rho_{FFM}} (p\cdot EB_{ref} + g) \\ & \qquad + \dfrac{\eta_{FM}}{\rho_{FM}} \big((1-p)\cdot EB_{ref} + g \big)
+\end{aligned}     
+\end{equation}
+represents the reference energy intake for normal growth. The energy balance for reference children is also of the form:
+\begin{equation}
+    EB_{ref}(t) = A e^{-(t - t^{EB}_{A})/\tau^{EB}_{A}} + B e^{-(t - t^{EB}_{B})^2/2(\tau^{EB}_{B})^2} + D e^{-(t - t^{EB}_{D})^2/2(\tau_{D}^{EB})^2}.
+\end{equation}
+The reference fat free mass $FFM_{ref}$ and the reference fat mass $FM_{ref}$ in \eqref{iref} were obtained from linear interpolations to the values in table \ref{ref} which were obtained from [@ellis2000reference, @fomon1982body, @haschke1989body].
+
+\begin{table}[!htb]
+    \centering
+    \begin{tabular}{lrrcrr}
+     & \multicolumn{2}{c}{\bf Males} &  & \multicolumn{2}{c}{\bf Females} \\
+     \cmidrule{2-3}  
+     \cmidrule{5-6} 
+      Age & Fat Mass (kg) &  Fat Free Mass (kg) & &  Fat Mass (kg) &  Fat Free Mass (kg)\\
+      \hline
+      \hline
+      4 & 14.0 & 2.7 & & 13.2 & 2.8 \\
+      5 & 16.0 & 2.7 & & 14.7 & 2.9 \\
+      6 & 17.9 & 2.8 & & 16.3 & 3.2 \\
+      7 & 19.9 & 2.9 & & 18.2 & 3.7 \\
+      8 & 22.0 & 3.3 & & 20.5 & 4.3 \\
+      9 & 24.4 & 3.7 & & 23.3 & 5.2 \\
+      10 & 27.5 & 4.8 & & 26.4 & 7.2 \\
+      11 & 29.5 & 5.9 & & 28.5 & 8.5 \\
+      12 & 33.2 & 6.7 & & 32.4 & 9.2 \\
+      13 & 38.1 & 7.0 & & 36.1 & 10.0 \\
+      14 & 43.6 & 7.2 & & 38.9 & 11.3 \\
+      15 & 49.1 & 7.5 & & 40.7 & 12.8 \\
+      16 & 54.0 & 8.0 & & 41.7 & 14.0 \\
+      17 & 57.7 & 8.4 & & 42.3 & 14.3 \\
+      18 & 60.0 & 8.8 & & 42.6 & 14.3 \\
+      \hline 
+      \hline 
+    \end{tabular}
+    \caption{Reference values for fat and fat free mass (kg) from [@ellis2000reference, @fomon1982body, @haschke1989body] for interpolation to obtain $FM_{ref}$ and $FFM_{ref}$.}
+    \label{ref}
+\end{table}
+
+A closed form expression for the energy is given by:
+\begin{equation}
+E = \dfrac{K + (\gamma_{FFM} + \delta) FFM + (\gamma_{FM} + \delta) FM + \beta \cdot \Delta I + \Big( \frac{\eta_{FFM}}{\rho_{FFM}} p + \frac{\eta_{FM}}{\rho_{FM}}\cdot (1-p) \Big) \cdot EI + g \cdot \Big(\frac{\eta_{FFM}}{\rho_{FFM}} - \frac{\eta_{FM}}{\rho_{FM}} \Big)}{1 + \frac{\eta_{FFM}}{\rho_{FFM}} p + \frac{\eta_{FM}}{\rho_{FM}}\cdot (1-p) }
+\end{equation}
+
+\subsubsection{Initial values of system of ordinary differential equations}
+To obtain the initial values for \eqref{diff} we estimated the initial fat mass using the equations from @deurenberg1991body:
+\begin{equation}\label{fm}
+    FM_{0} = \begin{cases}
+    1.51 \cdot \text{BMI}_0 - 0.7 \cdot a - \frac{2.2}{100} \cdot BW_0 & \textrm{ if Male}\\\\
+    1.51 \cdot BMI_0 - 0.7 \cdot a + \frac{1.4}{100} \cdot BW_0 & \textrm{ if Female}
+    \end{cases}
+\end{equation}
+where $a$ represents the age (years); $\text{BMI}$ the initial body mass index ($\text{kg}/\text{m}^2$) and $BW_0$ the initial body weight of the child. The initial fat free mass is given by the difference between fat mass and body weight:
+\begin{equation}\label{ffm}
+    FFM_0 = BW_0 - FM_0.
+\end{equation}
+
+
+## Solution algorithm
+To solve this system of differential equations, we used a 4th order Runge-Kutta  algorithm (RK4) @ascher2011first with a stepsize $\Delta t = 1$. RK4 was programmed in `C++` for speed and connected to R via the `Rcpp` package [@Rcpp2, @Rcpp1].
+
+#Additional information
+Additional information on the adult's model, and why to use the dynamic adult model instead of other classical approaches can be found in the package's vignettes:
+
+```{r, eval = FALSE}
+browseVignettes("bw")
+```
+
+# References

@@ -27,7 +27,7 @@ knitr::opts_chunk$set(fig.width = 7, fig.height = 4)
 
 \noindent 
 
-The main advantage of the model is that weight change is nonlinear and is based on physiological processes. Therefore, it does not follow rules such as *0.45 kg for every 3500 kcals* [@hall2008required]. These rules do not represent the physiological process correctly and may lead to a series of problems, such as:
+The main advantage of the model is that weight change is nonlinear and is based on the corresponding physiological processes. Therefore, it does not follow rules such as *0.45 kg for every 3500 kcals* [@hall2008required]. These rules do not represent the physiological process correctly and may lead to a series of problems, such as:
 
 ###Weight change is not immediate 
 
@@ -62,7 +62,7 @@ ggplot(data.frame(x = c("Man with underweight","Woman with obesity"), y = c(0.45
 ```
 
 ###Some linear models could lead to zero weight. 
-Some linear models are dependent on time. Oftentimes the previous *0.45 kg per 3500 kcals* includes a timeframe such as *0.45 kg/week per 3500 kcals* [@thomas2013can]. If the model is meant to predict weight in the long run some individuals might end weighing zero weight (or even negative weight!).
+Some linear models are dependent on time. Oftentimes the previous *0.45 kg per 3500 kcals* includes a timeframe such as *0.45 kg/week per 3500 kcals* [@thomas2013can]. If the model is meant to predict weight in the long term some individuals might end weighing zero weight (or even negative weight!).
 
 ```{r,echo = FALSE, warning=FALSE}
 data1 <- data.frame(Week = 0:266, Weight = seq(60,-60, by = -0.45))
@@ -80,7 +80,7 @@ ggplot(data1, aes(x = Week, y = Weight)) +
 ```
 
 ###Weight change is dependent on the previous weight change trajectory 
-Take for example a person was consuming 500 kcals more than those needed to maintain current weight (thus the individual is _en route_ to excess weight). This individual would gain weight even if a reduction of 250 kcals on their current diet was going to take place (they consume 250 more!). If we only consider the model given by a loss of  *0.45 kg for every 3500 kcals*, this individual would lose $\frac{250 \times 0.45}{3500} = 0.032\overline{142857}$, even in the case that the caloric intake to maintain weight was exceeded by 250 kcals. This makes no sense!
+Take for example a person was consuming 500 kcals more than those needed to maintain current weight (thus the individual is _en route_ to excess weight). This individual would gain weight even if a reduction of 250 kcals on their current diet was going to take place (they would still consume 250 kcals more!). If we only consider the model given by a loss of  *0.45 kg for every 3500 kcals*, this individual would lose $\frac{250 \times 0.45}{3500} = 0.032\overline{142857}$, even in the case that the caloric intake to maintain weight was exceeded by 250 kcals. This makes no sense!
 
 ```{r,echo = FALSE, warning=FALSE}
 myadult250 <- adult_weight(80,1.8, 40, "male",  EIchange = matrix(250, ncol = 365, nrow = 1))$Body_Weight
@@ -125,7 +125,7 @@ Any model needs to account for the individual's natural energy consumption chang
 
 ##The dynamic weight change model 
 
-The dynamic weight change model can be used to avoid problems as the ones stated before. This model considers weight change depends on physiological processes and individual characteristics such as weight, sex, age, and height (a clear description of the inputs will be given later). Weight change obtained from the dynamic is not immediate, and if no further changes in caloric intake take place, body weight will stabilize over time. Both the dynamic children and adult models have been previously validated [@T7, @T8, @T9, @T10, @hall2013dynamics, @katan2016impact]; the latter, against more than 50 different studies. Its predictive ability exceeds current models (including Comparative Risk Assesment). 
+The dynamic weight change model can be used to avoid problems as the ones stated before. This model considers weight change depends on physiological processes and individual characteristics such as weight, sex, age, and height. Weight change obtained from the dynamic is not immediate, and if no further changes in caloric intake take place, body weight will stabilize over time. Both the dynamic children and adult models have been previously validated [@T7, @T8, @T9, @T10, @hall2013dynamics, @katan2016impact]; the latter, against more than 50 different studies. Its predictive ability exceeds current models (including Comparative Risk Assesment). 
 
 An example of a weight change trajectory for an adult under the model is shown in the following graph:
 
@@ -154,120 +154,7 @@ ggplot(data.frame(Day = 1:3650, Weight = as.vector(trajectory)),
                 "2.9 kg of fat mass and 17.5 kg of free fat mass"))
 ```
 
-<!--
-### Brief explanation on Hall's equations
 
-\noindent The main idea of Hall's model is that body weight $BW(t)$ at a given time $t$ is the sum of four components: lean mass $L(t)$, fat mass $F(t)$, glycogen $g(t)$, and extracellular fluid $ECF(t)$:
-
-\begin{equation}\label{bw}
-\overbrace{BW(t)}^{\textrm{Weight}} = \underbrace{F(t)}_{\textrm{Fat}} + \overbrace{L(t)}^{\textrm{Lean}} + \underbrace{G(t)}_{\textrm{Glycogen}} + \overbrace{ECF(t)}^{\textrm{Extracellular Fluid}}
-\end{equation}
-
-Lean mass, fat mass, and glycogen are interrelated, meanwhile the extracellular fluid has its own dynamic. Hall model's equations are congruent with the energy conservation law. Changes in weight are therefore determined by:
-
-
-+ Energy intake ($EI$), 
-+ Energy expenditure ($EE$),
-+ Glycogen reserve ($G$).
-
-
-Changes in lean and fat mass are given by changes in intake, expenditure, and glycogen. An increase or decrease in body weight depends on the difference between intake and expenditure. A fraction of the change in weight $p$ will correspond to the change in lean mass and the remaining fraction $(1-p)$ will correspond to changes in fat mass. The corresponding equations are:
-
-\begin{equation}\nonumber
-\overbrace{\dfrac{dL}{dt}}^{\textrm{Change in lean mass}} = \underbrace{p}_{\textrm{Fraction}} \overbrace{\frac{\Big( EI - EE - \rho_G \frac{dG}{dt}\Big)}{\rho_L}}^{\textrm{Energy Intake} - \textrm{Expenditure+Storage}}
-\end{equation}
-
-\begin{equation}\nonumber
-\overbrace{\dfrac{dF}{dt}}^{\textrm{Change in fat mass}} = \underbrace{(1-p)}_{\textrm{Remaining fraction}} \overbrace{\frac{\Big( EI - EE - \rho_G \frac{dG}{dt}\Big)}{\rho_L}}^{\textrm{Energy Intake} - \textrm{xpenditure+Storage}}
-\end{equation}
-
-Changes in glycogen are determined by the proportion of energy consumption from carbohidrates $CI$:
-
-\begin{equation}
-\overbrace{\dfrac{dG}{dt}}^{\textrm{Change in glycogen}} = \underbrace{\frac{1}{\rho_G} \Big( CI - k_G G^2\Big)}_{\textrm{Carbohydrates and constant parameters}},
-\end{equation}
-
-Finally, the equation for extracellular fluid depends on sodium intake and carbohidrates consumed:
-\begin{equation}\nonumber
-\overbrace{\dfrac{dECF}{dt}}^{\textrm{Change in fluid}} = \overbrace{\frac{ \Big( \Delta Na_{diet} + \xi_{Na}(ECF - ECF_{init}) - \xi_{CI} (1 - \frac{CI}{CI_{b}}) \Big)}{Na}.}^{\textrm{Depends on changes in sodium and carbohidrate intake.}}
-\end{equation}
-
-
-To summarize: weight is divided into four components: lean mass, fat mass, glycogen, and extracellular fluid:
-
-\begin{equation}\nonumber
-\overbrace{BW(t)}^{\textrm{Weight}} = \underbrace{F(t)}_{\textrm{Fat}} + \overbrace{L(t)}^{\textrm{Lean}} + \underbrace{G(t)}_{\textrm{Glycogen}} + \overbrace{ECF(t)}^{\textrm{Extracellular fluid}}
-\end{equation}
-
-### How to solve this system? 
-
-\noindent Equations on this model are known as ordinary differential equations (ODE). In most cases this kind of equations cannot be solved analytically. Therefore, numerical methods are often used. 
-
-The <tt>R</tt> package <tt>bw</tt>  is  an implementation of Hall's model.[@R2015] If you use our software we ask you to reference it as it appears on the bibliography. [@HallR] The inputs required for the model are: <tt>weight</tt>, <tt>age</tt>, <tt>sex</tt>, <tt>height</tt>,  <tt>change in kcals</tt> and <tt>change in sodium</tt>. All these elements are needed to run Hall model. A series of additional variables can improve the estimation, these are: <tt>physical activity</tt>, <tt>\% of baseline carbohydrate intake</tt>, <tt> \% of carbohydrate intake after change in diet</tt>, <tt>baseline energy intake</tt>. If these are unknown, Hall model can still work.
-
-The model is constructed for individuals, therefore the best input for population estimates requires representative individual-level data. If this is not the case approximate estimations can be calculated as well.
-
-
-+ If stratified averages (at least by sex) are available, these can be taken as inputs for the model. Jensen's inequality guarantees that the bias from the model is an underestimation of thw change. Therefore when modelling weight loss, final weight will be overestimated, while under weight gaine the final weight will be underestimated. 
-
-+ If averages and a covariance matrix for the variables <tt>weight</tt>, <tt>age</tt>, <tt>height</tt>, <tt>change in kcal</tt>, and <tt>change in sodium</tt> are available, the delta method, a statistical technique, can be used to reduce bias in the estimation. 
-+ If additional data such as kurtosis, skewness, quantiles, centiles are available better estimates can be derived. 
-
-
-To summarize if only averages are available change in weight will be underestimated. If more information is available better estimates can be achieved, the best estimates will be obtained when individual-level data is available. If you want to further discuss the inputs of the model according to the data you have, you can send us an e-mail. 
-
-### The package <tt>bw</tt>
-
-\noindent We have an <tt>R</tt> package that has Hall model already programmed. In this section we explain how to use it. To run the model only the basics of <tt>R</tt> are needed (several free online courses are available at [Coursera](https://www.coursera.org/) , [edX](https://www.edx.org/) and [Code School](https://www.codeschool.com/courses/try-r)). 
-
-The following instruction downloads our <tt>R</tt> package from github:
-
-```{r,eval = FALSE}
-if (!require(devtools)){install.packages("devtools")}
-devtools::install_github("INSP-RH/bw", 
-                         build_vignettes = TRUE)
-```
-
-For the adult model specify weight, height, sex, age, and change in energy intake and in sodium:
-
-```{r,eval = TRUE}
-# Individual characteristics
-weight    <- 80
-height    <- 1.8
-age       <- 32
-sex       <- "female" #"female" or "male"
-
-# Change in energy intake
-days    <- 365*10 # Days to run the model
-deltaEI <- c(0, rep(-200, (days-1)))
-
-
-# Change in sodium
-deltaNA <- c(0, rep(-10, (days-1))) #Change in sodium (mg)
-
-```
-
-To run the model use ``bw::adult\_weight'':
-
-```{r,}
-trajectory <- adult_weight(bw=weight, ht= height, 
-                           age=age, sex=sex,
-                           EIchange = deltaEI,
-                           NAchange = deltaNA,
-                           days = days)
-```
-
-The body weight depends on each day. For day 30:
-
-```{r,}
-trajectory$Body_Weight[30]
-```
-
-To graph the trajectory use:
-```{r,}
-model_plot(trajectory, plotvars = "Body_Weight")
-```
--->
 
 For more information on the model and how to run it, you can read the package vignettes:
 ```{r,eval = FALSE}

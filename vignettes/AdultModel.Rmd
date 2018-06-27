@@ -7,6 +7,7 @@ vignette: >
   %\VignetteIndexEntry{Adult Model}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+bibliography: Referencias.bib
 ---
 
 ```{r, echo = FALSE, message=FALSE, warning = FALSE}
@@ -14,15 +15,19 @@ require("bw")
 require("ggplot2")
 ```
 
-<!--#The model
+> In this vignette we explain how to use the model for adults in R; we develop and explain the equations involved both for casual and advanced readers. 
 
-The Adult Weight Change Model estimates weight change for adult individuals from the paper in [https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3880593/]. 
--->
+#Contents 
 
-#Usage in R
++ [Usage in R](#user)
++ [Basic model explanation](#basic)
++ [Advanced model explanation](#advanced)
+
+
+#Usage in R {#user}
 
 ##Inputs
-The main inputs for the body weight change model are:
+The main inputs for the body weight change model in adults are:
 
 | Input | Meaning | Optional | Default |
 |------:|------:|------:|------:|
@@ -31,13 +36,13 @@ The main inputs for the body weight change model are:
 |  `age` |  Age (yrs) | No | - |
 |  `sex` |  Either `'male'` or `'female'` | No | - |
 
-As an example consider a `40` year old `'female'` weighting `80` kg with `1.8` metres as height: 
+As an example consider a `40` year old `'female'` weighting `80` kg with a height of `1.8` metres: 
 
 ```{r}
 female_model1 <- adult_weight(bw = 80, ht = 1.8, age = 40, sex = "female")
 ```
 
-Furthermore, the model allows the user to input daily energy intake and sodium intake difference from baseline (for example, if doiing a `-100` kcal diet which reduces `-100` kcals from previous consumption) 
+Furthermore, the model allows the user to input daily changes in sodium and energy intake compared to the baseline consumption (for example, if doing a diet which reduces `-100` kcals from previous consumption). 
 
 | Input | Meaning | Optional | Default |
 |------:|------:|------:|------:|
@@ -46,7 +51,7 @@ Furthermore, the model allows the user to input daily energy intake and sodium i
 
 Note that this `-100` kcals is not cummulative. For example, if an individual consumes daily `2000` kcals a `EIchange = -100` means that in day 1 the individual consumes `1900` kcals; in day 2 the individual consumes `1900` kcals; in day 3 the individual consumes `1900` kcals, etc. 
 
-For example, our female can reduce her energy consumption by `-250` kcals and her sodium intake by `20` mg:
+For example, this female can reduce her energy consumption by `-250` kcals and her sodium intake by `20` mg:
 
 ```{r}
 female_model2 <- adult_weight(bw = 80, ht = 1.8, age = 40, sex = "female", 
@@ -61,19 +66,19 @@ female_model3 <- adult_weight(bw = 80, ht = 1.8, age = 40, sex = "female",
 
 The same is true for `EIchange`. 
 
-Note that in the examples above, `EIchange = rep(-250, 365)` is inputed as a vector with each day representing the consumption reduction for that day. See [Energy Reduction](#energy-reduction) section for additional information
+Note that in the examples above, `EIchange = rep(-250, 365)` is inputed as a vector with each time step `dt` (default, `dt = 1` day) representing the consumption reduction for that day. See [Energy Reduction](#energy-reduction) section for additional information
 
 Other (optional) inputs include:
 
 | Input | Meaning | Optional | Default |
 |------:|------:|------:|------:|
 |  `EI`         |  Energy intake (kcal) at baseline  | Yes | Model estimate |
-|  `fat`        |  Fat mass (kg) of the individual   | Yes | Model estimate |
+|  `fat`        |  Baseline fat mass (kg) of the individual   | Yes | Model estimate |
 |  `PAL`        |  Physical activity level           | Yes | $1.5$ |
 |  `pcarb_base` |  \% of baseline intake that is carbohydrates | Yes | $0.5$ |
 |  `pcarb`      |  \% of intake after day $0$ that is carbohydrates | Yes | `pcarb_base` |
 
-Hence the same female can consume `2000` kcals at baseline, with `22`kg of fat mass, having a physical activity level of `1.7` with a proportion of `0.6` kcals attributed to carbohydrates at baseline and `0.5` kcals attributed to carbohydrates after diet change. 
+Hence the same female can consume `2000` kcals at baseline, with `22`kg of fat mass, having a physical activity level of `1.7` with a proportion of `0.6` kcals attributed to carbohydrates at baseline and a proportion of `0.5` kcals attributed to carbohydrates after dietary change. 
 
 ```{r}
 female_model4 <- adult_weight(bw = 80, ht = 1.8, age = 40, sex = "female", 
@@ -97,6 +102,7 @@ Additional inputs include `days` to specify the model's time span and `checkValu
 |  `pcarb_base` |  \% of baseline intake that is carbohydrates | Yes | $0.5$ |
 |  `pcarb`      |  \% of intake after day $0$ that is carbohydrates | Yes | `pcarb_base` |
 | `days`        | Time period (days) to run the model | Yes | $365$ |
+| `dt`          | Time step for Rungue-Kutta 4        | Yes | $1$ |
 | `checkValues` | Check for internal consistency | Yes | `TRUE` |
 
 Finally, we remark that one can also input data from a database to estimate individual-level weight change (see the [related section](#estimating-weight-change-of-a-database)
@@ -142,6 +148,7 @@ The interpolation looks like this:
 
 ```{r, fig.width=7, fig.height=4}
 ggplot() + geom_line(aes(x = 1:730, y = EI), data = data.frame(EI = EIbrownian)) + 
+  theme_classic() +
   xlab("Days") + ylab("Energy change (kcals)") + ggtitle("Energy interpolation")
 ```
 
@@ -165,13 +172,20 @@ Which look like this:
 
 ```{r, fig.width=7, fig.height=4}
 ggplot() + 
-  geom_line(aes(x = 1:730, y = EI, color = "Brownian"), data = data.frame(EI = EIbrownian)) + 
-  geom_line(aes(x = 1:730, y = EI, color = "Linear"), data = data.frame(EI = EIlinear)) + 
-  geom_line(aes(x = 1:730, y = EI, color = "Exponential"), data = data.frame(EI = EIexponential)) + 
-  geom_step(aes(x = 1:730, y = EI, color = "Right Stepwise"), data = data.frame(EI = EIstepwise_r)) + 
-  geom_step(aes(x = 1:730, y = EI, color = "Left Stepwise"), data = data.frame(EI = EIstepwise_l)) + 
-  geom_line(aes(x = 1:730, y = EI, color = "Logarithmic"), data = data.frame(EI = EIlogarithmic)) + 
-  xlab("Days") + ylab("Energy change (kcals)") + ggtitle("Energy interpolation") +
+  geom_line(aes(x = 1:730, y = EI, color = "Brownian"), 
+            data = data.frame(EI = EIbrownian)) + 
+  geom_line(aes(x = 1:730, y = EI, color = "Linear"), 
+            data = data.frame(EI = EIlinear)) + 
+  geom_line(aes(x = 1:730, y = EI, color = "Exponential"), 
+            data = data.frame(EI = EIexponential)) + 
+  geom_step(aes(x = 1:730, y = EI, color = "Right Stepwise"), 
+            data = data.frame(EI = EIstepwise_r)) + 
+  geom_step(aes(x = 1:730, y = EI, color = "Left Stepwise"), 
+            data = data.frame(EI = EIstepwise_l)) + 
+  geom_line(aes(x = 1:730, y = EI, color = "Logarithmic"), 
+            data = data.frame(EI = EIlogarithmic)) + 
+  xlab("Days") + ylab("Energy change (kcals)") + 
+  ggtitle("Energy interpolation") +
   theme_classic() + 
   scale_color_manual("Interpolation", 
                      values = c("Brownian" = "red", "Linear" = "deepskyblue3",
@@ -198,6 +212,7 @@ ggplot() +
   geom_line(aes(x = 1:730, y = as.vector(model_stepwise_l[["Body_Weight"]]), color = "Left Stepwise")) + 
   geom_line(aes(x = 1:730, y = as.vector(model_brownian[["Body_Weight"]]), color = "Brownian")) +
   xlab("Days") + ylab("Weight (kg)") + 
+  theme_classic() + 
   ggtitle("Weight change under different energy interpolations") + 
     scale_color_manual("Interpolation", 
                      values = c("Brownian" = "red", "Linear" = "deepskyblue3",
@@ -205,20 +220,20 @@ ggplot() +
                                 "Right Stepwise" = "black", "Left Stepwise" = "green"))
 ```
 
-##Estimating weight change of a database
+##Estimating weight change from a database
 
-Vector data can also be used in the model to calculate weight change for several individuals at a time (which is quite faster than doing them individually). As an example consider the following dataset:
+Vector data can also be used in the model to calculate weight change for several individuals at a time (which is quite faster than doing them individually in a `for` loop). As an example consider the following dataset:
 
 ```{r}
 #Database information
 mydata <- data.frame(
-  id = 1:5,
-  weight = c(45, 67, 58, 92, 81),
+  id     = 1:5,
+  weight = c(67, 68, 69, 70, 71),
   height = c(1.30, 1.73, 1.77, 1.92, 1.73),
-  age = c(45, 23, 66, 44, 23),
-  sex = c("male", "female", "female", "male", "male"),
+  age    = c(45, 23, 66, 44, 23),
+  sex    = c("male", "female", "female", "male", "male"),
   energy_change = runif(5, -200, 200),
-  prob = c(0.1, 0.2, 0.2, 0.05, 0.45))
+  prob   = c(0.1, 0.2, 0.2, 0.05, 0.45))
 
 #Get energy change with energy build function
 eichange      <- energy_build(cbind(rep(0,5), mydata$energy_change), c(0, 365))
@@ -240,7 +255,7 @@ Summary measures can be obtained via `model_mean` and `adult_bmi`. The first, qu
 model_mean(database_model, "Body_Weight")
 ```
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, warning = FALSE}
 head(model_mean(database_model, "Body_Weight"))[,1:5]
 ```
 
@@ -260,7 +275,7 @@ Mean can also be grouped by a variable (say, `sex`):
 model_mean(database_model, "Body_Weight", days = 1:365, group = mydata$sex)
 ```
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, warning = FALSE}
 head(model_mean(database_model, "Body_Weight", days = 1:365, group = mydata$sex))[,1:5]
 ```
 
@@ -293,3 +308,122 @@ Additional information on the Children model and other package functions can be 
 ```{r, eval = FALSE}
 browseVignettes("bw")
 ```
+
+#Basic explanation on model's equations {#basic}
+
+\noindent The main idea of the adult dynamic weight change model [@T7, @T8, @T9, @T10] is that body weight $BW(t)$ at a given time $t$ is the sum of four components: lean mass $L(t)$, fat mass $F(t)$, glycogen $g(t)$, and extracellular fluid $ECF(t)$:
+
+\begin{equation}\label{bw}
+\overbrace{BW(t)}^{\textrm{Weight}} = \underbrace{F(t)}_{\textrm{Fat}} + \overbrace{L(t)}^{\textrm{Lean}} + \underbrace{3.7 \cdot G(t)}_{\textrm{Glycogen and Associated water}} + \overbrace{ECF(t)}^{\textrm{Extracellular Fluid}}
+\end{equation}
+
+Lean mass, fat mass, and glycogen are interrelated, meanwhile the extracellular fluid has its own dynamic. The dynamic model's equations are congruent with the energy conservation law. Changes in weight are therefore determined by:
+
++ Energy intake ($EI$), 
++ Energy expenditure ($EE$),
++ Glycogen reserve ($G$).
+
+
+Changes in lean and fat mass are given by changes in intake, expenditure, and glycogen. An increase or decrease in body weight depends on the difference between intake and expenditure. A fraction of the change in weight $p$ will correspond to the change in lean mass and the remaining fraction $(1-p)$ will correspond to changes in fat mass. The corresponding equations are:
+
+\begin{equation}\nonumber
+\overbrace{\dfrac{dL}{dt}}^{\textrm{Change in lean mass}} = \underbrace{p}_{\textrm{Fraction}} \overbrace{\frac{\Big( EI - EE - \rho_G \frac{dG}{dt}\Big)}{\rho_L}}^{\textrm{Energy Intake} - \textrm{Expenditure+Storage}}
+\end{equation}
+
+\begin{equation}\nonumber
+\overbrace{\dfrac{dF}{dt}}^{\textrm{Change in fat mass}} = \underbrace{(1-p)}_{\textrm{Remaining fraction}} \overbrace{\frac{\Big( EI - EE - \rho_G \frac{dG}{dt}\Big)}{\rho_L}}^{\textrm{Energy Intake} - \textrm{Expenditure+Storage}}
+\end{equation}
+
+Changes in glycogen are determined by the proportion of energy consumption from carbohydrates $CI$:
+
+\begin{equation}
+\overbrace{\dfrac{dG}{dt}}^{\textrm{Change in glycogen}} = \underbrace{\frac{1}{\rho_G} \Big( CI - k_G G^2\Big)}_{\textrm{Carbohydrates and constant parameters}},
+\end{equation}
+
+Finally, the equation for extracellular fluid depends on sodium intake and carbohydrates consumed:
+\begin{equation}\nonumber
+\overbrace{\dfrac{dECF}{dt}}^{\textrm{Change in fluid}} = \overbrace{\frac{ \Big( \Delta Na_{diet} + \xi_{Na}(ECF - ECF_{init}) - \xi_{CI} (1 - \frac{CI}{CI_{b}}) \Big)}{Na}.}^{\textrm{Depends on changes in sodium and carbohydrat intake.}}
+\end{equation}
+
+To summarize: weight is divided into four interdependent components: lean mass, fat mass, glycogen, and extracellular fluid. The weight change model describes the processes resulting from interconnections between the components:
+
+\begin{equation}\label{bw2}
+\overbrace{BW(t)}^{\textrm{Weight}} = \underbrace{F(t)}_{\textrm{Fat}} + \overbrace{L(t)}^{\textrm{Lean}} + \underbrace{3.7 \cdot G(t)}_{\textrm{Glycogen and Associated water}} + \overbrace{ECF(t)}^{\textrm{Extracellular Fluid}}
+\end{equation}
+
+
+#Advanced explanation on model's equations {#advanced}
+
+The dynamic weight change model @T7 defines individual weight (kg) as the sum of fat $F$ and lean mass $L$, extracellular fluid $ECF$ and glycogen $G$:
+\begin{equation}\label{bodyweight}
+\begin{aligned}
+BW = ECF + 3.7 G + F + L.
+\end{aligned}
+\end{equation}
+Extracellular fluid $ECF \equiv ECF(t)$ is the solution to the ordinary differential equation system: 
+\begin{equation}\label{ecf}
+\begin{cases}
+\dfrac{dECF}{dt} & = \frac{1}{Na} \Big( \Delta Na_{diet} + \xi_{Na}(ECF - ECF_{init}) - \xi_{CI} (1 - CI /CI_{b}) \Big),\\\\
+ECF_{init} & = 0.
+\end{cases}
+\end{equation}
+where $Na = 3.22$ mg/ml, $\xi_{Na} = 3000$ mg/L/d, and $\xi_{CI} = 4000$ mg/d, are phisiological constants [@T7].  $\Delta Na_{diet}$ represents the change in sodium (mg/d) for the individual. $CI_b$ is the carbohydrate intake at baseline (assumed to be $1/2$ of energy intake estimated) and $CI \equiv CI(t)$ is the carbohydrate intake after the consumption reduction (assumed to be half the energy intake after reduction, $CI \equiv \Delta EI(t) / 2$). 
+Glycogen mass $G \equiv G(t)$ is described by the ordinary differential equation:
+\begin{equation}\label{gly}
+\dfrac{dG}{dt} = \frac{1}{\rho_G} \Big( CI - k_G \cdot G^2\Big),
+\end{equation}
+where $\rho_G = 4206.501 \textrm{kcals}/\textrm{kg}$ ($17.6 MJ/kg$), and $k_G = CI_b/G_{init}^2$ is a constant with $G_{init} = 0.5$ kg the initial glycogen mass. 
+
+Fat and lean mass, $F\equiv F(t)$ and $L \equiv L(t)$, represent the solutions to the following system of nonlinear ordinary differential equations: 
+\begin{equation}\label{desolveadoras}
+    \begin{aligned}
+    \dfrac{dF}{dt} & = \frac{\big(1-p \big)}{\rho_F}\Big( EI_{\textrm{init}} - EE - \rho_G \frac{dG}{dt}\Big),\\
+    \dfrac{dL}{dt} & = \frac{p}{\rho_L}\Big( EI_{\textrm{init}} - EE - \rho_G \frac{dG}{dt}\Big),
+    \end{aligned}
+\end{equation}
+with $\rho_F = 9440.727$ kcals/kg ($39.5$ MJ/kg), $\rho_L = 1816.444$ kcals/kg ($7.6$ MJ/kg) are constants, and $p \equiv  C/ (C+F)$ a function of fat mass with $C = 10.4 \cdot \rho_L \rho_F^{-1}$. 
+Total energy expenditure $EE$ is given by:
+\begin{equation}
+EE = K + \gamma_F F + \gamma_L L + \delta BW + TEF + AT + \eta_L \dfrac{dL}{dt} + \eta_F \dfrac{dF}{dt} ,
+\end{equation}
+with $\gamma_F = 3.107075$ kcals/kg/d ($13$ kJ/kg/d), $\gamma_L =  21.98853$ kcals/kg/d ($92$ kJ/kg/d), $\eta_F = 179.2543$ kcals/kg ($750$ kJ/d), $\eta_L =  229.4455$ kcals/kg ($960$ kJ/kg) are physiological constants. $K$ is determined by the initial energy balance condition:
+\begin{equation}\label{K}
+K =  RMR_{init} \cdot PAL  - \gamma_L L_{init} - \gamma_F F_{init} - \delta BW_{init}
+\end{equation}
+with $RMR_{init}$ the initial resting metabolic rate, $PAL$ the physical activity level (assumed $PAL = 1.5$), $L_{init}, F_{init}, BW_{init}$ the initial lean, fat and body weight masses. The constant $\delta$ is determined defined as $\delta = RMR_{init} \Big( (1 - \beta_{TEF}) \cdot PAL - 1\Big) / BW_{init}$ with $\beta_{TEF} = 0.1$. Furthermore, the thermal effect of feeding is defined as $TEF \equiv \beta_{TEF} \Delta EI(t)$
+with $\Delta EI(t)$ as previously specified. Finally, adaptative thermogenesis is given by the solution to the ODE system:
+\begin{equation}\label{at}
+\begin{cases}
+\dfrac{dAT}{dt} & = \beta_{AT} \Delta EI - AT, \\ \\
+AT_{init} & = \beta_{AT} \cdot PAL \cdot RMR_{init}.
+\end{cases}
+\end{equation}
+We remark that for each individual, the initial resting metabolic rate $RMR_{init}$ is described by the equations @mifflin1990new:
+\begin{equation}\label{rmr}
+RMR_{init} = \begin{cases}
+9.99\cdot BW_{init} + 625\cdot H_{init} -4.92\cdot AGE_{init} + 5 &  \text{if Sex $=$ Male},  \\
+9.99\cdot BW_{init} + 625\cdot H_{init}-4.92\cdot \cdot AGE_{init} -161 & \text{if Sex $=$ Female}.
+\end{cases}
+\end{equation}
+with $H_{init}$, $AGE_{init}$ initial height and age respectively.
+Initial fat mass was obtained via the function:
+\begin{equation}\label{fatmass}
+F_{init} = \begin{cases}
+(1/100) \cdot BW_{init} \cdot \Big(0.14 \cdot AGE_{init} + 37.31 \times \ln(BW_{init} / H_{init}^2) - 103.94 \Big) & \text{if Sex $=$ Male} , \\
+(1/100) \cdot BW_{init} \cdot \Big(0.14 \cdot  AGE_{init} + 39.96 \cdot \ln(BW_{init} / H_{init}^2) - 102.01 \Big) & \text{if Sex $=$ Female}.
+\end{cases}
+\end{equation}
+
+Additional information on the model can be found in [@T7, @T8, @T9, @T10]
+
+## Solution algorithm
+To solve this system of differential equations, we used a 4th order Runge-Kutta  algorithm (RK4) @ascher2011first with a stepsize $\Delta t = 1$. RK4 was programmed in `C++` for speed and connected to R via the `Rcpp` package [@Rcpp2, @Rcpp1].
+
+#Additional information
+Additional information on the children's model, and why to use the dynamic adult model instead of other classical approaches can be found in the package's vignettes:
+
+```{r, eval = FALSE}
+browseVignettes("bw")
+```
+
+# References

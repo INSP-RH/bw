@@ -2,10 +2,8 @@
 //  adult_weight.cpp
 //  
 //
-//  This is a function that calculates
-//  weight change for adults using the dynamic
-//  weight model by Kevin D. Hall et al. and
-//  Runge Kutta method to solve the ODE system.
+//  This is a function that calculates weight change for adults using the dynamic
+//  weight model by Kevin D. Hall et al. and Runge Kutta method to solve the ODE system.
 //
 //  Input:
 //  bw              .-  Body weight (kg).
@@ -27,6 +25,23 @@
 //  Authors:
 //  Dalia Camacho-García-Formentí
 //  Rodrigo Zepeda-Tello
+//
+// References:
+//
+//  Chow, Carson C, and Kevin D Hall. 2008. “The Dynamics of Human Body Weight Change.” PLoS Comput Biol 4 (3):e1000045.
+//
+//  Hall, Kevin D. 2010. “Predicting Metabolic Adaptation, Body Weight Change, and Energy Intake in Humans.”
+//      American Journal of Physiology-Endocrinology and Metabolism 298 (3). Am Physiological Soc: E449–E466.
+//
+//  Hall, Kevin D, and Peter N Jordan. 2008. “Modeling Weight-Loss Maintenance to Help Prevent Body Weight Regain.”
+//      The American Journal of Clinical Nutrition 88 (6). Am Soc Nutrition: 1495–1503.
+//
+//  Hall, Kevin D, Gary Sacks, Dhruva Chandramohan, Carson C Chow, Y Claire Wang, Steven L Gortmaker, and Boyd A Swinburn. 2011.
+//      “Quantification of the Effect of Energy Imbalance on Bodyweight.” The Lancet 378 (9793). Elsevier: 826–37.
+//
+//  Mifflin, Mark D, Sachiko T St Jeor, Lisa A Hill, Barbara J Scott, Sandra A Daugherty, and YO Koh. 1990.
+//      “A New Predictive Equation for Resting Energy Expenditure in Healthy Individuals.” The American Journal of Clinical Nutrition 51 (2).
+//      Am Soc Nutrition: 241–47.
 //
 //----------------------------------------------------------------------------------------
 // License: MIT

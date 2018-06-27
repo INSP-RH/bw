@@ -1,6 +1,9 @@
 //
 //  energy_build.cpp 
 //
+//  This function performs different interpolation methods for values in a matrix
+//  that represent different measured moments in time. 
+//
 //  INPUT:
 //  Energy   .- Includes measurements of energy comsumption where each row is an individual
 //  and each column is a time in Time in which it was measured.

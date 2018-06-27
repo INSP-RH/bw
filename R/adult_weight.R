@@ -36,11 +36,24 @@
 #' @import compiler
 #' @importFrom Rcpp evalCpp 
 #' 
-#' @references HALL, Kevin D., et al. \emph{Quantification of the effect of energy 
-#' imbalance on bodyweight}. The Lancet, 2011, vol. 378, no 9793, p. 826-83
+#' @references Chow, Carson C, and Kevin D Hall. 2008. \emph{The Dynamics of Human Body Weight Change.} PLoS Comput Biol 4 (3):e1000045.
+#'
+#' Hall, Kevin D. 2010. \emph{Predicting Metabolic Adaptation, Body Weight Change, and Energy Intake in Humans.}
+#'    American Journal of Physiology-Endocrinology and Metabolism 298 (3). Am Physiological Soc: E449–E466.
+#'
+#' Hall, Kevin D, and Peter N Jordan. 2008. \emph{Modeling Weight-Loss Maintenance to Help Prevent Body Weight Regain.}
+#'     The American Journal of Clinical Nutrition 88 (6). Am Soc Nutrition: 1495–1503.
+#'     
+#' Hall, Kevin D, Gary Sacks, Dhruva Chandramohan, Carson C Chow, Y Claire Wang, Steven L Gortmaker, and Boyd A Swinburn. 2011.
+#' \emph{Quantification of the Effect of Energy Imbalance on Bodyweight.} The Lancet 378 (9793). Elsevier: 826–37.
+#´
+#´ Mifflin, Mark D, Sachiko T St Jeor, Lisa A Hill, Barbara J Scott, Sandra A Daugherty, and YO Koh. 1990.
+#' \emph{A New Predictive Equation for Resting Energy Expenditure in Healthy Individuals.} 
+#' The American Journal of Clinical Nutrition 51 (2). Am Soc Nutrition: 241–47.
 #' 
 #' @seealso \code{\link{model_plot}} for plotting the results and 
-#' \code{\link{model_mean}} for aggregate data estimation. 
+#' \code{\link{model_mean}} for aggregate data estimation. \code{\link{child_weight}} 
+#' implements a similar model for children.
 #' 
 #' @examples 
 #' #EXAMPLE 1: INDIVIDUAL MODELLING
