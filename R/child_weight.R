@@ -19,8 +19,12 @@
 #' 
 #' @details \code{richardsonparams} is a named list of parameters:
 #' \code{K}, \code{A}, \code{Q}, \code{C}, \code{B}, \code{nu}
-#' which result in Richardon's cure:
+#' which result in Richardon's curve:
 #' \deqn{A + \frac{K-A}{(C + Q exp(-B*t))^{1/nu}}}
+#' The Richardson's curve is another option for modelling the energy
+#' intake for a child: by specifying the parameters no energy input
+#' is needed; instead Energy is assumed to follow the equation:
+#' \deqn{EI(t) = A + \frac{K-A}{(C + Q exp(-B*t))^{1/nu}}}
 #' 
 #' @useDynLib bw
 #' @import compiler
@@ -66,7 +70,8 @@
 #' 
 #' #Using Richardson's energy
 #' girl <- child_weight(6,"female", days=365, dt = 5, 
-#'                      richardsonparams = list(K = 2700, Q = 10, B = 12, A = 3, nu = 4, C = 1))
+#'                      richardsonparams = list(K = 2700, Q = 10, 
+#'                      B = 12, A = 3, nu = 4, C = 1))
 #' plot(girl$Body_Weight[1,])
 #' 
 #' #EXAMPLE 2: DATASET MODELLING
@@ -84,7 +89,8 @@
 #' model_weight <- child_weight(ages, sexes, Fat, FatFree, eintake)
 #' 
 #' model_weight_2 <- child_weight(ages, sexes, Fat, FatFree, 
-#'                     richardsonparams = list(K = 2700, Q = 10, B = 12, A = 3, nu = 4, C = 1))
+#'                     richardsonparams = list(K = 2700, Q = 10, 
+#'                     B = 12, A = 3, nu = 4, C = 1))
 #'          
 #' @export
 #'

@@ -200,6 +200,21 @@ ggplot() +
                                 "Right Stepwise" = "black", "Left Stepwise" = "green"))
 ```
 
+##Using Richardson's function
+The children model includes the option `richardsonparams` which is a list of parameters $list(K = NA, Q = NA, B = NA, A = NA, nu = NA, C = NA)$ representing $K, Q, \beta, A, \nu, C$. If parameters are specified, the model assumes the energy intake function is a generalized logistic function (Richardson's function [@falkner2012human]):
+\begin{equation}
+EI(t) = A + \frac{K-A}{(C + Q e^{-\beta \cdot t})^{1/\nu}}.
+\end{equation}
+
+```{r, fig.width=7, fig.height=4}
+girl <- child_weight(6,"female", days=365, dt = 5, 
+                     richardsonparams = list(K = 2700, Q = 10, 
+                                             B = 12, A = 3, nu = 4, 
+                                             C = 1))
+model_plot(girl, "Body_Weight")
+```
+
+
 ##Estimating weight change of a database
 
 Vector data can also be used in the model to calculate weight change for several individuals at a time (which is quite faster than doing them individually). As an example consider the following dataset:
@@ -278,6 +293,33 @@ browseVignettes("bw")
 
 #Basic explanation on model's equations {#basic}
 
+The main idea of the children's weight model [@katan2016impact, @hall2013dynamics] is that weight is determined by fat and fat free mass:
+\begin{equation}
+    \underbrace{BW(t)}_{\text{Body Weight}} = \underbrace{FM(t)}_{\text{Fat Mass}} + \underbrace{FFM(t)}_{\text{Fat Free Mass}}.
+\end{equation}
+Both fat and fat free masses are interdependent; their dependencies given by the equation system:
+\begin{equation}
+    \begin{aligned}
+     \overbrace{\dfrac{d FFM}{dt}}^{\text{Change in fat free mass}} & = \overbrace{\dfrac{1}{\rho_{FFM}}}^{\text{Scaling}} \times  \overbrace{p}^{\text{Proportion of energy difference going to fat free}} \times \overbrace{(EI - E)}^{\text{Difference between intake and expenditure}} 
+     \\ & \qquad + \underbrace{g}_{\text{Control for growth}} \\\\
+     \underbrace{\dfrac{d FM}{dt}}_{\text{Change in fat mass}} & = \underbrace{\dfrac{1}{\rho_{FM}}}_{\text{Scaling}} \times \underbrace{(1-p)}_{\text{Proportion of energy difference going to fat}} \times \underbrace{(EI - E)}_{\text{Difference between intake and expenditure}} 
+     \\ & \qquad - \underbrace{g}_{\text{Control for growth}} 
+    \end{aligned}
+\end{equation}
+Energy intake $EI$ is a function that can either be specified by the user (via the `EI` entry) or one can use a Richardson's function
+[@falkner2012human]:
+\begin{equation}
+EI(t) = A + \frac{K-A}{(C + Q e^{-\beta \cdot t})^{1/\nu}}
+\end{equation}
+by specifying the individual's parameters $K,A,C,Q,\beta,\nu$. The energy expenditure is given by a combination of the changes in fat and fat free masses as well as the masses themselves:
+\begin{equation}
+\begin{aligned}
+    E & = \overbrace{K}_{\text{Individual's parameter}} + \overbrace{\gamma_{FFM} FFM}^{\text{Fat Free Mass}} + \overbrace{\gamma_{FM} FM}^{\text{Fat Mass}} + \overbrace{\beta \Delta I}^{\text{Difference in intake with respect to normal growth}}  \\\\\\ & \qquad + \underbrace{\delta \cdot BW}_{\text{Body weight}} + \underbrace{\eta_{FFM} \cdot \dfrac{dFFM}{dt} + \eta_{FM} \cdot \dfrac{dFM}{dt}}_{\text{Changes in fat free and fat masses}},
+\end{aligned}
+\end{equation}
+Thus body weight is the result of this physiological interdependencies between the fat mass, the fat free mass, the energy intake and the expenditure. The model is further expanded in the following section.
+
+
 #Advanced explanation on model's equations {#advanced}
 
 The children weight model [@katan2016impact, @hall2013dynamics] considers the interactions between fat mass $FM := FM(t)$; fat free mass $FFM := FFM(t)$; an energy intake function $EI:= EI(t)$; an energy expenditure function $E := E(t)$ adjusted by a body-growth term $g(t)$. In this model, body weight is given by the sum of fat mass and fat free mass:
@@ -290,7 +332,7 @@ The components of body weight, $FM$ and $FFM$, are determined by a system of ord
 \begin{equation}\label{diff}
     \begin{aligned}
     \rho_{FFM} \cdot \dfrac{d FFM}{dt} & = p \cdot (EI - E) + g \\\\
-    \rho_{FM} \cdot \dfrac{d FFM}{dt} & = (1-p) \cdot (EI - E) - g 
+    \rho_{FM} \cdot \dfrac{d FM}{dt} & = (1-p) \cdot (EI - E) - g 
     \end{aligned}
 \end{equation}
 where $p = C/(C + FM)$ a ratio established by Forbes with $C = 10.4 \rho_{FFM} / \rho_{FM}$. The parameters $\rho_{FM} = 9.4 kcal/g$ ($= 9400 \textrm{ kcal}/\textrm{kg}$ and $\rho_{FFM} = (4.3 \cdot FFM_0 + 837) \textrm{ kcal}/\textrm{kg}$ where $FFM_0$ represents the amount of fat free mass (kg) at baseline. 
