@@ -455,22 +455,6 @@ List Adult::rk4(double days){
     for (int i = 1; i <= nsims; i++){
         
         
-        if (check){
-            for (int k = 0; k < nind; k++){
-              //Need to correct in windows isfinite does not exist
-                /*if(L(k,i-1)<=0|| !isfinite(L(k,i-1)) || F(k,i-1)<=0|| !isfinite(F(k,i-1))){
-                    Rcout << "First error in person "<< k+1 <<std::endl;
-                    correctVals = false;
-                    break;
-                }*/
-            }
-        }
-        
-        if (!correctVals) {
-            break;
-        }
-        
-        
         //Adaptive thermogenesis
         k1 = dAT(TIME(i-1), AT(_, i-1)); // f(t_n , y_n)
         k2 = dAT(TIME(i-1) + 0.5 * dt, AT(_, i-1) + 0.5 * dt * k1); // f(t_n + h/2, y_n + h/2 k1)

@@ -43,6 +43,7 @@
 #' 
 #' #EXAMPLE 2A: DATASET MODELLING FOR ADULTS
 #' #--------------------------------------------------------
+#' \donttest{
 #' #Antropometric data
 #' models <- c(45, 67, 58, 92, 81)
 #' heights <- c(1.30, 1.73, 1.77, 1.92, 1.73)
@@ -62,7 +63,9 @@
 #' 
 #' #Plot Body Mass Index
 #' model_plot(model_model, "Body_Mass_Index")
+#' }
 #' 
+#' \donttest{
 #' #EXAMPLE 2C: DATASET MODELLING FOR CHILDREN
 #' #--------------------------------------------------------
 #' #Antropometric data
@@ -79,7 +82,7 @@
 #' 
 #' #Plot Body Mass Index
 #' model_plot(model_model, "Fat_Mass")
-#'                             
+#' }                           
 #' @export
 
 model_plot <- function(model, 

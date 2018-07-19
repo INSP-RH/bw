@@ -45,16 +45,17 @@
 #'                              EIchange)
 #'                              
 #' #Calculate survey mean and variance for 25 days
+#' \donttest{
 #' aggregate_data <- model_mean(model_model)
 #' 
 #' #You can plot the mean with ci
-#' \dontrun{
 #' if(require(ggplot2)){
-#' ggplot(subset(aggregate_data, variable == "Body_model")) + 
+#' ggplot(subset(aggregate_data, variable == "Body_Weight")) + 
 #'     geom_line(aes(x = time, y = mean)) +
 #'     geom_line(aes(x = time, y = Lower_CI_mean), linetype = "dashed") +
 #'     geom_line(aes(x = time, y = Upper_CI_mean), linetype = "dashed") +
 #'     theme_classic() + xlab("Days") + ylab("Mean Body model (kg)")
+#' }
 #' }
 #' 
 #' #EXAMPLE 1C: RANDOM SAMPLE MODELLING FOR CHILDREN
@@ -69,19 +70,22 @@
 #' model_model <- child_weight(ages, sexes, Fat, FatFree)
 #' 
 #' #Calculate survey mean and variance for 25 days
+#' \donttest{
 #' aggregate_data <- model_mean(model_model)
 #' 
 #' #You can plot the mean with ci
 #' if(require(ggplot2)){
-#' ggplot(subset(aggregate_data, variable == "Body_model")) + 
+#' ggplot(subset(aggregate_data, variable == "Body_Weight")) + 
 #'     geom_line(aes(x = time, y = mean)) +
 #'     geom_line(aes(x = time, y = Lower_CI_mean), linetype = "dashed") +
 #'     geom_line(aes(x = time, y = Upper_CI_mean), linetype = "dashed") +
 #'     theme_classic() + xlab("Days") + ylab("Mean Body model (kg)")
 #' }
+#' }
 #'   
 #' #EXAMPLE 2A: SURVEY DATA FOR ADULTS
 #' #-------------------------------------------------------
+#' \donttest{
 #' #Data frame for use in survey
 #' probs   <- runif(10, 20, 60)
 #' datasvy <- data.frame(
@@ -119,14 +123,17 @@
 #' 
 #' #You can plot the mean with ci
 #' if(require(ggplot2)){
-#' ggplot(subset(aggregate_data, variable == "Body_model")) + 
+#' ggplot(subset(aggregate_data, variable == "Body_Weight")) + 
 #'     geom_ribbon(aes(x = time, ymin = Lower_CI_mean, ymax = Upper_CI_mean,
 #'     fill = factor(group)), alpha = 0.25) +
 #'     geom_line(aes(x = time, y = mean, color = factor(group)), size = 2) +
 #'     theme_classic() + xlab("Days") + ylab("Mean Body model (kg)") 
 #' }
+#' }
+#' 
 #' #EXAMPLE 2A: SURVEY DATA FOR CHILDREN
 #' #-------------------------------------------------------
+#' \donttest{
 #' #Data frame for use in survey
 #' probs   <- runif(10, 20, 60)
 #' datasvy <- data.frame(
@@ -153,14 +160,14 @@
 #'     
 #' #Calculate survey mean and variance for 25 days
 #' aggregate_data <- model_mean(svymodel, design = design, group = group)
-#' aggregate_data
+#' 
 #' #You can plot the mean with ci
 #' if(require(ggplot2)){
-#' ggplot(subset(aggregate_data, variable == "Body_model")) + 
+#' ggplot(subset(aggregate_data, variable == "Body_Weight")) + 
 #'     geom_ribbon(aes(x = time, ymin = Lower_CI_mean, ymax = Upper_CI_mean,
 #'     fill = factor(group)), alpha = 0.25) +
 #'     geom_line(aes(x = time, y = mean, color = factor(group)), size = 2) +
-#'     theme_classic() + xlab("Days") + ylab("Mean Body model (kg)") 
+#'     theme_classic() + xlab("Days") + ylab("Mean Body Weight (kg)") 
 #' }                     
 #' }                                                             
 #' @export

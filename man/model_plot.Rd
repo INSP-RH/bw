@@ -51,6 +51,7 @@ model_plot(mymodel, "Body_Weight", ncol = 1)
 
 #EXAMPLE 2A: DATASET MODELLING FOR ADULTS
 #--------------------------------------------------------
+\donttest{
 #Antropometric data
 models <- c(45, 67, 58, 92, 81)
 heights <- c(1.30, 1.73, 1.77, 1.92, 1.73)
@@ -70,7 +71,9 @@ model_plot(model_model)
 
 #Plot Body Mass Index
 model_plot(model_model, "Body_Mass_Index")
+}
 
+\donttest{
 #EXAMPLE 2C: DATASET MODELLING FOR CHILDREN
 #--------------------------------------------------------
 #Antropometric data
@@ -87,7 +90,7 @@ model_plot(model_model)
 
 #Plot Body Mass Index
 model_plot(model_model, "Fat_Mass")
-                            
+}                           
 }
 \author{
 Rodrigo Zepeda-Tello \email{rzepeda17@gmail.com}

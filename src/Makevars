@@ -1,0 +1,7 @@
+#Choose C++11 as compiler
+CXX_STD      = CXX11
+
+# https://stat.ethz.ch/pipermail/r-package-devel/2018q1/002252.html
+strippedLib: $(SHLIB)
+		if test -e "/usr/bin/strip" & test -e "/bin/uname" & [[ `uname` == "Linux" ]] ; then /usr/bin/strip --strip-debug $(SHLIB); fi
+.phony: strippedLib

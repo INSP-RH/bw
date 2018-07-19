@@ -17,7 +17,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 require(ggplot2)
 require(bw)
-knitr::opts_chunk$set(fig.width = 7, fig.height = 4)
+knitr::opts_chunk$set(fig.width = 6, fig.height = 4)
 ```
 
 

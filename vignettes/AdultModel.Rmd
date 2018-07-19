@@ -102,7 +102,7 @@ Additional inputs include `days` to specify the model's time span and `checkValu
 |  `pcarb_base` |  \% of baseline intake that is carbohydrates | Yes | $0.5$ |
 |  `pcarb`      |  \% of intake after day $0$ that is carbohydrates | Yes | `pcarb_base` |
 | `days`        | Time period (days) to run the model | Yes | $365$ |
-| `dt`          | Time step for Rungue-Kutta 4        | Yes | $1$ |
+| `dt`          | Time step for Runge-Kutta 4        | Yes | $1$ |
 | `checkValues` | Check for internal consistency | Yes | `TRUE` |
 
 Finally, we remark that one can also input data from a database to estimate individual-level weight change (see the [related section](#estimating-weight-change-of-a-database)
@@ -121,18 +121,18 @@ database_model <- adult_weight(weights, heights, ages, sexes)
 ##Plots
 Result plots can be obtained by `model_plot` function:
 
-```{r, fig.width=7, fig.height=4}
+```{r, fig.width=6, fig.height=4}
 model_plot(female_model2, "Body_Weight")
 ```
 
 Plotting options include `"Body_Weight"`, `Fat_Mass`, `Lean_Mass`, `Glycogen`, `Extracellular_Fluid` and `Adaptive_Thermogenesis`. Several can be chosen at the same time:
 
-```{r, fig.width=7, fig.height=4}
+```{r, fig.width=6, fig.height=4}
 model_plot(female_model2, c("Body_Weight", "Fat_Mass"))
 ```
 
 Variables can also be plotted against age:
-```{r, fig.width=7, fig.height=4}
+```{r, fig.width=6, fig.height=4}
 model_plot(female_model2, c("Body_Weight", "Fat_Mass"), timevar = "Age")
 ```
 
@@ -146,7 +146,7 @@ EIbrownian <- energy_build(c(0, -250, 100), c(0, 365, 730))
 
 The interpolation looks like this:
 
-```{r, fig.width=7, fig.height=4}
+```{r, fig.width=6, fig.height=4}
 ggplot() + geom_line(aes(x = 1:730, y = EI), data = data.frame(EI = EIbrownian)) + 
   theme_classic() +
   xlab("Days") + ylab("Energy change (kcals)") + ggtitle("Energy interpolation")
@@ -170,7 +170,7 @@ EIlogarithmic <- energy_build(c(0, -250, 100), c(0, 365, 730), "Logarithmic")
 
 Which look like this:
 
-```{r, fig.width=7, fig.height=4}
+```{r, fig.width=6, fig.height=4}
 ggplot() + 
   geom_line(aes(x = 1:730, y = EI, color = "Brownian"), 
             data = data.frame(EI = EIbrownian)) + 
@@ -203,7 +203,7 @@ model_stepwise_l  <- adult_weight(70, 1.75, 22, "male", EIstepwise_l, days = 730
 ```
 
 Which look as follows:
-```{r, echo = FALSE, fig.width=7, fig.height=4}
+```{r, echo = FALSE, fig.width=6, fig.height=4}
 ggplot() +
   geom_line(aes(x = 1:730, y = as.vector(model_linear[["Body_Weight"]]), color = "Linear")) + 
   geom_line(aes(x = 1:730, y = as.vector(model_exponential[["Body_Weight"]]), color = "Exponential")) + 
@@ -245,7 +245,7 @@ database_model <- adult_weight(mydata$weight, mydata$height, mydata$age, mydata$
 
 Plots can also be obtained for the population with the same command `model_plot`:
 
-```{r fig.width=7, fig.height=4}
+```{r fig.width=6, fig.height=4}
 model_plot(database_model, "Body_Weight")
 ```
 

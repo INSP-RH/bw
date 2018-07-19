@@ -71,7 +71,7 @@ Other (optional) inputs include:
 | Input | Meaning | Optional | Default |
 |------:|------:|------:|------:|
 |  `days`         |  Number of days to run de model  | Yes | $365$ |
-| `dt`            | Time step for Rungue-Kutta 4        | Yes | $1$ |
+| `dt`            | Time step for Runge-Kutta 4        | Yes | $1$ |
 |  `checkValues`  |  Boolean indicating whether the model should check parameters make sense   | Yes | `TRUE` |
 
 All inputs used in the model are:
@@ -84,7 +84,7 @@ All inputs used in the model are:
 |  `FFM`  | Fat Free Mass (kg) | Yes | Model estimate |
 |  `EI`  | Energy Intake per day | Yes | Model estimate |
 | `days`        | Time period (days) to run the model | Yes | $365$ |
-| `dt`          | Time step for Rungue-Kutta 4        | Yes | $1$ |
+| `dt`          | Time step for Runge-Kutta 4        | Yes | $1$ |
 | `checkValues` | Check for internal consistency | Yes | `TRUE` |
 
 Finally, we remark that one can also input data from a database to estimate individual-level weight change (see the [related section](#estimating-weight-change-of-a-database))
@@ -101,104 +101,24 @@ database_model <- child_weight(ages, sexes)
 ##Plots
 Result plots can be obtained by `model_plot` function:
 
-```{r, fig.width=7, fig.height=4}
+```{r, fig.width=6, fig.height=4}
 model_plot(female_model2, "Body_Weight")
 ```
 
 Plotting options include `"Body_Weight"`, `Fat_Mass`, and `Fat_Free_Mass`. Several can be chosen at the same time:
 
-```{r, fig.width=7, fig.height=4}
+```{r, fig.width=6, fig.height=4}
 model_plot(female_model2, c("Body_Weight", "Fat_Mass"))
 ```
 
 Variables can also be plotted against age:
-```{r, fig.width=7, fig.height=4}
+```{r, fig.width=6, fig.height=4}
 model_plot(female_model2, c("Body_Weight", "Fat_Mass"), timevar = "Age")
 ```
 
 ##Energy
 
-Energy intake is usually not continuously measured but measured at different and distant points in time (say 1 year apart). The function `energy_build` allows the user to interpolate different energy models between the interpolation points. As an example consider an individual that initially consumed `1600` kcals, by day `365` consumed in `1750` kcals and by day `730` had increased his consumption to `1820` kcals. The `energy_build` function interpolates those values via a Brownian Bridge:
-
-```{r}
-EIbrownian <- energy_build(c(1600, 1750, 1820), c(0, 365, 730))
-```
-
-The interpolation looks like this:
-
-```{r, fig.width=7, fig.height=4}
-ggplot() + geom_line(aes(x = 1:730, y = EI), data = data.frame(EI = EIbrownian)) +
-  theme_classic() +
-  xlab("Days") + ylab("Energy intake (kcals)") + ggtitle("Energy interpolation")
-```
-
-Such energy change matrix can be directly inputed in the model:
-
-```{r, message = FALSE}
-model_brownian <- child_weight(10, "male", EI = EIbrownian, days = 730)
-```
-
-Other interpolation modes include `Linear`, `Exponential`, `Stepwise_R` (right stepwise), `Stepwise_L` (left stepwise), and `Logarithmic`:
-
-```{r}
-EIlinear      <- energy_build(c(1600, 1750, 1820), c(0, 365, 730), "Linear")
-EIexponential <- energy_build(c(1600, 1750, 1820), c(0, 365, 730), "Exponential")
-EIstepwise_r  <- energy_build(c(1600, 1750, 1820), c(0, 365, 730), "Stepwise_R")
-EIstepwise_l  <- energy_build(c(1600, 1750, 1820), c(0, 365, 730), "Stepwise_L")
-EIlogarithmic <- energy_build(c(1600, 1750, 1820), c(0, 365, 730), "Logarithmic")
-```
-
-Which look like this:
-
-```{r, fig.width=7, fig.height=4}
-ggplot() + 
-  geom_line(aes(x = 1:730, y = EI, color = "Brownian"), 
-            data = data.frame(EI = EIbrownian)) + 
-  geom_line(aes(x = 1:730, y = EI, color = "Linear"), 
-            data = data.frame(EI = EIlinear)) + 
-  geom_line(aes(x = 1:730, y = EI, color = "Exponential"), 
-            data = data.frame(EI = EIexponential)) + 
-  geom_step(aes(x = 1:730, y = EI, color = "Right Stepwise"), 
-            data = data.frame(EI = EIstepwise_r)) + 
-  geom_step(aes(x = 1:730, y = EI, color = "Left Stepwise"), 
-            data = data.frame(EI = EIstepwise_l)) + 
-  geom_line(aes(x = 1:730, y = EI, color = "Logarithmic"), 
-            data = data.frame(EI = EIlogarithmic)) + 
-  xlab("Days") + ylab("Energy change (kcals)") + 
-  ggtitle("Energy interpolation") +
-  theme_classic() + 
-  scale_color_manual("Interpolation", 
-                     values = c("Brownian" = "red", "Linear" = "deepskyblue3",
-                                "Exponential" = "forestgreen", "Logarithmic" = "purple",
-                                "Right Stepwise" = "black", "Left Stepwise" = "green"))
-```
-
-These models result in different weight changes: 
-```{r, message = FALSE}
-model_linear      <- child_weight(10, "male", EI = EIlinear, days = 730)
-model_exponential <- child_weight(10, "male", EI = EIexponential, days = 730)
-model_logarithmic <- child_weight(10, "male", EI = EIlogarithmic, days = 730)
-model_stepwise_r  <- child_weight(10, "male", EI = EIstepwise_r, days = 730)
-model_stepwise_l  <- child_weight(10, "male", EI = EIstepwise_l, days = 730)
-```
-
-Which look as follows:
-```{r, echo = FALSE, fig.width=7, fig.height=4}
-ggplot() +
-  geom_line(aes(x = 1:730, y = as.vector(model_linear[["Body_Weight"]]), color = "Linear")) + 
-  geom_line(aes(x = 1:730, y = as.vector(model_exponential[["Body_Weight"]]), color = "Exponential")) + 
-  geom_line(aes(x = 1:730, y = as.vector(model_logarithmic[["Body_Weight"]]), color = "Logarithmic")) + 
-  geom_line(aes(x = 1:730, y = as.vector(model_stepwise_r[["Body_Weight"]]), color = "Right Stepwise")) + 
-  geom_line(aes(x = 1:730, y = as.vector(model_stepwise_l[["Body_Weight"]]), color = "Left Stepwise")) + 
-  geom_line(aes(x = 1:730, y = as.vector(model_brownian[["Body_Weight"]]), color = "Brownian")) +
-  xlab("Days") + ylab("Weight (kg)") + 
-  theme_classic()+
-  ggtitle("Weight change under different energy interpolations") + 
-    scale_color_manual("Interpolation", 
-                     values = c("Brownian" = "red", "Linear" = "deepskyblue3",
-                                "Exponential" = "forestgreen", "Logarithmic" = "purple",
-                                "Right Stepwise" = "black", "Left Stepwise" = "green"))
-```
+Energy intake is usually not continuously measured but measured at different and distant points in time (say 1 year apart). The function `energy_build` allows the user to interpolate different energy models between the interpolation points. For further information  on the  `energy_build` function see `AdultModel` vignette.
 
 ##Using Richardson's function
 The children model includes the option `richardsonparams` which is a list of parameters $list(K = NA, Q = NA, B = NA, A = NA, nu = NA, C = NA)$ representing $K, Q, \beta, A, \nu, C$. If parameters are specified, the model assumes the energy intake function is a generalized logistic function (Richardson's function [@falkner2012human]):
@@ -206,7 +126,7 @@ The children model includes the option `richardsonparams` which is a list of par
 EI(t) = A + \frac{K-A}{(C + Q e^{-\beta \cdot t})^{1/\nu}}.
 \end{equation}
 
-```{r, fig.width=7, fig.height=4}
+```{r, fig.width=6, fig.height=4}
 girl <- child_weight(6,"female", days=365, dt = 5, 
                      richardsonparams = list(K = 2700, Q = 10, 
                                              B = 12, A = 3, nu = 4, 
@@ -237,7 +157,7 @@ database_model <- child_weight(mydata$age, mydata$sex, EI = t(eichange))
 
 Plots can also be obtained for the population with the same command `model_plot`:
 
-```{r fig.width=7, fig.height=4}
+```{r fig.width=6, fig.height=4}
 model_plot(database_model, "Body_Weight")
 ```
 

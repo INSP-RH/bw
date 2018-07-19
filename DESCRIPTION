@@ -1,7 +1,7 @@
 Package: bw
 Version: 1.0.0
 Title: Dynamic Body Weight Models for Children and Adults
-Description: Implementation of the dynamic weight change models for adults from "The Dynamics of Human Body Weight Change" by Chow and Hall as well as the children weight change model from "Dynamics of childhood growth and obesity: development and validation of a quantitative mathematical model" by Hall, Butte and others. These model the physiological processes related to weight change in each individual by considering each of the biological processes involved. This package was developed under funding by Bloomberg Philanthropies.
+Description: Implementation of the dynamic weight change models for adults from "The Dynamics of Human Body Weight Change" by CC. Chow and KD. Hall (2008) <doi:10.1371/journal.pcbi.1000045>. As well as the children weight change model from "Dynamics of childhood growth and obesity: development and validation of a quantitative mathematical model" by KD. Hall, NF. Butte, BA. Swinburn, and CC. Chow (2013) <doi:10.1016/S2213-8587(13)70051-2>. These model the physiological processes related to weight change in each individual by considering each of the biological processes involved. This package was developed under funding by Bloomberg Philanthropies.
 Authors@R: c(person("Dalia", "Camacho-García-Formentí", email = "daliaf172@gmail.com", role = c("aut","cre")), person("Rodrigo", "Zepeda-Tello", email = "rzepeda17@gmail.com", role = c("aut")))
 License: MIT + file LICENSE
 Encoding: UTF-8
@@ -23,5 +23,4 @@ Imports:
     ggplot2,
     gridExtra,
     reshape2,
-    survey,
-    utils
+    survey
