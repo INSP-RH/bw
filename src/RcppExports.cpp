@@ -6,7 +6,7 @@
 using namespace Rcpp;
 
 // adult_weight_wrapper
-List adult_weight_wrapper(NumericVector bw, NumericVector ht, NumericVector age, NumericVector sex, NumericMatrix EIchange, NumericMatrix NAchange, NumericVector PAL, NumericVector pcarb_base, NumericVector pcarb, double dt, double days, bool checkValues);
+List adult_weight_wrapper(NumericVector bw, NumericVector ht, NumericVector age, NumericVector sex, NumericMatrix EIchange, NumericMatrix NAchange, NumericMatrix PAL, NumericVector pcarb_base, NumericVector pcarb, double dt, double days, bool checkValues);
 RcppExport SEXP _bw_adult_weight_wrapper(SEXP bwSEXP, SEXP htSEXP, SEXP ageSEXP, SEXP sexSEXP, SEXP EIchangeSEXP, SEXP NAchangeSEXP, SEXP PALSEXP, SEXP pcarb_baseSEXP, SEXP pcarbSEXP, SEXP dtSEXP, SEXP daysSEXP, SEXP checkValuesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -17,7 +17,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type sex(sexSEXP);
     Rcpp::traits::input_parameter< NumericMatrix >::type EIchange(EIchangeSEXP);
     Rcpp::traits::input_parameter< NumericMatrix >::type NAchange(NAchangeSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type PAL(PALSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type PAL(PALSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type pcarb_base(pcarb_baseSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type pcarb(pcarbSEXP);
     Rcpp::traits::input_parameter< double >::type dt(dtSEXP);
@@ -28,7 +28,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // adult_weight_wrapper_EI
-List adult_weight_wrapper_EI(NumericVector bw, NumericVector ht, NumericVector age, NumericVector sex, NumericMatrix EIchange, NumericMatrix NAchange, NumericVector PAL, NumericVector pcarb_base, NumericVector pcarb, double dt, NumericVector extradata, double days, bool checkValues, bool isEnergy);
+List adult_weight_wrapper_EI(NumericVector bw, NumericVector ht, NumericVector age, NumericVector sex, NumericMatrix EIchange, NumericMatrix NAchange, NumericMatrix PAL, NumericVector pcarb_base, NumericVector pcarb, double dt, NumericVector extradata, double days, bool checkValues, bool isEnergy);
 RcppExport SEXP _bw_adult_weight_wrapper_EI(SEXP bwSEXP, SEXP htSEXP, SEXP ageSEXP, SEXP sexSEXP, SEXP EIchangeSEXP, SEXP NAchangeSEXP, SEXP PALSEXP, SEXP pcarb_baseSEXP, SEXP pcarbSEXP, SEXP dtSEXP, SEXP extradataSEXP, SEXP daysSEXP, SEXP checkValuesSEXP, SEXP isEnergySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -39,7 +39,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type sex(sexSEXP);
     Rcpp::traits::input_parameter< NumericMatrix >::type EIchange(EIchangeSEXP);
     Rcpp::traits::input_parameter< NumericMatrix >::type NAchange(NAchangeSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type PAL(PALSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type PAL(PALSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type pcarb_base(pcarb_baseSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type pcarb(pcarbSEXP);
     Rcpp::traits::input_parameter< double >::type dt(dtSEXP);
@@ -52,7 +52,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // adult_weight_wrapper_EI_fat
-List adult_weight_wrapper_EI_fat(NumericVector bw, NumericVector ht, NumericVector age, NumericVector sex, NumericMatrix EIchange, NumericMatrix NAchange, NumericVector PAL, NumericVector pcarb_base, NumericVector pcarb, double dt, NumericVector input_EI, NumericVector input_fat, double days, bool checkValues);
+List adult_weight_wrapper_EI_fat(NumericVector bw, NumericVector ht, NumericVector age, NumericVector sex, NumericMatrix EIchange, NumericMatrix NAchange, NumericMatrix PAL, NumericVector pcarb_base, NumericVector pcarb, double dt, NumericVector input_EI, NumericVector input_fat, double days, bool checkValues);
 RcppExport SEXP _bw_adult_weight_wrapper_EI_fat(SEXP bwSEXP, SEXP htSEXP, SEXP ageSEXP, SEXP sexSEXP, SEXP EIchangeSEXP, SEXP NAchangeSEXP, SEXP PALSEXP, SEXP pcarb_baseSEXP, SEXP pcarbSEXP, SEXP dtSEXP, SEXP input_EISEXP, SEXP input_fatSEXP, SEXP daysSEXP, SEXP checkValuesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -63,7 +63,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type sex(sexSEXP);
     Rcpp::traits::input_parameter< NumericMatrix >::type EIchange(EIchangeSEXP);
     Rcpp::traits::input_parameter< NumericMatrix >::type NAchange(NAchangeSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type PAL(PALSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type PAL(PALSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type pcarb_base(pcarb_baseSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type pcarb(pcarbSEXP);
     Rcpp::traits::input_parameter< double >::type dt(dtSEXP);
