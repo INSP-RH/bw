@@ -371,7 +371,7 @@ NumericVector Adult::R(double t, NumericVector L, NumericVector G,
                        NumericVector AT, NumericVector ECF){
     NumericVector F      = fatMass(L);
     NumericVector weight = L + F + ECF + 3.7*(G);
-    NumericVector R3     = K + delta*weight + TEF(t) + AT - TotalIntake(t) + dG(t, G);
+    NumericVector R3     = K + delta*weight + TEF(t) + AT - TotalIntake(t) + roG*dG(t, G);
     return (R3 + gammaL*L + gammaF*F)/(alfa1 + alfa2*F);
 }
 
