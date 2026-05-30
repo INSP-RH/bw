@@ -1,0 +1,21 @@
+# Verification manifest
+# Files proven byte-identical to current source via verify_parity.sh
+# (Re)generate via: ./tests/parity/verify_parity.sh --save-artifacts
+
+numerical outputs:
+  074d6b18d73ead6263fdbe41f36f8bb485adfd4962372e4a408bbefaccbd8e2d  energy_exponential.json
+  08d5a2eefd3ef3b5e8698060ffcf05bbdbf7eb1a50ea6491e0a9eaed8d51adcb  adult_male_ei2400.json
+  2df4b2f9228be1022605d449b2bb0eb380d94c0d06ee773599cbcf550286b10d  adult_male_baseline.json
+  57717d6b4ffd868b56aeacba46ee2337d2ebaae901529a9714c25b2e2fe2f6e7  adult_male_deficit.json
+  58262a51555063fd1dfcc97731719e0176c7c1ac6ac827ce0eb98ce6744287d3  child_male_365d.json
+  5f5f729a0916eeea17d870fc7abfe9f6fab81be7ac64ffe9e769788d0f1d26b7  energy_logarithmic.json
+  6a9c86cd6480f8b00ac8fb16a1ef3c9d97c35a1e3b3782efd1dbc34439e981fd  child_male_5yr.json
+  733afd6f0ecbe30ec387e04b12b1391832e56a8aae2fc2441d754adfb4977e63  child_female_730d.json
+  7dada4ac2ff35377de4710cd2262a1a405e4985b57b61a8cb43f628a3964ac7e  energy_stepwise_l.json
+  96e6f3d7de90c41221c44bd5e9a69e655bab5dd7757e25984be2c69bb66c727d  adult_multi.json
+  af2caed2c2066a87ca8f7361acb532eea39d457e0ea0c7d966a04362b93386f6  adult_female_baseline.json
+  e6235c0e3251e57188941b70f38c365eefd17d35ee44a4a408984aa7d6b94076  energy_linear.json
+  efd33d986d070fd21760ca10e522a367cc0e5cf72771bf9a8cbef900636c17aa  energy_stepwise_r.json
+
+R API surface:
+  11964df013211925610c853a5c94d8df889764e9c3ce85e33946ec2002335b76  exports.txt

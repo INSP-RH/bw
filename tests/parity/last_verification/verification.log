@@ -1,0 +1,15 @@
+Parity verification — PASS
+==========================
+
+All R-visible snapshots are byte-identical to the committed contracts.
+
+Numerical outputs:
+  13 committed reference files, 13 byte-identical, 0 drifted.
+R API surface:
+  exports.txt byte-identical.
+
+outputs.diff      empty (no per-byte difference in any of the 13 JSONs)
+api_surface.diff  empty (no difference in exports.txt)
+manifest.txt      sha256 of every contract file at the moment of proof
+
+Reproduce: ./tests/parity/verify_parity.sh

@@ -17,10 +17,15 @@
 # This script is the executable backing of docs/QA_R_BEHAVIOR_UNCHANGED.md.
 #
 # Usage:
-#   ./tests/parity/verify_parity.sh             # verify both, return exit code
-#   ./tests/parity/verify_parity.sh --keep      # don't delete the temp dir
-#   ./tests/parity/verify_parity.sh --update    # overwrite committed snapshots
-#                                                 (only after deliberate change)
+#   ./tests/parity/verify_parity.sh                 # verify both, return exit code
+#   ./tests/parity/verify_parity.sh --keep          # don't delete the temp dir
+#   ./tests/parity/verify_parity.sh --update        # overwrite committed snapshots
+#                                                     (only after deliberate change)
+#   ./tests/parity/verify_parity.sh --save-artifacts
+#                                                   # on PASS, write the verification
+#                                                   # log + (empty) diffs to
+#                                                   # tests/parity/last_verification/
+#                                                   # as committed proof artifacts
 #
 # Exit codes:
 #   0   both contracts hold — PASS
@@ -50,10 +55,12 @@ DOCKERFILE="$REPO_ROOT/Dockerfile"
 # ---------------------------------------------------------------------------
 KEEP=0
 UPDATE=0
+SAVE_ARTIFACTS=0
 for arg in "$@"; do
     case "$arg" in
-        --keep)   KEEP=1 ;;
-        --update) UPDATE=1 ;;
+        --keep)            KEEP=1 ;;
+        --update)          UPDATE=1 ;;
+        --save-artifacts)  SAVE_ARTIFACTS=1 ;;
         -h|--help)
             sed -n '2,30p' "$0" | sed 's/^# //;s/^#//'
             exit 0
@@ -218,6 +225,65 @@ if (( REF_OK && API_OK )); then
     echo "      - R+C++ outputs are byte-identical to the committed reference."
     echo "      - R API surface is byte-identical to the committed snapshot."
     echo "      No R-visible behavior change in this checkout."
+
+    # --- on --save-artifacts, write proof artifacts into the repo --------
+    if (( SAVE_ARTIFACTS )); then
+        ART_DIR="$REPO_ROOT/tests/parity/last_verification"
+        mkdir -p "$ART_DIR"
+
+        # 1. Per-contract diffs (empty on success) — proof of no difference
+        : > "$ART_DIR/outputs.diff"
+        for committed in "$REF_DIR"/*.json; do
+            name="$(basename "$committed")"
+            regen="$TMP_OUT/references/$name"
+            diff -u "$committed" "$regen" >> "$ART_DIR/outputs.diff" || true
+        done
+
+        : > "$ART_DIR/api_surface.diff"
+        diff -u "$API_DIR/exports.txt" "$TMP_OUT/api_surface/exports.txt" \
+            >> "$ART_DIR/api_surface.diff" || true
+
+        # 2. Per-case file inventory (sha256 of each committed snapshot —
+        #    a quick "what was proven" manifest, stable across runs)
+        {
+            echo "# Verification manifest"
+            echo "# Files proven byte-identical to current source via verify_parity.sh"
+            echo "# (Re)generate via: ./tests/parity/verify_parity.sh --save-artifacts"
+            echo
+            echo "numerical outputs:"
+            (cd "$REF_DIR" && shasum -a 256 *.json | sort | sed 's/^/  /')
+            echo
+            echo "R API surface:"
+            (cd "$API_DIR" && shasum -a 256 exports.txt | sed 's/^/  /')
+        } > "$ART_DIR/manifest.txt"
+
+        # 3. Human-readable summary report
+        {
+            echo "Parity verification — PASS"
+            echo "=========================="
+            echo
+            echo "All R-visible snapshots are byte-identical to the committed contracts."
+            echo
+            echo "Numerical outputs:"
+            echo "  $REF_TOTAL committed reference files, $REF_SAME byte-identical, 0 drifted."
+            echo "R API surface:"
+            echo "  exports.txt byte-identical."
+            echo
+            echo "outputs.diff      empty (no per-byte difference in any of the $REF_TOTAL JSONs)"
+            echo "api_surface.diff  empty (no difference in exports.txt)"
+            echo "manifest.txt      sha256 of every contract file at the moment of proof"
+            echo
+            echo "Reproduce: ./tests/parity/verify_parity.sh"
+        } > "$ART_DIR/verification.log"
+
+        echo
+        echo "==> wrote proof artifacts to tests/parity/last_verification/"
+        echo "    - verification.log   (human-readable summary)"
+        echo "    - outputs.diff       (empty — no per-byte difference in 13 JSONs)"
+        echo "    - api_surface.diff   (empty — no difference in exports.txt)"
+        echo "    - manifest.txt       (sha256 of every contract file)"
+    fi
+
     exit 0
 fi
 

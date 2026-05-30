@@ -1,0 +1,4 @@
+PKG_CPPFLAGS = -I./include
+
+SOURCES = $(wildcard *.cpp) $(wildcard kernel/*.cpp)
+OBJECTS = $(SOURCES:.cpp=.o)

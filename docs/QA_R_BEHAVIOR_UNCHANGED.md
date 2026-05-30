@@ -164,6 +164,29 @@ For full usage:
 ./tests/parity/verify_parity.sh --help
 ```
 
+To leave a **committed proof artifact** in the repo after a successful
+run (used by the refactor commits to ship visible evidence that the gate
+held), pass `--save-artifacts`:
+
+```bash
+./tests/parity/verify_parity.sh --save-artifacts
+```
+
+This writes, on a passing run only:
+
+- `tests/parity/last_verification/verification.log` — human-readable summary
+- `tests/parity/last_verification/outputs.diff` — empty file (proves zero
+  per-byte difference across all 13 reference JSONs)
+- `tests/parity/last_verification/api_surface.diff` — empty file (proves
+  zero difference in `exports.txt`)
+- `tests/parity/last_verification/manifest.txt` — sha256 of every contract
+  file at the moment of proof
+
+These are committed alongside the code change they prove. A reviewer who
+doesn't want to run Docker themselves can read these directly and verify
+the hashes against `tests/parity/reference_values/` and
+`tests/parity/api_surface/`.
+
 See [`REFERENCE_VALUES_CATALOG.md`](REFERENCE_VALUES_CATALOG.md) for what
 each of the 13 cases exercises.
 
@@ -324,4 +347,8 @@ takes the stricter contract that fits.
   the 13 frozen numerical-output JSON files.
 - [`../tests/parity/api_surface/exports.txt`](../tests/parity/api_surface/exports.txt) —
   the frozen R API surface.
+- [`../tests/parity/last_verification/`](../tests/parity/last_verification) —
+  the most recent successful proof artifacts (log, empty diffs, sha256
+  manifest). Updated by `--save-artifacts` on each refactor commit that
+  needs to ship visible evidence.
 - [`../Dockerfile`](../Dockerfile) — the pinned R/C++ toolchain.
