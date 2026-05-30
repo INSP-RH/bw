@@ -1,0 +1,11 @@
+.git
+.Rhistory
+.RData
+*.o
+*.so
+*.dll
+README.md
+README.Rmd
+README_files
+FORMULA_COMPARISON.md
+LICENSE.md

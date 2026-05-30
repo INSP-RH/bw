@@ -1,0 +1,7 @@
+^Dockerfile$
+^\.dockerignore$
+^tests/parity$
+^tests/parity/.*$
+^docs/QA_R_BEHAVIOR_UNCHANGED\.md$
+^docs/REFERENCE_VALUES_CATALOG\.md$
+^r_parity_diff\.log$
