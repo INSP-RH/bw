@@ -333,14 +333,56 @@ takes the stricter contract that fits.
 
 ---
 
+## The two kinds of proof you can run
+
+There are two scripts. They prove different things and have different
+trust assumptions:
+
+| script | what it does | what you trust |
+|---|---|---|
+| `tests/parity/verify_parity.sh` | regenerates snapshots from the **current** source and byte-diffs against the committed reference JSONs | that the committed JSONs were correctly snapshotted from a known-good source at some past moment |
+| `tests/parity/compare_against_upstream.sh` | builds the package from `upstream/master` AND from `HEAD` in separate Docker images, runs the same R driver against both **live**, byte-diffs the outputs | nothing — both packages are built and run from scratch each time |
+
+The first is the day-to-day CI gate: fast, deterministic, no network. The
+second is the **end-to-end demonstration** for someone who doesn't want to
+trust the committed snapshots — it runs upstream's actual R package and
+this PR's R package side-by-side, and proves they produce identical
+outputs for identical inputs.
+
+Run the strongest proof:
+
+```bash
+./tests/parity/compare_against_upstream.sh
+```
+
+Expected last lines:
+
+```
+----- live side-by-side comparison -----
+  before:   upstream/master  (698ff71)
+  after:    HEAD   (8efccf9)
+  files (before / after): 13 / 13
+  byte-identical:         13
+  drifted (content):      0
+  missing from 'after':   0
+  extra in 'after':       0
+----------------------------------------
+
+PASS: the R package produces byte-identical outputs at 8efccf9
+      as it did at 698ff71.
+```
+
+Exit code: `0`. Two Docker builds + two R driver runs ≈ 6 minutes on first
+invocation, ~2 minutes thereafter.
+
 ## For skeptics: hand-verify without trusting any automation
 
-If you don't want to trust `verify_parity.sh`, follow the step-by-step
-walkthrough in [`MANUAL_VERIFICATION.md`](MANUAL_VERIFICATION.md). It
-breaks the proof into primitive commands (`git diff`, `cmp`, `diff -u`,
-`shasum`, `R CMD INSTALL`) you can read and run by hand, with the expected
-output for each step. Includes a step where you deliberately break a
-constant and confirm the gate catches it.
+If you don't want to trust either script, follow the step-by-step walk-
+through in [`MANUAL_VERIFICATION.md`](MANUAL_VERIFICATION.md). It breaks
+the proof into primitive commands (`git diff`, `cmp`, `diff -u`, `shasum`,
+`R CMD INSTALL`) you can read and run by hand, with the expected output
+for each step. Includes a step where you deliberately break a constant
+and confirm the gate catches it.
 
 ## References
 
@@ -350,7 +392,11 @@ constant and confirm the gate catches it.
 - [`REFERENCE_VALUES_CATALOG.md`](REFERENCE_VALUES_CATALOG.md) — what each
   of the 13 cases exercises.
 - [`../tests/parity/verify_parity.sh`](../tests/parity/verify_parity.sh) —
-  the executable that produces the report above.
+  the day-to-day CI gate (regenerates from current source, diffs against
+  committed snapshots).
+- [`../tests/parity/compare_against_upstream.sh`](../tests/parity/compare_against_upstream.sh)
+  — the end-to-end demonstration (builds both upstream's and HEAD's
+  packages live, byte-diffs their outputs).
 - [`../tests/parity/generate_reference.R`](../tests/parity/generate_reference.R) —
   the 13 numerical-output input cases.
 - [`../tests/parity/snapshot_api.R`](../tests/parity/snapshot_api.R) —
