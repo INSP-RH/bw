@@ -333,8 +333,20 @@ takes the stricter contract that fits.
 
 ---
 
+## For skeptics: hand-verify without trusting any automation
+
+If you don't want to trust `verify_parity.sh`, follow the step-by-step
+walkthrough in [`MANUAL_VERIFICATION.md`](MANUAL_VERIFICATION.md). It
+breaks the proof into primitive commands (`git diff`, `cmp`, `diff -u`,
+`shasum`, `R CMD INSTALL`) you can read and run by hand, with the expected
+output for each step. Includes a step where you deliberately break a
+constant and confirm the gate catches it.
+
 ## References
 
+- [`MANUAL_VERIFICATION.md`](MANUAL_VERIFICATION.md) — step-by-step
+  walkthrough for hand-checking the parity claim without trusting any
+  automation.
 - [`REFERENCE_VALUES_CATALOG.md`](REFERENCE_VALUES_CATALOG.md) — what each
   of the 13 cases exercises.
 - [`../tests/parity/verify_parity.sh`](../tests/parity/verify_parity.sh) —
